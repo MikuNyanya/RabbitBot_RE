@@ -1,2 +1,2 @@
 # RabbitBot_RE
-init
+init 兔子忙碌中。。。
