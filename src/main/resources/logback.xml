@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
+	<property name="LOG_HOME" value="logs" />
+	<property name="APP_NAME" value="RabbitBot_RE" />
+	<property name="MaxHistory" value="365" />
+
+	<!-- 控制台输出 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<withJansi>true</withJansi>
+		
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>
+				%d{HH:mm:ss} [%thread] %highlight(%-5level) %cyan(%logger{50}) - %highlight(%msg) %n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	
+	<!-- 每日记录log 级别：info -->
+	<appender name="DAILY_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>
+				%d{HH:mm:ss}[%thread] %-5level %logger{50} - %msg%n
+			</pattern>
+		</encoder>
+		
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${LOG_HOME}/${APP_NAME}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+			<MaxHistory>${MaxHistory}</MaxHistory>
+			<MaxFileSize>100MB</MaxFileSize>
+		</triggeringPolicy>
+		
+	</appender>
+	
+	<!-- error 日志文件 级别：error -->
+	<appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss} %X{requestId} [%thread] %-5level %logger{50} - %msg%n
+			</pattern>
+		</encoder>
+		
+		<triggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${LOG_HOME}/${APP_NAME}_ERROR.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+			<MaxHistory>${MaxHistory}</MaxHistory>
+			<MaxFileSize>100MB</MaxFileSize>
+		</triggeringPolicy>
+		
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>  
+            <onMismatch>DENY</onMismatch>  
+		</filter> 
+	</appender>
+	
+	
+	
+	<!-- root是一个 特殊的 根级 logger -->
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="DAILY_FILE" />
+		<appender-ref ref="ERROR_FILE" />
+	</root>
+
+</configuration>
