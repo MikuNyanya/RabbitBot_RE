@@ -1,13 +1,14 @@
 package cn.mikulink.command.everywhere;
 
 import cn.mikulink.constant.ConstantImage;
+import cn.mikulink.entity.CommandProperties;
 import cn.mikulink.entity.apirequest.imjad.ImjadPixivResponse;
 import cn.mikulink.exceptions.RabbitException;
 import cn.mikulink.service.PixivBugService;
 import cn.mikulink.service.PixivService;
 import cn.mikulink.service.RabbitBotService;
+import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.utils.StringUtil;
-import cn.mikulink.entity.CommandProperties;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
@@ -16,7 +17,6 @@ import net.mamoe.mirai.message.data.PlainText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.Map;
  * <p>
  * 根据pixiv用户随机展示图片
  */
-@Component
+@Command
 public class PUserIllustCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(PUserIllustCommand.class);
     //操作间隔 账号，操作时间戳

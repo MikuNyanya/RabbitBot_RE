@@ -1,21 +1,34 @@
 package cn.mikulink.service;
 
+import cn.mikulink.apirequest.saucenao.SaucenaoImageSearch;
 import cn.mikulink.constant.ConstantCommon;
 import cn.mikulink.constant.ConstantConfig;
 import cn.mikulink.constant.ConstantImage;
 import cn.mikulink.entity.ImageInfo;
-import cn.mikulink.utils.FileUtil;
-import cn.mikulink.utils.ImageUtil;
-import cn.mikulink.utils.RandomUtil;
-import cn.mikulink.utils.StringUtil;
+import cn.mikulink.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
+import cn.mikulink.entity.apirequest.saucenao.SaucenaoSearchResult;
+import cn.mikulink.exceptions.RabbitException;
+import cn.mikulink.utils.*;
+import com.alibaba.fastjson.JSONObject;
 import net.coobird.thumbnailator.Thumbnails;
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,6 +41,13 @@ import java.util.List;
 @Service
 public class ImageService {
     private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
+
+    @Autowired
+    private PixivService pixivService;
+    @Autowired
+    private PixivBugService pixivBugService;
+    @Autowired
+    private DanbooruService danbooruService;
 
     /**
      * 随机获取一张鸽子图
@@ -155,84 +175,127 @@ public class ImageService {
     }
 
     /**
+     * 上传图片，获取图片id
+     * 重载，单条转化
+     *
+     * @param localImagesPath 本地图片地址
+     * @param subject         mirai对象
+     * @return 封装好的mirai消息
+     */
+    public MessageChain uploadMiraiImage(String localImagesPath, Contact subject) {
+        return uploadMiraiImage(Arrays.asList(localImagesPath), subject);
+    }
+
+    /**
+     * 上传图片，获取图片id
+     * todo 我也不知道上传到哪里了，怎么会这么慢，有办法快点么
+     *
+     * @param localImagesPath 本地图片列表
+     * @param subject         mirai对象
+     * @return 封装好的mirai消息
+     */
+    public MessageChain uploadMiraiImage(List<String> localImagesPath, Contact subject) {
+        MessageChain result = MessageUtils.newChain();
+        //上传并获取每张图片的id
+        if (null != localImagesPath) {
+            for (String localImagePath : localImagesPath) {
+                try {
+                    //上传
+                    BufferedImage image = ImageIO.read(new FileInputStream(localImagePath));
+                    Image tempMiraiImg = subject.uploadImage(image);
+
+                    //拼接到消息里
+                    result = result.plus("");
+                    result = result.plus(tempMiraiImg);
+                    result = result.plus("\n");
+                } catch (IOException ioEx) {
+                    logger.error(String.format("ImageService uploadMiraiImage error,localImagesPath:%s", JSONObject.toJSONString(localImagesPath)));
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * 使用Saucenao搜图
      *
      * @param imgUrl 网络图片链接
      * @return 搜索结果
      */
-//    public static String searchImgFromSaucenao(String imgUrl) {
-//        String apiKey = ConstantCommon.common_config.get(ConstantImage.SAUCENAO_API_KEY);
-//        if (StringUtil.isEmpty(apiKey)) {
-//            logger.warn(ConstantImage.SAUCENAO_API_KEY_EMPTY);
-//            return ConstantImage.SAUCENAO_API_KEY_EMPTY;
-//        }
-//        SaucenaoSearchInfoResult searchResult = null;
-//        try {
-//            //调用API
-//            SaucenaoImageSearch request = new SaucenaoImageSearch();
-//            request.setAccessToken(apiKey);
-//            request.setNumres(1);
-//            request.setUrl(imgUrl);
-//
-//            request.doRequest();
-//            SaucenaoSearchResult saucenaoSearchResult = request.getEntity();
-//            if (null == saucenaoSearchResult) {
-//                return ConstantImage.SAUCENAO_API_SEARCH_FAIL;
-//            }
-//
-//            //解析结果 header基本不用看，看结果就行，取第一个
-//            List<SaucenaoSearchInfoResult> infoResultList = saucenaoSearchResult.getResults();
-//            if (null == infoResultList || infoResultList.size() <= 0) {
-//                return ConstantImage.SAUCENAO_SEARCH_FAIL;
-//            }
-//            for (SaucenaoSearchInfoResult infoResult : infoResultList) {
-//                //暂时只识别pixiv和Danbooru的
-//                int indexId = infoResult.getHeader().getIndex_id();
-//                boolean isPixiv = 5 == indexId;
-//                boolean isDanbooru = (9 == indexId || null != infoResult.getData().getDanbooru_id());
-//                if (!isPixiv && !isDanbooru) {
-//                    continue;
-//                }
-//
-//                //过滤掉相似度50一下的
-//                String similarity = infoResult.getHeader().getSimilarity();
-//                if (StringUtil.isEmpty(similarity) || 50.0 > NumberUtil.toDouble(similarity)) {
-//                    continue;
-//                }
-//                searchResult = infoResult;
-//                break;
-//            }
-//        } catch (Exception ex) {
-//            logger.error(ConstantImage.SAUCENAO_API_REQUEST_ERROR + ex.toString(), ex);
-//            return ConstantImage.SAUCENAO_API_REQUEST_ERROR;
-//        }
-//
-//        if (null == searchResult) {
-//            //没有符合条件的图片，识图失败
-//            return ConstantImage.SAUCENAO_SEARCH_FAIL_PARAM;
-//        }
-//
-//        try {
-//            //获取信息，并返回结果
-//            if (5 == searchResult.getHeader().getIndex_id()) {
-//                //pixiv
-//                //是否走爬虫
-//                String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_USE_API);
-//                if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-//                    return PixivBugService.parsePixivImgRequest(searchResult);
-//                } else {
-//                    return PixivService.parsePixivImgRequest(searchResult);
-//                }
-//            } else {
-//                //Danbooru
-//                return DanbooruService.parseDanbooruImgRequest(searchResult);
-//            }
-//        } catch (FileNotFoundException fileNotFoundEx) {
-//            logger.warn(ConstantImage.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
-//            return ConstantImage.PIXIV_IMAGE_DELETE;
-//        } catch (Exception ex) {
-//            logger.error(ConstantImage.IMAGE_GET_ERROR + ex.toString(), ex);
-//            return ConstantImage.IMAGE_GET_ERROR;
-//        }
-//    }
+    public MessageChain searchImgFromSaucenao(String imgUrl, Contact subject) throws RabbitException {
+        String apiKey = ConstantCommon.common_config.get(ConstantImage.SAUCENAO_API_KEY);
+        if (StringUtil.isEmpty(apiKey)) {
+            logger.warn(ConstantImage.SAUCENAO_API_KEY_EMPTY);
+            throw new RabbitException(ConstantImage.SAUCENAO_API_KEY_EMPTY);
+        }
+        SaucenaoSearchInfoResult searchResult = null;
+        try {
+            //调用API
+            SaucenaoImageSearch request = new SaucenaoImageSearch();
+            request.setAccessToken(apiKey);
+            request.setNumres(1);
+            request.setUrl(imgUrl);
+
+            request.doRequest();
+            SaucenaoSearchResult saucenaoSearchResult = request.getEntity();
+            if (null == saucenaoSearchResult) {
+                throw new RabbitException(ConstantImage.SAUCENAO_API_SEARCH_FAIL);
+            }
+
+            //解析结果 header基本不用看，看结果就行，取第一个
+            List<SaucenaoSearchInfoResult> infoResultList = saucenaoSearchResult.getResults();
+            if (null == infoResultList || infoResultList.size() <= 0) {
+                throw new RabbitException(ConstantImage.SAUCENAO_SEARCH_FAIL);
+            }
+            for (SaucenaoSearchInfoResult infoResult : infoResultList) {
+                //暂时只识别pixiv和Danbooru的
+                int indexId = infoResult.getHeader().getIndex_id();
+                boolean isPixiv = 5 == indexId;
+                boolean isDanbooru = (9 == indexId || null != infoResult.getData().getDanbooru_id());
+                if (!isPixiv && !isDanbooru) {
+                    continue;
+                }
+
+                //过滤掉相似度50一下的
+                String similarity = infoResult.getHeader().getSimilarity();
+                if (StringUtil.isEmpty(similarity) || 50.0 > NumberUtil.toDouble(similarity)) {
+                    continue;
+                }
+                searchResult = infoResult;
+                break;
+            }
+        } catch (Exception ex) {
+            logger.error(ConstantImage.SAUCENAO_API_REQUEST_ERROR + ex.toString(), ex);
+            throw new RabbitException(ConstantImage.SAUCENAO_API_REQUEST_ERROR);
+        }
+
+        if (null == searchResult) {
+            //没有符合条件的图片，识图失败
+            throw new RabbitException(ConstantImage.SAUCENAO_SEARCH_FAIL_PARAM);
+        }
+
+        try {
+            //获取信息，并返回结果
+            if (5 == searchResult.getHeader().getIndex_id()) {
+                //pixiv
+                //是否走爬虫
+                String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_USE_API);
+                if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
+//                    return pixivBugService.parsePixivImgRequest(searchResult);
+                    return MessageUtils.newChain();
+                } else {
+                    return pixivService.parsePixivImgRequest(searchResult, subject);
+                }
+            } else {
+                //Danbooru
+                return danbooruService.parseDanbooruImgRequest(searchResult,subject);
+            }
+        } catch (FileNotFoundException fileNotFoundEx) {
+            logger.warn(ConstantImage.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
+            throw new RabbitException(ConstantImage.PIXIV_IMAGE_DELETE);
+        } catch (Exception ex) {
+            logger.error(ConstantImage.IMAGE_GET_ERROR + ex.toString(), ex);
+            throw new RabbitException(ConstantImage.IMAGE_GET_ERROR);
+        }
+    }
 }

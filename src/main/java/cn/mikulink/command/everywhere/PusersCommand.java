@@ -1,19 +1,16 @@
 package cn.mikulink.command.everywhere;
 
 import cn.mikulink.constant.ConstantImage;
-import cn.mikulink.service.PixivBugService;
-import cn.mikulink.service.PixivService;
+import cn.mikulink.entity.CommandProperties;
+import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.utils.RandomUtil;
 import cn.mikulink.utils.RegexUtil;
 import cn.mikulink.utils.StringUtil;
-import cn.mikulink.entity.CommandProperties;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +23,7 @@ import java.util.List;
  * <p>
  * 搜索P站作者信息指令
  */
-@Component
+@Command
 public class PusersCommand extends BaseEveryWhereCommand {
     //展示的数量
     private static final int SHOW_COUNT = 15;

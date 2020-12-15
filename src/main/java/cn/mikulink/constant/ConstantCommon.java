@@ -1,5 +1,8 @@
 package cn.mikulink.constant;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -11,11 +14,13 @@ import java.util.Map;
  * <p>
  * 公共常量
  */
+@Component
 public class ConstantCommon {
     //兔叽
-    public static final String RABBIT_BOT_NAME = "兔叽";
+    @Value("bot.name.cn")
+    public static String RABBIT_BOT_NAME = "兔叽";
     //RabbitBot
-    public static final String RABBIT_BOT_NAME_EN = "RabbitBot";
+    public static String RABBIT_BOT_NAME_EN = "RabbitBot";
     //换行符
     public static final String NEXT_LINE = "\n";
     //指令前缀

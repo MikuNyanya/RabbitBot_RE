@@ -1,5 +1,6 @@
 package cn.mikulink.command.group;
 
+import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.command.GroupCommand;
 import cn.mikulink.constant.ConstantCapsuleToy;
 import cn.mikulink.constant.ConstantFile;
@@ -14,7 +15,6 @@ import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * <p>
  * 扭蛋
  */
-@Component
+@Command
 public class CapsuleToyCommand implements GroupCommand {
 
     @Autowired

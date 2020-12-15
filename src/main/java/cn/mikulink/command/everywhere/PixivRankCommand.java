@@ -3,11 +3,13 @@ package cn.mikulink.command.everywhere;
 import cn.mikulink.constant.ConstantCommon;
 import cn.mikulink.constant.ConstantImage;
 import cn.mikulink.constant.ConstantWeiboNews;
+import cn.mikulink.entity.CommandProperties;
 import cn.mikulink.entity.pixiv.PixivRankImageInfo;
+import cn.mikulink.service.ImageService;
 import cn.mikulink.service.PixivBugService;
 import cn.mikulink.service.PixivService;
 import cn.mikulink.service.RabbitBotService;
-import cn.mikulink.entity.CommandProperties;
+import cn.mikulink.sys.annotate.Command;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
@@ -16,7 +18,6 @@ import net.mamoe.mirai.message.data.PlainText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ import java.util.List;
  * <p>
  * P站日榜
  */
-@Component
+@Command
 public class PixivRankCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(PixivRankCommand.class);
 
@@ -40,6 +41,8 @@ public class PixivRankCommand extends BaseEveryWhereCommand {
     private PixivBugService pixivBugService;
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private ImageService imageService;
 
 
     @Override
@@ -67,7 +70,7 @@ public class PixivRankCommand extends BaseEveryWhereCommand {
             //拼接一个发送一个，中间间隔几秒
             for (PixivRankImageInfo imageInfo : imageList) {
                 //上传图片
-                MessageChain resultChain = pixivService.uploadMiraiImage(imageInfo.getLocalImagesPath(), subject);
+                MessageChain resultChain = imageService.uploadMiraiImage(imageInfo.getLocalImagesPath(), subject);
                 //拼接图片描述
                 String resultStr = pixivService.parsePixivImgInfoToGroupMsg(imageInfo);
                 resultChain = resultChain.plus("").plus(resultStr);

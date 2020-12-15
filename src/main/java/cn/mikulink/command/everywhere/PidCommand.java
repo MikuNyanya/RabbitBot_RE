@@ -4,6 +4,7 @@ import cn.mikulink.constant.ConstantCommon;
 import cn.mikulink.constant.ConstantImage;
 import cn.mikulink.service.PixivBugService;
 import cn.mikulink.service.PixivService;
+import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.utils.NumberUtil;
 import cn.mikulink.utils.StringUtil;
 import cn.mikulink.entity.CommandProperties;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
  * <p>
  * 根据pixiv图片id搜索图片
  */
-@Component
+@Command
 public class PidCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(PidCommand.class);
 

@@ -1,6 +1,4 @@
-图片测试
-[CQ:image,file=boring.gif]
 war
 war, war never changes.
 兔叽
-嗯~|在|yep?|干嘛|有什么事嘛|兔叽死啦ヽ(#`Д´)ノ|来啦来啦（￣▽￣）／|是谁在呼叫舰队|是谁在呼叫兔叽|[CQ:image,file=fear.png]|[CQ:image,file=boring.gif]
+嗯~|在|yep?|干嘛|有什么事嘛|兔叽死啦ヽ(#`Д´)ノ|来啦来啦（￣▽￣）／|是谁在呼叫舰队|是谁在呼叫兔叽

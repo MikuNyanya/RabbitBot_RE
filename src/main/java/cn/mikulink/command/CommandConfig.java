@@ -44,11 +44,13 @@ public class CommandConfig {
     /**
      * 注册指令(批量)
      */
-    public void registerCommands() {
-        Command[] commands = initCommands();
-        for (Command command : commands) {
-            registerCommand(command);
+    public void registerCommands(List<Command> commandList) {
+        if (null == commandList || commandList.size() <= 0) {
+            return;
         }
+        //idea提示我可以换成this::什么鬼，这是什么神奇的语法
+//        commandList.forEach(this::registerCommand);
+        commandList.forEach(command -> registerCommand(command));
     }
 
     /**
@@ -123,28 +125,4 @@ public class CommandConfig {
         };
         return heads;
     }
-
-    public Command[] initCommands() {
-        Command[] commands = new Command[]{
-                new CLSCommand(),
-                new CapsuleToyCommand(),
-                new RollCommand(),
-                new RPCommand(),
-                new WeiboNewsCommand(),
-                new ConfigCommand(),
-                new HelpCommand(),
-                new PidCommand(),
-                new PixivRankCommand(),
-                new SystemCommand(),
-                new PtagCommand(),
-                new PtagsCommand(),
-                new PwdCommand(),
-                new PUserIllustCommand(),
-                new PusersCommand(),
-                new SetuCommand(),
-                new SayCommand()
-        };
-        return commands;
-    }
-
 }

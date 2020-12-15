@@ -1,14 +1,14 @@
 package cn.mikulink.command.group;
 
+import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.command.GroupCommand;
-import cn.mikulink.utils.RandomUtil;
 import cn.mikulink.entity.CommandProperties;
+import cn.mikulink.utils.RandomUtil;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * <p>
  * roll数字
  */
-@Component
+@Command
 public class RollCommand implements GroupCommand {
     @Override
     public CommandProperties properties() {

@@ -5,6 +5,7 @@ import cn.mikulink.command.CommandConfig;
 import cn.mikulink.event.MessageEvents;
 import cn.mikulink.filemanage.*;
 import cn.mikulink.quartzs.RabbitBotJob;
+import cn.mikulink.sys.AnnotateScanner;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.event.Events;
@@ -37,6 +38,8 @@ public class RabbitBot {
     //监听事件
     @Autowired
     private MessageEvents messageEvents;
+    @Autowired
+    private AnnotateScanner annotateScanner;
     //账号
     @Value("${bot.account}")
     private Long botAccount;
@@ -65,7 +68,7 @@ public class RabbitBot {
 
         //注册指令
         commandConfig.registerCommandHeads();
-        commandConfig.registerCommands();
+        commandConfig.registerCommands(annotateScanner.getCommandList());
 
         //注册事件
 //        List<ListenerHost> events = Arrays.asList(

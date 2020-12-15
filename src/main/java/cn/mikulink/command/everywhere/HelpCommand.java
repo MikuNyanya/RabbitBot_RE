@@ -2,12 +2,12 @@ package cn.mikulink.command.everywhere;
 
 import cn.mikulink.constant.ConstantCommon;
 import cn.mikulink.entity.CommandProperties;
+import cn.mikulink.sys.annotate.Command;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * <p>
  * 帮助列表
  */
-@Component
+@Command
 public class HelpCommand extends BaseEveryWhereCommand {
     private static String clsMessage = null;
 

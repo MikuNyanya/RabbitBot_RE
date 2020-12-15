@@ -26,7 +26,7 @@ public class WhatAnimeService {
      * @param imgUrl 网络图片链接
      * @return 返回消息
      */
-    public static String searchAnimeFromWhatAnime(String imgUrl) {
+    public String searchAnimeFromWhatAnime(String imgUrl) {
         try {
             WhatAnimeApi request = new WhatAnimeApi();
             request.setImgUrl(imgUrl);

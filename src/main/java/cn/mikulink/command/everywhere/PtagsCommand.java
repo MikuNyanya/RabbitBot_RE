@@ -1,18 +1,15 @@
 package cn.mikulink.command.everywhere;
 
 import cn.mikulink.constant.ConstantImage;
-import cn.mikulink.service.PixivBugService;
-import cn.mikulink.service.PixivService;
+import cn.mikulink.entity.CommandProperties;
+import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.utils.RandomUtil;
 import cn.mikulink.utils.StringUtil;
-import cn.mikulink.entity.CommandProperties;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +22,7 @@ import java.util.List;
  * <p>
  * 展示部分tag
  */
-@Component
+@Command
 public class PtagsCommand extends BaseEveryWhereCommand {
     //展示的tag数量
     private static final int SHOW_TAG_QTY = 10;

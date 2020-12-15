@@ -1,15 +1,22 @@
 package cn.mikulink.service;
 
-import gugugu.bots.LoggerRabbit;
-import gugugu.constant.ConstantImage;
-import gugugu.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
+import cn.mikulink.constant.ConstantImage;
+import cn.mikulink.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
+import cn.mikulink.exceptions.RabbitException;
+import cn.mikulink.utils.FileUtil;
+import cn.mikulink.utils.HttpUtil;
+import cn.mikulink.utils.ImageUtil;
+import cn.mikulink.utils.StringUtil;
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import utils.FileUtil;
-import utils.HttpUtil;
-import utils.ImageUtil;
-import utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,7 +29,12 @@ import java.net.Proxy;
  * for the Reisen
  * Danbooru相关服务
  */
+@Service
 public class DanbooruService {
+    private static final Logger logger = LoggerFactory.getLogger(DanbooruService.class);
+
+    @Autowired
+    private ImageService imageService;
 
     /**
      * 拼装识图结果_Danbooru
@@ -31,7 +43,8 @@ public class DanbooruService {
      * @param infoResult 识图结果
      * @return 拼装好的群消息
      */
-    public static String parseDanbooruImgRequest(SaucenaoSearchInfoResult infoResult) {
+    public MessageChain parseDanbooruImgRequest(SaucenaoSearchInfoResult infoResult, Contact subject) throws RabbitException {
+        MessageChain result = null;
         //根据id获取图片列表
         try {
             //Danbooru图片id
@@ -43,32 +56,30 @@ public class DanbooruService {
             //Saucenao搜索结果相似度
             String similarity = infoResult.getHeader().getSimilarity();
 
-            //图片cq码
-            String danbooruImgCQ = getDanbooruImgCQById(String.valueOf(danbooruId));
+            //图片id
+            result = getImgIdByDanbooruId(String.valueOf(danbooruId), subject);
 
             StringBuilder resultStr = new StringBuilder();
-            resultStr.append(danbooruImgCQ);
-            resultStr.append("\n[相似度] " + similarity + "%");
-            resultStr.append("\n[DanbooruId] " + danbooruId);
-            resultStr.append("\n[Tag] " + tag);
-            resultStr.append("\n[来源] " + source);
-            return resultStr.toString();
+            resultStr.append("\n[相似度] ").append(similarity).append("%");
+            resultStr.append("\n[DanbooruId] ").append(danbooruId);
+            resultStr.append("\n[Tag] ").append(tag);
+            resultStr.append("\n[来源] ").append(source);
+            result.plus(resultStr.toString());
+            return result;
         } catch (Exception ex) {
-            LoggerRabbit.logger().error("DanbooruService " + ConstantImage.DANBOORU_ID_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
-            return ConstantImage.DANBOORU_ID_GET_ERROR_GROUP_MESSAGE;
+            logger.error("DanbooruService " + ConstantImage.DANBOORU_ID_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
+            throw new RabbitException(ConstantImage.DANBOORU_ID_GET_ERROR_GROUP_MESSAGE);
         }
     }
 
     /**
-     * 根据danbooruId下载图片然后转为CQ码
+     * 根据danbooruId下载图片然后转为mirai图片id
      *
      * @param danbooruId danbooru图片id
-     * @return cq码，或者错误信息
+     * @return mirai图片id
      */
-    private static String getDanbooruImgCQById(String danbooruId) {
+    private MessageChain getImgIdByDanbooruId(String danbooruId, Contact subject) throws RabbitException {
         try {
-            String imgCQ = null;
-
             //目标页面
             String danbooru = "https://danbooru.donmai.us/posts/" + danbooruId;
             //通过请求获取到返回的页面
@@ -92,24 +103,22 @@ public class DanbooruService {
             String imgFileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
             String localDanbooruFilePath = ConstantImage.DEFAULT_IMAGE_SAVE_PATH + File.separator + "danbooru" + File.separator + imgFileName;
             if (FileUtil.exists(localDanbooruFilePath)) {
-                return ImageService.parseCQByLocalImagePath(localDanbooruFilePath);
+                return imageService.uploadMiraiImage(localDanbooruFilePath, subject);
             }
 
             //下载图片
             String localUrl = ImageUtil.downloadImage(null, imageUrl, ConstantImage.DEFAULT_IMAGE_SAVE_PATH + File.separator + "danbooru", null, proxy);
             if (StringUtil.isNotEmpty(localUrl)) {
-                imgCQ = ImageService.parseCQByLocalImagePath(localDanbooruFilePath);
+                return imageService.uploadMiraiImage(localDanbooruFilePath, subject);
             }
-            if (StringUtil.isEmpty(imgCQ)) {
-                imgCQ = ConstantImage.DANBOORU_IMAGE_DOWNLOAD_FAIL;
-            }
-            return imgCQ;
+
+            throw new RabbitException(ConstantImage.DANBOORU_IMAGE_DOWNLOAD_FAIL);
         } catch (FileNotFoundException fileNotFoundEx) {
-            LoggerRabbit.logger().warning("DanbooruService " + ConstantImage.DANBOORU_ID_GET_NOT_FOUND + "(" + danbooruId + ")");
-            return ConstantImage.DANBOORU_ID_GET_NOT_FOUND;
+            logger.warn("DanbooruService " + ConstantImage.DANBOORU_ID_GET_NOT_FOUND + "(" + danbooruId + ")");
+            throw new RabbitException(ConstantImage.DANBOORU_ID_GET_NOT_FOUND);
         } catch (IOException ioEx) {
-            LoggerRabbit.logger().error("DanbooruService " + ConstantImage.DANBOORU_ID_GET_FAIL_GROUP_MESSAGE + "(" + danbooruId + ")", ioEx);
-            return ConstantImage.DANBOORU_ID_GET_FAIL_GROUP_MESSAGE;
+            logger.error("DanbooruService " + ConstantImage.DANBOORU_ID_GET_FAIL_GROUP_MESSAGE + "(" + danbooruId + ")", ioEx);
+            throw new RabbitException(ConstantImage.DANBOORU_ID_GET_FAIL_GROUP_MESSAGE);
         }
     }
 }

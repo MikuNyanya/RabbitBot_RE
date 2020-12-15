@@ -1,12 +1,18 @@
 package cn.mikulink.command.everywhere;
 
-import cc.moecraft.icq.command.CommandProperties;
-import cc.moecraft.icq.command.interfaces.EverywhereCommand;
-import cc.moecraft.icq.event.events.message.EventMessage;
-import cc.moecraft.icq.user.User;
-import gugugu.bots.LoggerRabbit;
-import gugugu.constant.ConstantAmap;
-import gugugu.service.WeatherService;
+import cn.mikulink.command.EverywhereCommand;
+import cn.mikulink.constant.ConstantAmap;
+import cn.mikulink.entity.CommandProperties;
+import cn.mikulink.service.WeatherService;
+import cn.mikulink.sys.annotate.Command;
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.contact.User;
+import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.PlainText;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 
@@ -17,30 +23,26 @@ import java.util.ArrayList;
  * <p>
  * 天气情况
  */
+@Command
 public class CommandWeather implements EverywhereCommand {
-    /**
-     * 执行指令
-     *
-     * @param event   事件
-     * @param sender  发送者的用户
-     * @param command 指令名 ( 不包含指令参数 )
-     * @param args    指令参数 ( 不包含指令名 )
-     * @return 发送回去的消息 ( 当然也可以手动发送然后返回空 )
-     */
+    private static final Logger logger = LoggerFactory.getLogger(CommandWeather.class);
+    @Autowired
+    private WeatherService weatherService;
+
     @Override
-    public String run(EventMessage event, User sender, String command, ArrayList<String> args) {
+    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
         if (null == args || args.size() == 0) {
-            return "";
+            return null;
         }
         String inputCity = args.get(0);
         String result = "";
         try {
-            result = WeatherService.getWeatherByCityName(inputCity);
+            result = weatherService.getWeatherByCityName(inputCity);
         } catch (Exception ex) {
-            LoggerRabbit.logger().error("获取天气信息异常:" + ex.toString(), ex);
+            logger.error("获取天气信息异常:" + ex.toString(), ex);
             result = ConstantAmap.WEATHER_API_FAIL;
         }
-        return result;
+        return new PlainText(result);
     }
 
     @Override

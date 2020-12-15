@@ -1,12 +1,18 @@
 package cn.mikulink.command.everywhere;
 
-import cc.moecraft.icq.command.CommandProperties;
-import cc.moecraft.icq.command.interfaces.EverywhereCommand;
-import cc.moecraft.icq.event.events.message.EventMessage;
-import cc.moecraft.icq.user.User;
-import gugugu.constant.ConstantAnime;
-import gugugu.service.WhatAnimeService;
-import utils.StringUtil;
+
+import cn.mikulink.command.EverywhereCommand;
+import cn.mikulink.constant.ConstantAnime;
+import cn.mikulink.entity.CommandProperties;
+import cn.mikulink.service.WhatAnimeService;
+import cn.mikulink.sys.annotate.Command;
+import cn.mikulink.utils.StringUtil;
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.contact.User;
+import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.PlainText;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 
@@ -17,36 +23,37 @@ import java.util.ArrayList;
  * <p>
  * 以图搜番指令
  */
+@Command
 public class CommandAnimeSearch implements EverywhereCommand {
-    /**
-     * 执行指令
-     *
-     * @param event   事件
-     * @param sender  发送者的用户
-     * @param command 指令名 ( 不包含指令参数 )
-     * @param args    指令参数 ( 不包含指令名 )
-     * @return 发送回去的消息 ( 当然也可以手动发送然后返回空 )
-     */
-    @Override
-    public String run(EventMessage event, User sender, String command, ArrayList<String> args) {
-        if (null == args || args.size() == 0) {
-            return ConstantAnime.ANIME_SEARCH_NO_IMAGE_INPUT;
-        }
-        //获取传入图片，解析CQ中的网络图片链接
-        String imgCQ = args.get(0);
-        if (!imgCQ.contains("[CQ:image")) {
-            return ConstantAnime.ANIME_SEARCH_NO_IMAGE_INPUT;
-        }
-        String imgUrl = StringUtil.getCQImageUrl(imgCQ);
-        if (StringUtil.isEmpty(imgUrl)) {
-            return ConstantAnime.ANIME_SEARCH_IMAGE_URL_PARSE_FAIL;
-        }
-        //搜番，然后把图片加在最上面
-        return imgCQ + "\n" + WhatAnimeService.searchAnimeFromWhatAnime(imgUrl);
-    }
+
+    @Autowired
+    private WhatAnimeService whatAnimeService;
 
     @Override
     public CommandProperties properties() {
-        return new CommandProperties("AnimeSearch", "搜番", "animesearch");
+        return new CommandProperties("AnimeSearch", "搜番");
     }
+
+
+    @Override
+    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
+        if (null == args || args.size() == 0) {
+            return new PlainText(ConstantAnime.ANIME_SEARCH_NO_IMAGE_INPUT);
+        }
+        //获取传入图片，解析CQ中的网络图片链接 todo 接入mirai
+        String imgCQ = args.get(0);
+        if (!imgCQ.contains("[CQ:image")) {
+            return new PlainText(ConstantAnime.ANIME_SEARCH_NO_IMAGE_INPUT);
+        }
+        String imgUrl = StringUtil.getCQImageUrl(imgCQ);
+        if (StringUtil.isEmpty(imgUrl)) {
+            return new PlainText(ConstantAnime.ANIME_SEARCH_IMAGE_URL_PARSE_FAIL);
+        }
+        //搜番，然后把图片加在最上面
+        whatAnimeService.searchAnimeFromWhatAnime(imgUrl);
+
+        return null;
+    }
+
+
 }

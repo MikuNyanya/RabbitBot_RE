@@ -2,12 +2,12 @@ package cn.mikulink.command.everywhere;
 
 import cn.mikulink.constant.ConstantCommon;
 import cn.mikulink.entity.CommandProperties;
+import cn.mikulink.sys.annotate.Command;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * <p>
  * 兔叽信息
  */
-@Component
+@Command
 public class SystemCommand extends BaseEveryWhereCommand {
     @Override
     public CommandProperties properties() {
@@ -32,7 +32,7 @@ public class SystemCommand extends BaseEveryWhereCommand {
         msg.append("==========\n");
         msg.append(String.format("[Name] %s(%s)\n", ConstantCommon.RABBIT_BOT_NAME, ConstantCommon.RABBIT_BOT_NAME_EN));
         msg.append("[Birthday] 2019-12-3\n");
-        msg.append("[Version] V2.0\n");
+        msg.append("[Version] V1.0\n");
         msg.append("System Online\n");
         msg.append("兔叽增员中...\n");
         msg.append("==========");

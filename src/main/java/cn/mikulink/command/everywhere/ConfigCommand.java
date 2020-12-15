@@ -6,16 +6,15 @@ import cn.mikulink.entity.CommandProperties;
 import cn.mikulink.entity.ReString;
 import cn.mikulink.filemanage.FileManagerConfig;
 import cn.mikulink.service.RabbitBotService;
+import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.utils.RandomUtil;
 import cn.mikulink.utils.StringUtil;
-
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
@@ -27,7 +26,7 @@ import java.util.ArrayList;
  * <p>
  * 兔叽配置
  */
-@Component
+@Command
 public class ConfigCommand extends BaseEveryWhereCommand {
     private static String clsMessage = null;
 

@@ -9,6 +9,7 @@ import cn.mikulink.constant.ConstantConfig;
 import cn.mikulink.constant.ConstantImage;
 import cn.mikulink.entity.ReString;
 import cn.mikulink.entity.apirequest.imjad.*;
+import cn.mikulink.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
 import cn.mikulink.entity.pixiv.PixivRankImageInfo;
 import cn.mikulink.exceptions.RabbitException;
 import cn.mikulink.filemanage.FileManagerPixivMember;
@@ -283,20 +284,15 @@ public class PixivService {
      * @param infoResult 识图结果
      * @return 拼装好的群消息
      */
-//    public String parsePixivImgRequest(SaucenaoSearchInfoResult infoResult) throws IOException {
-//        //根据pid获取信息
-//        ImjadPixivResponse response = null;
-//        try {
-//            response = getImgsByPixivId((long) infoResult.getData().getPixiv_id());
-//        } catch (RabbitException rex) {
-//            return rex.getMessage();
-//        }
-//
-//        //Saucenao搜索结果相似度
-//        String similarity = infoResult.getHeader().getSimilarity();
-//        //拼装结果
-//        return parsePixivImgInfoByApiInfo(response, similarity);
-//    }
+    public MessageChain parsePixivImgRequest(SaucenaoSearchInfoResult infoResult, Contact subject) throws RabbitException, IOException {
+        //根据pid获取信息
+        ImjadPixivResponse response = getImgsByPixivId((long) infoResult.getData().getPixiv_id());
+
+        //Saucenao搜索结果相似度
+        String similarity = infoResult.getHeader().getSimilarity();
+        //拼装结果
+        return parsePixivImgInfoByApiInfo(response, similarity, subject);
+    }
 
     /**
      * 查询p站图片id并返回结果
@@ -486,7 +482,7 @@ public class PixivService {
                 //单图
                 localImagesPath.add(downloadPixivImg(response.getImage_urls().getLarge(), response.getId()));
             }
-            result = uploadMiraiImage(localImagesPath, subject);
+            result = imageService.uploadMiraiImage(localImagesPath, subject);
         }
 
         //图片标题
@@ -500,15 +496,15 @@ public class PixivService {
 
         StringBuilder resultStr = new StringBuilder();
         if (1 < response.getPage_count()) {
-            resultStr.append("\n该Pid共包含" + response.getPage_count() + "张图片");
+            resultStr.append("\n该Pid共包含").append(response.getPage_count()).append("张图片");
         }
         if (StringUtil.isNotEmpty(similarity)) {
-            resultStr.append("\n[相似度] " + similarity + "%");
+            resultStr.append("\n[相似度] ").append(similarity).append("%");
         }
-        resultStr.append("\n[P站id] " + response.getId());
-        resultStr.append("\n[标题] " + title);
-        resultStr.append("\n[作者] " + memberName);
-        resultStr.append("\n[上传时间] " + createDate);
+        resultStr.append("\n[P站id] ").append(response.getId());
+        resultStr.append("\n[标题] ").append(title);
+        resultStr.append("\n[作者] ").append(memberName);
+        resultStr.append("\n[上传时间] ").append(createDate);
 //            resultStr.append("\n[图片简介] " + caption);
 
         //保存一份tag
@@ -527,36 +523,13 @@ public class PixivService {
      */
     public String parsePixivImgInfoToGroupMsg(PixivRankImageInfo infoPixivRankImage) {
         StringBuilder resultStr = new StringBuilder();
-        resultStr.append("\n[排名] " + infoPixivRankImage.getRank());
-        resultStr.append("\n[昨日排名] " + infoPixivRankImage.getPreviousRank());
-        resultStr.append("\n[P站id] " + infoPixivRankImage.getPid());
-        resultStr.append("\n[标题] " + infoPixivRankImage.getTitle());
-        resultStr.append("\n[作者] " + infoPixivRankImage.getUserName());
-        resultStr.append("\n[创建时间] " + infoPixivRankImage.getCreatedTime());
+        resultStr.append("\n[排名] ").append(infoPixivRankImage.getRank());
+        resultStr.append("\n[昨日排名] ").append(infoPixivRankImage.getPreviousRank());
+        resultStr.append("\n[P站id] ").append(infoPixivRankImage.getPid());
+        resultStr.append("\n[标题] ").append(infoPixivRankImage.getTitle());
+        resultStr.append("\n[作者] ").append(infoPixivRankImage.getUserName());
+        resultStr.append("\n[创建时间] ").append(infoPixivRankImage.getCreatedTime());
         return resultStr.toString();
-    }
-
-    //上传图片到服务器，获取图片id
-    public MessageChain uploadMiraiImage(List<String> localImagesPath, Contact subject) {
-        MessageChain result = MessageUtils.newChain();
-        //上传并获取每张图片的id
-        if (null != localImagesPath) {
-            for (String localImagePath : localImagesPath) {
-                try {
-                    //上传
-                    BufferedImage image = ImageIO.read(new FileInputStream(localImagePath));
-                    Image tempMiraiImg = subject.uploadImage(image);
-
-                    //拼接到消息里
-                    result = result.plus("");
-                    result = result.plus(tempMiraiImg);
-                    result = result.plus("\n");
-                } catch (IOException ioEx) {
-                    logger.error(String.format("PixivService uploadMiraiImage error,localImagesPath:%s", JSONObject.toJSONString(localImagesPath)));
-                }
-            }
-        }
-        return result;
     }
 
     //从一页里随机出指定数量的结果

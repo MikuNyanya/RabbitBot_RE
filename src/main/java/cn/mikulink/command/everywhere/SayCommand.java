@@ -5,13 +5,13 @@ import cn.mikulink.constant.ConstantFile;
 import cn.mikulink.constant.ConstantFreeTime;
 import cn.mikulink.entity.CommandProperties;
 import cn.mikulink.filemanage.FileManagerFreeTime;
+import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.utils.RandomUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * <p>
  * 说些日常句子
  */
-@Component
+@Command
 public class SayCommand extends BaseEveryWhereCommand {
 
     @Override

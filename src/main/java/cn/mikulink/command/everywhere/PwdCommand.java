@@ -1,16 +1,16 @@
 package cn.mikulink.command.everywhere;
 
 import cn.mikulink.constant.ConstantCommon;
+import cn.mikulink.entity.CommandProperties;
+import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.utils.NumberUtil;
 import cn.mikulink.utils.RandomUtil;
 import cn.mikulink.utils.RegexUtil;
-import cn.mikulink.entity.CommandProperties;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ import java.util.List;
  * 可自定义长度，默认长度为6
  * 密码组合至少包含2个特殊字符和两个字母
  */
-@Component
+@Command
 public class PwdCommand extends BaseEveryWhereCommand {
     private static final String OVER_SIZE = "密码长度必须在1-20之间";
     //密码字符列表 定死算了
