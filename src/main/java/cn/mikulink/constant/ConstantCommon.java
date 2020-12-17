@@ -1,6 +1,5 @@
 package cn.mikulink.constant;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -16,12 +15,6 @@ import java.util.Map;
  */
 @Component
 public class ConstantCommon {
-    //兔叽
-    @Value("${bot.name.cn:兔叽}")
-    public static String RABBIT_BOT_NAME;
-    //RabbitBot
-    @Value("${bot.name.en:RabbitBot}")
-    public static String RABBIT_BOT_NAME_EN;
     //换行符
     public static final String NEXT_LINE = "\n";
     //指令前缀

@@ -4,7 +4,6 @@ package cn.mikulink.bot;
 import cn.mikulink.command.CommandConfig;
 import cn.mikulink.event.MessageEvents;
 import cn.mikulink.filemanage.*;
-import cn.mikulink.quartzs.RabbitBotJob;
 import cn.mikulink.sys.AnnotateScanner;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactoryJvm;
@@ -85,9 +84,6 @@ public class RabbitBot {
 
         //加载资源文件
         FileManagerConfig.dataFileInit();
-
-        //启动定时任务
-        new RabbitBotJob().jobStart();
 
         // 这个和picbotx 还是不太一样 那个不会占用主线程
         // 这里必须要启新线程去跑bot 不然会占用主线程

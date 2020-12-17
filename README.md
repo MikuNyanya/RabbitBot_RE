@@ -68,6 +68,7 @@ imjad的pixiv接口又炸了...寄人篱下啊...果然还是自己的东西好�
 全面重写pixiv相关功能，自行逆向Api，准备完全替代掉imjad的接口<br/>
 pixiv和danbooru业务代码下沉<br/>
 其他api的token和key整合进properties配置文件
+定时任务并入spring配置文件
 
 2020年12月16日<br/>
 指令注册改为自动注册，省了不少事情<br/>

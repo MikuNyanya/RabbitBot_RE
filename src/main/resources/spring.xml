@@ -8,6 +8,9 @@
     <!--扫描service-->
     <context:component-scan base-package="cn.mikulink"/>
 
-    <!--读取配置文件-->
+    <!--读取properties配置文件-->
     <context:property-placeholder location="classpath:rabbitbot_re.properties"/>
+
+    <!--定时器配置-->
+    <import resource="spring-quartz.xml"/>
 </beans>

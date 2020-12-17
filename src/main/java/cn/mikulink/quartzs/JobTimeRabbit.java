@@ -1,4 +1,4 @@
-package cn.mikulink.quartzs.jobs;
+package cn.mikulink.quartzs;
 
 import cn.mikulink.bot.RabbitBot;
 import cn.mikulink.command.group.RPCommand;
@@ -18,6 +18,7 @@ import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -30,8 +31,12 @@ import java.util.List;
  * 1小时执行一次的定时器
  */
 @Component
-public class JobTimeRabbit implements Job {
+public class JobTimeRabbit{
     private static final Logger logger = LoggerFactory.getLogger(JobTimeRabbit.class);
+
+    //兔叽
+    @Value("${bot.name.cn:兔叽}")
+    public String rabbit_bot_name;
 
     @Autowired
     private WeatherService weatherService;
@@ -42,8 +47,7 @@ public class JobTimeRabbit implements Job {
     @Autowired
     private RabbitBotService rabbitBotService;
 
-    @Override
-    public void execute(JobExecutionContext jobExecutionContext) {
+    public void execute() {
         //报时兔子
         timeRabbit();
         //天气
@@ -64,7 +68,7 @@ public class JobTimeRabbit implements Job {
         String msgEx = getMsgEx();
 
         //群报时，时间间隔交给定时器，这里返回值取当前时间即可
-        String msg = String.format("这里是%s报时：%s%s", ConstantCommon.RABBIT_BOT_NAME, DateUtil.toString(new Date()), msgEx);
+        String msg = String.format("这里是%s报时：%s%s", rabbit_bot_name, DateUtil.toString(new Date()), msgEx);
         try {
             //给每个群发送报时
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();

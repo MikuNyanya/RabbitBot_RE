@@ -1,4 +1,4 @@
-package cn.mikulink.quartzs.jobs;
+package cn.mikulink.quartzs.bak.jobs;
 
 
 import cn.mikulink.bot.RabbitBot;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
  * <p>
  * 1分钟执行一次的定时器
  */
-@Component
+@Component("bak_jobMain")
 public class JobMain implements Job {
     private static final Logger logger = LoggerFactory.getLogger(JobMain.class);
 

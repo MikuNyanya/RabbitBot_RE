@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!--主要定时器-->
+    <bean id="quartzMain" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="jobMain"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+    <!--次要定时器-->
+    <bean id="quartzTimeRabbit" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="jobTimeRabbit"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+
+    <!-- ======================== 调度触发器 ======================== -->
+    <bean id="quartzMainCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="quartzMain"/>
+        <property name="cronExpression" value="0 0/1 * * * ?"/>
+    </bean>
+
+    <bean id="quartzTimeRabbitCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="quartzTimeRabbit"/>
+        <property name="cronExpression" value="0 0 0/1 * * ?"/>
+    </bean>
+
+    <!-- ======================== 调度工厂 ======================== -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="quartzMainCronTriggerBean"/>
+                <ref bean="quartzTimeRabbitCronTriggerBean"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>
