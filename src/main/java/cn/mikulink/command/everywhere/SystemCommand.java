@@ -8,6 +8,7 @@ import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,9 @@ import java.util.ArrayList;
  */
 @Command
 public class SystemCommand extends BaseEveryWhereCommand {
+    @Value("${bot.version}")
+    private String version;
+
     @Override
     public CommandProperties properties() {
         return new CommandProperties("System", "system");
@@ -32,7 +36,7 @@ public class SystemCommand extends BaseEveryWhereCommand {
         msg.append("==========\n");
         msg.append(String.format("[Name] %s(%s)\n", ConstantCommon.RABBIT_BOT_NAME, ConstantCommon.RABBIT_BOT_NAME_EN));
         msg.append("[Birthday] 2019-12-3\n");
-        msg.append("[Version] V1.0\n");
+        msg.append("[Version] ").append(version).append("\n");
         msg.append("System Online\n");
         msg.append("兔叽增员中...\n");
         msg.append("==========");
