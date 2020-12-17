@@ -3,6 +3,8 @@ package cn.mikulink.entity.pixiv;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * create by MikuLink on 2020/3/13 16:50
  * for the Reisen
@@ -31,6 +33,20 @@ public class PixivImageInfo {
      * 图片链接
      */
     private PixivImageUrlInfo urls;
+    /**
+     * 图片链接
+     * 如果是多图，这个值才会有用
+     */
+    private List<PixivImageUrlInfo> urlList;
+    /**
+     * 本地图片路径
+     */
+    private List<String> localImgPathList;
+    /**
+     * 似乎是某种限制，应该可以用来判断是否r18和r18g
+     * 0为无限制 1为有限制
+     */
+    private Integer xRestrict;
     /**
      * 作者id
      */
@@ -68,4 +84,8 @@ public class PixivImageInfo {
      */
     private Integer commentCount;
 //    private Object tags;
+    /**
+     * 相似度，在搜图功能里会用到
+     */
+    private String similarity;
 }

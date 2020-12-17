@@ -6,8 +6,8 @@ import cn.mikulink.constant.ConstantWeiboNews;
 import cn.mikulink.entity.CommandProperties;
 import cn.mikulink.entity.pixiv.PixivRankImageInfo;
 import cn.mikulink.service.ImageService;
-import cn.mikulink.service.PixivBugService;
 import cn.mikulink.service.PixivService;
+import cn.mikulink.service.PixivImjadService;
 import cn.mikulink.service.RabbitBotService;
 import cn.mikulink.sys.annotate.Command;
 import net.mamoe.mirai.contact.Contact;
@@ -36,13 +36,11 @@ public class PixivRankCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(PixivRankCommand.class);
 
     @Autowired
+    private PixivImjadService pixivImjadService;
+    @Autowired
     private PixivService pixivService;
     @Autowired
-    private PixivBugService pixivBugService;
-    @Autowired
     private RabbitBotService rabbitBotService;
-    @Autowired
-    private ImageService imageService;
 
 
     @Override
@@ -63,17 +61,14 @@ public class PixivRankCommand extends BaseEveryWhereCommand {
             //是否走爬虫
             String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_USE_API);
             if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-                imageList = pixivBugService.getPixivIllustRank(ConstantImage.PIXIV_IMAGE_PAGESIZE);
+                imageList = pixivService.getPixivIllustRank(ConstantImage.PIXIV_IMAGE_PAGESIZE);
             } else {
-                imageList = pixivService.getPixivIllustRank(1, ConstantImage.PIXIV_IMAGE_PAGESIZE);
+                imageList = pixivImjadService.getPixivIllustRank(1, ConstantImage.PIXIV_IMAGE_PAGESIZE);
             }
             //拼接一个发送一个，中间间隔几秒
             for (PixivRankImageInfo imageInfo : imageList) {
                 //上传图片
-                MessageChain resultChain = imageService.uploadMiraiImage(imageInfo.getLocalImagesPath(), subject);
-                //拼接图片描述
-                String resultStr = pixivService.parsePixivImgInfoToGroupMsg(imageInfo);
-                resultChain = resultChain.plus("").plus(resultStr);
+                MessageChain resultChain = pixivService.parsePixivImgInfoByApiInfo(imageInfo);
                 //发送消息
                 subject.sendMessage(resultChain);
                 Thread.sleep(1000L * 2);
@@ -87,6 +82,4 @@ public class PixivRankCommand extends BaseEveryWhereCommand {
         }
         return null;
     }
-
-
 }

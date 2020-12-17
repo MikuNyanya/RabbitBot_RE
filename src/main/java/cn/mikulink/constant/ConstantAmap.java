@@ -10,9 +10,6 @@ import java.util.Map;
  * 高德地图相关
  */
 public class ConstantAmap extends ConstantCommon {
-    //高德appkey 在系统配置中的key
-    public static final String APP_KEY_KEY = "amapKey";
-
     //存放高德地图API所需要的城市adcode
     public static Map<String, String> map_adcode = new HashMap<>();
 

@@ -42,6 +42,11 @@ public class PixivRankImageInfo {
      */
     private String createdTime;
     /**
+     * 似乎是某种限制，应该可以用来判断是否r18和r18g
+     * 0为无限制 1为有限制
+     */
+    private Integer xRestrict;
+    /**
      * 作画工具
      */
     private String tools;

@@ -2,12 +2,11 @@ package cn.mikulink.service;
 
 import cn.mikulink.apirequest.amap.WeatherRequest;
 import cn.mikulink.constant.ConstantAmap;
-import cn.mikulink.constant.ConstantCommon;
 import cn.mikulink.entity.apirequest.amap.InfoWeather;
 import cn.mikulink.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,6 +21,9 @@ import java.util.List;
 @Service
 public class WeatherService {
     private static final Logger logger = LoggerFactory.getLogger(WeatherService.class);
+
+    @Value("${amap.key}")
+    private String amapKey;
 
     /**
      * 根据传入的字符串，匹配城市名称
@@ -102,13 +104,12 @@ public class WeatherService {
      * @return 天气信息
      */
     public InfoWeather doWeatherRequest(String adcode) throws IOException {
-        String appKey = ConstantCommon.common_config.get(ConstantAmap.APP_KEY_KEY);
-        if (StringUtil.isEmpty(appKey)) {
+        if (StringUtil.isEmpty(amapKey)) {
             logger.warn("高德appkey为空！");
             return null;
         }
         WeatherRequest request = new WeatherRequest();
-        request.setAppkey(appKey);
+        request.setAppkey(amapKey);
         request.setCityAcode(adcode);
 
         request.doRequest();

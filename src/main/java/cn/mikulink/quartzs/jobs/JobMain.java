@@ -16,6 +16,8 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * create by MikuLink on 2019/12/3 12:58
@@ -23,6 +25,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * 1分钟执行一次的定时器
  */
+@Component
 public class JobMain implements Job {
     private static final Logger logger = LoggerFactory.getLogger(JobMain.class);
 
@@ -35,6 +38,9 @@ public class JobMain implements Job {
     private static Long free_time_last_send_time = System.currentTimeMillis();
     //日常语句下次发送的随机间隔时间
     private static Long free_time_random_send_time = 0L;
+
+    @Autowired
+    private WeiboNewsService weiboNewsService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
@@ -96,7 +102,7 @@ public class JobMain implements Job {
 
         try {
             //执行一次微博消息推送
-            WeiboNewsService.doPushWeiboNews();
+            weiboNewsService.doPushWeiboNews();
         } catch (Exception ex) {
             logger.error("微博消息推送执行异常:" + ex.toString(), ex);
         }

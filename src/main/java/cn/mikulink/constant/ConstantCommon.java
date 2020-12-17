@@ -17,10 +17,11 @@ import java.util.Map;
 @Component
 public class ConstantCommon {
     //兔叽
-    @Value("bot.name.cn")
-    public static String RABBIT_BOT_NAME = "兔叽";
+    @Value("${bot.name.cn:兔叽}")
+    public static String RABBIT_BOT_NAME;
     //RabbitBot
-    public static String RABBIT_BOT_NAME_EN = "RabbitBot";
+    @Value("${bot.name.en:RabbitBot}")
+    public static String RABBIT_BOT_NAME_EN;
     //换行符
     public static final String NEXT_LINE = "\n";
     //指令前缀

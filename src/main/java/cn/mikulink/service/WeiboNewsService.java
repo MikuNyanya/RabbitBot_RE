@@ -20,6 +20,7 @@ import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -37,6 +38,9 @@ import java.util.List;
 public class WeiboNewsService {
     private static final Logger logger = LoggerFactory.getLogger(WeiboNewsService.class);
 
+    @Value("${weibo.token}")
+    private String weiboToken;
+
     /**
      * 获取微信的最新消息
      *
@@ -44,9 +48,9 @@ public class WeiboNewsService {
      * @return 微博查询接口返回的对象
      * @throws IOException 接口异常
      */
-    public static InfoWeiboHomeTimeline getWeiboNews(Integer pageSize) throws IOException, RabbitException {
+    public InfoWeiboHomeTimeline getWeiboNews(Integer pageSize) throws IOException, RabbitException {
         //检查授权码
-        if (!ConstantCommon.common_config.containsKey("weiboToken")) {
+        if (StringUtil.isEmpty(weiboToken)) {
             throw new RabbitException(ConstantWeiboNews.NO_ACCESSTOKEN);
         }
 
@@ -55,7 +59,7 @@ public class WeiboNewsService {
         }
 
         WeiboHomeTimelineGet request = new WeiboHomeTimelineGet();
-        request.setAccessToken(ConstantCommon.common_config.get("weiboToken"));
+        request.setAccessToken(weiboToken);
         request.setPage(1);
         //每次获取最近的5条
         request.setCount(pageSize);
@@ -71,7 +75,7 @@ public class WeiboNewsService {
      *
      * @param statuses 从微博API获取的推文列表
      */
-    public static void sendWeiboNewsToEveryGroup(List<InfoStatuses> statuses) throws InterruptedException, IOException {
+    public void sendWeiboNewsToEveryGroup(List<InfoStatuses> statuses) throws InterruptedException, IOException {
         if (null == statuses || statuses.size() == 0) {
             return;
         }
@@ -99,7 +103,7 @@ public class WeiboNewsService {
     /**
      * 执行一次微博群消息推送
      */
-    public static void doPushWeiboNews() throws IOException, InterruptedException, RabbitException {
+    public void doPushWeiboNews() throws IOException, InterruptedException, RabbitException {
         InfoWeiboHomeTimeline weiboNews = getWeiboNews(10);
         Long sinceId = weiboNews.getSince_id();
         //刷新最后推文标识，但如果一次请求中没有获取到新数据，since_id会为0
@@ -116,14 +120,14 @@ public class WeiboNewsService {
     /**
      * 更新微博sinceId
      */
-    public static void refreshSinceId() {
+    public void refreshSinceId() {
         try {
             //检查授权码
-            if (!ConstantCommon.common_config.containsKey("weiboToken")) {
+            if (StringUtil.isEmpty(weiboToken)) {
                 throw new RabbitException(ConstantWeiboNews.NO_ACCESSTOKEN);
             }
             WeiboHomeTimelineGet request = new WeiboHomeTimelineGet();
-            request.setAccessToken(ConstantCommon.common_config.get("weiboToken"));
+            request.setAccessToken(weiboToken);
             request.setPage(1);
             request.setCount(1);
 
@@ -151,7 +155,7 @@ public class WeiboNewsService {
      * @return 转化好的信息对象，包含图片信息
      * @throws IOException 处理异常
      */
-    public static MessageChain parseWeiboBody(InfoStatuses info, Group subject) throws IOException {
+    public MessageChain parseWeiboBody(InfoStatuses info, Group subject) throws IOException {
         MessageChain result = MessageUtils.newChain();
         //头像
         if (1312997677 != info.getUser().getId()) {
@@ -202,7 +206,7 @@ public class WeiboNewsService {
      * @param imageUrl 图片链接
      * @return 原图链接
      */
-    private static String getImgLarge(String imageUrl) {
+    private String getImgLarge(String imageUrl) {
         //一般缩略图是这样的 http://wx4.sinaimg.cn/thumbnail/006QZngZgy1gaqfywbnqlg30dw0hzu0z.gif
         //原图链接是这样的   http://wx4.sinaimg.cn/large/006QZngZgy1gaqfywbnqlg30dw0hzu0z.gif
         //发现不一样的地方只有中段，thumbnail是缩略图 bmiddle是压过的图 large是原图
@@ -211,7 +215,7 @@ public class WeiboNewsService {
     }
 
     //解析微博图片为miraiImage对象
-    private static Image getMiraiImageByWeiboImgUrl(String imageUrl, Group subject) throws IOException {
+    private Image getMiraiImageByWeiboImgUrl(String imageUrl, Group subject) throws IOException {
         if (StringUtil.isEmpty(imageUrl)) {
             return null;
         }

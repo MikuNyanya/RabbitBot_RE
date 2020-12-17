@@ -5,27 +5,21 @@ import cn.mikulink.command.group.RPCommand;
 import cn.mikulink.constant.ConstantCommon;
 import cn.mikulink.constant.ConstantImage;
 import cn.mikulink.entity.pixiv.PixivRankImageInfo;
-import cn.mikulink.service.PixivBugService;
+import cn.mikulink.service.PixivImjadService;
 import cn.mikulink.service.PixivService;
+import cn.mikulink.service.RabbitBotService;
 import cn.mikulink.service.WeatherService;
 import cn.mikulink.utils.DateUtil;
-import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -35,16 +29,18 @@ import java.util.List;
  * <p>
  * 1小时执行一次的定时器
  */
-@Service
+@Component
 public class JobTimeRabbit implements Job {
     private static final Logger logger = LoggerFactory.getLogger(JobTimeRabbit.class);
 
     @Autowired
     private WeatherService weatherService;
     @Autowired
+    private PixivImjadService pixivImjadService;
+    @Autowired
     private PixivService pixivService;
     @Autowired
-    private PixivBugService pixivBugService;
+    private RabbitBotService rabbitBotService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
@@ -157,36 +153,17 @@ public class JobTimeRabbit implements Job {
             //是否走爬虫
             String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_USE_API);
             if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-                imageList = pixivBugService.getPixivIllustRank(ConstantImage.PIXIV_IMAGE_PAGESIZE);
+                imageList = pixivService.getPixivIllustRank(ConstantImage.PIXIV_IMAGE_PAGESIZE);
             } else {
-                imageList = pixivService.getPixivIllustRank(1, ConstantImage.PIXIV_IMAGE_PAGESIZE);
+                imageList = pixivImjadService.getPixivIllustRank(1, ConstantImage.PIXIV_IMAGE_PAGESIZE);
             }
             for (PixivRankImageInfo imageInfo : imageList) {
+                //上传图片
+                MessageChain resultChain = pixivService.parsePixivImgInfoByApiInfo(imageInfo);
+
                 //给每个群发送消息
                 ContactList<Group> groupList = RabbitBot.getBot().getGroups();
                 for (Group groupInfo : groupList) {
-                    //上传图片
-                    MessageChain resultChain = MessageUtils.newChain();
-                    //上传并获取每张图片的id
-                    if (null != imageInfo.getLocalImagesPath()) {
-                        for (String localImagePath : imageInfo.getLocalImagesPath()) {
-                            try {
-                                //上传
-                                BufferedImage image = ImageIO.read(new FileInputStream(localImagePath));
-                                Image tempMiraiImg = groupInfo.uploadImage(image);
-
-                                //拼接到消息里
-                                resultChain = resultChain.plus("");
-                                resultChain = resultChain.plus(tempMiraiImg);
-                            } catch (IOException ioEx) {
-                                logger.error(String.format("JobTimeRabbit pixivRankDay error,imageInfo:%s", JSONObject.toJSONString(imageInfo)));
-                            }
-                        }
-                    }
-                    //拼接图片描述
-                    String resultStr = pixivService.parsePixivImgInfoToGroupMsg(imageInfo);
-                    resultChain = resultChain.plus("").plus(resultStr);
-
                     groupInfo.sendMessage(resultChain);
 
                     //每个群之间间隔半秒意思下

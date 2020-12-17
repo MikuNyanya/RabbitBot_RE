@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * create by MikuLink on 2020/1/8 18:47
  * for the Reisen
@@ -16,6 +19,8 @@ public class BaseRequest {
     protected String body;
     //接口请求授权码
     protected String accessToken;
+    //请求头
+    protected Map<String, String> header = new HashMap<>();
     //接口参数
     protected JSONObject param = new JSONObject();
 }

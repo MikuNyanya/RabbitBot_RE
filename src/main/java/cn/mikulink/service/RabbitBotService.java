@@ -1,9 +1,17 @@
 package cn.mikulink.service;
 
+import cn.mikulink.bot.RabbitBot;
 import cn.mikulink.utils.StringUtil;
+import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -94,5 +102,78 @@ public class RabbitBotService {
         }
 
         return false;
+    }
+
+
+    /**
+     * 上传图片，获取图片id
+     * 重载，单条转化
+     *
+     * @param localImagesPath 本地图片地址
+     * @return mirai图片id
+     */
+    public List<Image> uploadMiraiImage(String localImagesPath) {
+        return uploadMiraiImage(Arrays.asList(localImagesPath));
+    }
+
+    /**
+     * 上传图片，获取图片id
+     * todo 我也不知道上传到哪里了，怎么会这么慢，有办法快点么
+     *
+     * @param localImagesPath 本地图片列表
+     * @return mirai图片id列表
+     */
+    public List<Image> uploadMiraiImage(List<String> localImagesPath) {
+        List<Image> miraiImgList = new ArrayList<>();
+        //上传并获取每张图片的id
+        if (null != localImagesPath) {
+            for (String localImagePath : localImagesPath) {
+                //上传 todo 目前没搞懂图片上传机制，这个上传速度很慢很慢很慢，没道理啊，难道上传到了第三方服务器了
+                Image tempMiraiImg = RabbitBot.getBot().getGroups().get(0).uploadImage(new File(localImagePath));
+                miraiImgList.add(tempMiraiImg);
+            }
+        }
+        return miraiImgList;
+    }
+
+    /**
+     * 针对多张图拼接成消息连做的代码封装方法
+     *
+     * @param imgList mirai图片集合
+     * @return 消息链
+     */
+    public MessageChain parseMsgChainByImgs(List<Image> imgList) {
+        MessageChain messageChain = MessageUtils.newChain();
+        for (Image image : imgList) {
+            messageChain.plus("").plus(image).plus("\n");
+        }
+        return messageChain;
+    }
+
+
+    /**
+     * 针对本地图片路径上传并拼接成消息连做的代码封装方法
+     *
+     * @param localImgPath 本地图片路径
+     * @return 消息链
+     */
+    public MessageChain parseMsgChainByLocalImgs(String localImgPath) {
+        return parseMsgChainByLocalImgs(Arrays.asList(localImgPath));
+    }
+
+    /**
+     * 针对本地图片路径上传并拼接成消息连做的代码封装方法
+     * 重载 批量处理
+     *
+     * @param localImgsPath 本地图片路径
+     * @return 消息链
+     */
+    public MessageChain parseMsgChainByLocalImgs(List<String> localImgsPath) {
+        MessageChain messageChain = MessageUtils.newChain();
+        List<Image> imageList = uploadMiraiImage(localImgsPath);
+        for (Image image : imageList) {
+            messageChain.plus("").plus(image).plus("\n");
+        }
+        return messageChain;
     }
 }

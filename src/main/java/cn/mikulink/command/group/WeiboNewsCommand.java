@@ -40,6 +40,8 @@ public class WeiboNewsCommand implements GroupCommand {
 
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private WeiboNewsService weiboNewsService;
 
     @Override
     public CommandProperties properties() {
@@ -104,7 +106,7 @@ public class WeiboNewsCommand implements GroupCommand {
                 return new PlainText(ConstantWeiboNews.SINCEID_OVERRIDE_SUCCESS);
             case ConstantWeiboNews.SINCEID_REFRESH:
                 //刷新sinceId
-                WeiboNewsService.refreshSinceId();
+                weiboNewsService.refreshSinceId();
                 return new PlainText(ConstantWeiboNews.SINCEID_OVERRIDE_SUCCESS);
             case ConstantWeiboNews.EXEC:
                 //立刻执行一次推送
@@ -123,7 +125,7 @@ public class WeiboNewsCommand implements GroupCommand {
         }
         try {
             //获取咨询
-            InfoWeiboHomeTimeline weiboNews = WeiboNewsService.getWeiboNews(10);
+            InfoWeiboHomeTimeline weiboNews = weiboNewsService.getWeiboNews(10);
             Long sinceId = weiboNews.getSince_id();
             //刷新最后推文标识，但如果一次请求中没有获取到新数据，since_id会为0
             if (0 != sinceId) {
@@ -145,7 +147,7 @@ public class WeiboNewsCommand implements GroupCommand {
                     continue;
                 }
                 //解析微博报文
-                MessageChain msgChain = WeiboNewsService.parseWeiboBody(info, subject);
+                MessageChain msgChain = weiboNewsService.parseWeiboBody(info, subject);
                 //发送微博信息
                 subject.sendMessage(msgChain);
                 //每次发送之间间隔一点时间，免得瞬间刷屏太厉害

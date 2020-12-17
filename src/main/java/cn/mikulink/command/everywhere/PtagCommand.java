@@ -4,8 +4,8 @@ import cn.mikulink.constant.ConstantImage;
 import cn.mikulink.entity.CommandProperties;
 import cn.mikulink.entity.ReString;
 import cn.mikulink.entity.apirequest.imjad.ImjadPixivResponse;
-import cn.mikulink.service.PixivBugService;
 import cn.mikulink.service.PixivService;
+import cn.mikulink.service.PixivImjadService;
 import cn.mikulink.service.RabbitBotService;
 import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.utils.StringUtil;
@@ -41,9 +41,9 @@ public class PtagCommand extends BaseEveryWhereCommand {
     public static final String PIXIV_TAG_SPLIT_ERROR = "[%s]%s秒后可以使用tag搜索";
 
     @Autowired
-    private PixivService pixivService;
+    private PixivImjadService pixivImjadService;
     @Autowired
-    private PixivBugService pixivBugService;
+    private PixivService pixivService;
     @Autowired
     private RabbitBotService rabbitBotService;
 
@@ -79,13 +79,13 @@ public class PtagCommand extends BaseEveryWhereCommand {
 
         try {
             //根据tag获取接口返回信息
-            ReString tagResult = pixivService.getPixivIllustByTag(tag);
+            ReString tagResult = pixivImjadService.getPixivIllustByTag(tag);
             if (!tagResult.isSuccess()) {
                 return new PlainText(tagResult.getMessage());
             }
             ImjadPixivResponse response = (ImjadPixivResponse) tagResult.getData();
             //转化为返回对象
-            return pixivService.parsePixivImgInfoByApiInfo(response, null, subject);
+            return pixivImjadService.parsePixivImgInfoByApiInfo(response, null);
         } catch (SocketTimeoutException stockTimeoutEx) {
             logger.warn(ConstantImage.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
             return new PlainText(ConstantImage.PIXIV_IMAGE_TIMEOUT);

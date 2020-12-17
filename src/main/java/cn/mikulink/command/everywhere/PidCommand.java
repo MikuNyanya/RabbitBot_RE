@@ -2,12 +2,13 @@ package cn.mikulink.command.everywhere;
 
 import cn.mikulink.constant.ConstantCommon;
 import cn.mikulink.constant.ConstantImage;
-import cn.mikulink.service.PixivBugService;
+import cn.mikulink.entity.CommandProperties;
+import cn.mikulink.entity.pixiv.PixivImageInfo;
+import cn.mikulink.service.PixivImjadService;
 import cn.mikulink.service.PixivService;
 import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.utils.NumberUtil;
 import cn.mikulink.utils.StringUtil;
-import cn.mikulink.entity.CommandProperties;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
@@ -16,7 +17,6 @@ import net.mamoe.mirai.message.data.PlainText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 import java.net.SocketTimeoutException;
@@ -35,9 +35,9 @@ public class PidCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(PidCommand.class);
 
     @Autowired
-    private PixivService pixivService;
+    private PixivImjadService pixivImjadService;
     @Autowired
-    private PixivBugService pixivBugService;
+    private PixivService pixivService;
 
     @Override
     public CommandProperties properties() {
@@ -63,11 +63,11 @@ public class PidCommand extends BaseEveryWhereCommand {
             //是否走爬虫
             String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_USE_API);
             if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-//                resultChain = pixivBugService.searchPixivImgById(NumberUtil.toLong(pid), subject);
+                PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById(NumberUtil.toLong(pid));
+                resultChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
             } else {
-                resultChain = pixivService.searchPixivImgById(NumberUtil.toLong(pid), subject);
+                resultChain = pixivImjadService.searchPixivImgById(NumberUtil.toLong(pid));
             }
-
             return resultChain;
         } catch (FileNotFoundException fileNotFoundEx) {
             logger.warn(ConstantImage.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
@@ -80,5 +80,4 @@ public class PidCommand extends BaseEveryWhereCommand {
             return new PlainText(ConstantImage.PIXIV_ID_GET_ERROR_GROUP_MESSAGE);
         }
     }
-
 }

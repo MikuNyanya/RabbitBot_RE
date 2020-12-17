@@ -23,7 +23,7 @@ import java.io.IOException;
 @Service
 public class SetuService {
     @Autowired
-    private PixivService pixivService;
+    private PixivImjadService pixivImjadService;
     @Autowired
     private RabbitBotService rabbitBotService;
 
@@ -43,7 +43,7 @@ public class SetuService {
         if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
 //                result = PixivBugService.searchPixivImgById(NumberUtil.toLong(pid),subject);
         } else {
-            resultChain = pixivService.searchPixivImgById(NumberUtil.toLong(setu_pid), subject);
+            resultChain = pixivImjadService.searchPixivImgById(NumberUtil.toLong(setu_pid));
         }
         return resultChain;
     }

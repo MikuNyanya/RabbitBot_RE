@@ -16,6 +16,7 @@ public class MiraiUtil {
      * @return 是否为mirai图片码
      */
     public static boolean isMiraiImg(String msgStr) {
+        //todo 未完成的方法
         String regex = "^[mirai:image:{FD4A1FC8-45F7-A3A9-FB8A-C75AFE71C47E}.mirai]$";
         return RegexUtil.regex(msgStr,regex);
     }

@@ -4,8 +4,8 @@ import cn.mikulink.constant.ConstantImage;
 import cn.mikulink.entity.CommandProperties;
 import cn.mikulink.entity.apirequest.imjad.ImjadPixivResponse;
 import cn.mikulink.exceptions.RabbitException;
-import cn.mikulink.service.PixivBugService;
 import cn.mikulink.service.PixivService;
+import cn.mikulink.service.PixivImjadService;
 import cn.mikulink.service.RabbitBotService;
 import cn.mikulink.sys.annotate.Command;
 import cn.mikulink.utils.StringUtil;
@@ -42,9 +42,9 @@ public class PUserIllustCommand extends BaseEveryWhereCommand {
     private static final String PIXIV_USER_SPLIT_ERROR = "[%s]%s秒后可以使用用户作品搜索";
 
     @Autowired
-    private PixivService pixivService;
+    private PixivImjadService pixivImjadService;
     @Autowired
-    private PixivBugService pixivBugService;
+    private PixivService pixivService;
     @Autowired
     private RabbitBotService rabbitBotService;
 
@@ -77,14 +77,14 @@ public class PUserIllustCommand extends BaseEveryWhereCommand {
         }
 
         try {
-            List<ImjadPixivResponse> randIllustList = pixivService.getPixivIllustByMember(memberName);
+            List<ImjadPixivResponse> randIllustList = pixivImjadService.getPixivIllustByMember(memberName);
             if (null == randIllustList) {
                 return new PlainText(ConstantImage.PIXIV_MEMBER_NO_ILLUST);
             }
 
             //拼装作品信息
             for (ImjadPixivResponse imjadPixivResponse : randIllustList) {
-                MessageChain msgChain = pixivService.parsePixivImgInfoByApiInfo(imjadPixivResponse, null, subject);
+                MessageChain msgChain = pixivImjadService.parsePixivImgInfoByApiInfo(imjadPixivResponse, null);
                 subject.sendMessage(msgChain);
             }
             return null;
