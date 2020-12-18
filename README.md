@@ -7,7 +7,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
     很多功能都是为自家群量身定制的，项目中部分功能需要去申请自己的token，比如 Saucenao搜图 微博消息获取等等
     但非常欢迎学习功能实现代码，也非常欢迎提出更优的实现方法
 
-基于 `java` 语言和 `mirai` 框架的群聊机器人，使用 `maven` 进行项目管理，加入了 `spring` `quartz`等技术       
+基于 `java` 语言和 `mirai` 框架的群聊机器人，使用 `maven` 进行项目管理，加入了 `spring` `quartz`等技术  
 
 ### 程序包含:
 * `mirai` 
@@ -17,6 +17,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 * `lombok`  用于简化代码
 * `junit` 用于单元测试
 * `logback` 用于输出日志，以及日志数据持久化
+* `Pixiv` 涩图是人类进步的阶梯(x) 自研解析pixiv页面，不依赖第三方Api，更加稳定可靠
 * `还有兔子` \兔子万岁/
 
 ### 设计理念
@@ -62,6 +63,9 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.say|.say|随机发言，是些日常语句|
 |.cls|.清屏<br/>.cls|回复一个很高的空白消息，可以帮助所有人快速清理屏幕，比如上班摸鱼时突然有人发涩图的时候|
 
+### 其他
+[mirai事件列表一览](https://github.com/mamoe/mirai/blob/dev/mirai-core-api/src/commonMain/kotlin/event/events/README.md)
+
 ### 日志
 2020年12月18日<br/>
 imjad的pixiv接口又炸了...寄人篱下啊...果然还是自己的东西好用<br/>
@@ -78,6 +82,14 @@ pixiv和danbooru业务代码下沉<br/>
 整体项目代码上传
 
 -----
+### IntelliJ IDEA
+>[IDEA](https://www.jetbrains.com/idea/) 是 [jetbrains](https://www.jetbrains.com/) 出品 java语言开发的集成环境
+
+感谢IDEA提供的开源项目 [申请免费授权](https://www.jetbrains.com/shop/eform/opensource?product=ALL) 渠道  
+它真好用.jpg
+
+-----
+    在本项目开发过程中，没有任何兔子受到伤害
 踌躇半晌，还是决定把代码上传到gayhub了<br/>
 本来酷Q挂掉后，我已经失去热情了，企鹅这手太恶心人了<br/>
 草草的迁移到mirai，功能也失去了不少，也没兴趣研究了<br/>
