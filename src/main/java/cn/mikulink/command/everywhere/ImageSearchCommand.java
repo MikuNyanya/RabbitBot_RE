@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * 搜图指令
  */
 @Command
-public class CommandImageSearch implements EverywhereCommand {
+public class ImageSearchCommand implements EverywhereCommand {
     @Autowired
     private ImageService imageService;
 

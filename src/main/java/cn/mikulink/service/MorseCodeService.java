@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 /**
  * create by MikuLink on 2020/2/26 17:38
  * for the Reisen
- * 摩尔斯电码相关
+ * 摩斯电码相关
  */
 @Service
 public class MorseCodeService {
@@ -16,8 +16,8 @@ public class MorseCodeService {
      * 编码
      *
      * @param str   需要加密的字符串
-     * @param split 摩尔斯电码之间的间隔
-     * @return 加密好的摩尔斯电码
+     * @param split 摩斯电码之间的间隔
+     * @return 加密好的摩斯电码
      */
     public String encode(String str, String split) {
         if (StringUtil.isEmpty(str)) {
@@ -33,11 +33,7 @@ public class MorseCodeService {
         StringBuilder resultStr = new StringBuilder();
         for (char c : str.toCharArray()) {
             String tempStr = String.valueOf(c);
-            if (ConstantMorseCode.morse_code_map.containsKey(tempStr)) {
-                resultStr.append(ConstantMorseCode.morse_code_map.get(tempStr));
-            } else {
-                resultStr.append(tempStr);
-            }
+            resultStr.append(ConstantMorseCode.morse_code_map.getOrDefault(tempStr, tempStr));
             resultStr.append(split);
         }
         return resultStr.substring(0, resultStr.length() - 1);
@@ -46,7 +42,7 @@ public class MorseCodeService {
     /**
      * 解码
      *
-     * @param morseStr 摩尔斯电码
+     * @param morseStr 摩斯电码
      * @param split    间隔标识
      * @return 解码后的字符串
      */

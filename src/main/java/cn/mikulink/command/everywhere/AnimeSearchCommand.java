@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * 以图搜番指令
  */
 @Command
-public class CommandAnimeSearch implements EverywhereCommand {
+public class AnimeSearchCommand implements EverywhereCommand {
 
     @Autowired
     private WhatAnimeService whatAnimeService;

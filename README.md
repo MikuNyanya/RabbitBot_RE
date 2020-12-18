@@ -52,7 +52,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |指令<br/>"()"为必填参数"[]"为可选参数|示例|详情|
 |----|----|-----|
 |.help|.help|帮助列表，不过不完善，毕竟把东西都写上去太臃肿了|
-|.config (action) (configName) (configValue)|.config set r18 off|配置相关指令，可以实现远程热更新配置参数|
+|.config (action) (configName) (configValue)|.config set r18 off|配置相关指令，可以实现远程热更新配置参数；<br/>这是控制自己业务自定义的参数|
 |.r|.r|生成一个1-100的随机数|
 |.rpwd [长度]|.rpwd 10|随机一个(看起来)强度很高的密码，默认长度为6|
 |.扭蛋|.扭蛋|随机抽取一个神奇的东西|
@@ -62,11 +62,16 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.来点色图|.来点色图|随机出现一张涩图，图片都源于pixiv|
 |.say|.say|随机发言，是些日常语句|
 |.cls|.清屏<br/>.cls|回复一个很高的空白消息，可以帮助所有人快速清理屏幕，比如上班摸鱼时突然有人发涩图的时候|
+|.morse (action) (value)|.摩斯 编码 r<br>.morse encode r<br>.摩斯 解码 .-.<br/>.morse decode .-.|摩斯电码相关，编码，解码|
 
 ### 其他
 [mirai事件列表一览](https://github.com/mamoe/mirai/blob/dev/mirai-core-api/src/commonMain/kotlin/event/events/README.md)
 
 ### 日志
+2020年12月18日17:50
+淦，新疆这边老鼠好大只啊，身体都快成球了  
+
+
 2020年12月18日<br/>
 imjad的pixiv接口又炸了...寄人篱下啊...果然还是自己的东西好用<br/>
 全面重写pixiv相关功能，自行逆向Api，准备完全替代掉imjad的接口<br/>
