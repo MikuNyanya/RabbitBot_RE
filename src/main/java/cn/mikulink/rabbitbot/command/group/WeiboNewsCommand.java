@@ -129,7 +129,7 @@ public class WeiboNewsCommand implements GroupCommand {
                     continue;
                 }
                 //解析微博报文
-                MessageChain msgChain = weiboNewsService.parseWeiboBody(info, subject);
+                MessageChain msgChain = weiboNewsService.parseWeiboBody(info);
                 //发送微博信息
                 subject.sendMessage(msgChain);
                 //每次发送之间间隔一点时间，免得瞬间刷屏太厉害

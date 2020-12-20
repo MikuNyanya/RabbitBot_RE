@@ -120,8 +120,17 @@ public class RabbitBotService {
      * @param localImagesPath 本地图片地址
      * @return mirai图片id
      */
-    public List<Image> uploadMiraiImage(String localImagesPath) {
-        return uploadMiraiImage(Arrays.asList(localImagesPath));
+    public Image uploadMiraiImage(String localImagesPath) {
+        //上传
+        ExternalImage externalImage = ExternalImageJvmKt.toExternalImage(new File(localImagesPath));
+        if (null == group) {
+            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
+            for (Group grouptemp : groupList) {
+                group = grouptemp;
+                break;
+            }
+        }
+        return group.uploadImage(externalImage);
     }
 
     /**
@@ -137,17 +146,7 @@ public class RabbitBotService {
             return miraiImgList;
         }
         for (String localImagePath : localImagesPath) {
-            //上传
-            ExternalImage externalImage = ExternalImageJvmKt.toExternalImage(new File(localImagePath));
-            if (null == group) {
-                ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-                for (Group grouptemp : groupList) {
-                    group = grouptemp;
-                    break;
-                }
-
-            }
-            Image tempMiraiImg = group.uploadImage(externalImage);
+            Image tempMiraiImg = uploadMiraiImage(localImagePath);
             miraiImgList.add(tempMiraiImg);
         }
         return miraiImgList;

@@ -22,6 +22,7 @@ import net.mamoe.mirai.utils.ExternalImage;
 import net.mamoe.mirai.utils.ExternalImageJvmKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,8 @@ public class WeiboNewsService {
 
     @Value("${weibo.token}")
     private String weiboToken;
+    @Autowired
+    private RabbitBotService rabbitBotService;
 
     /**
      * 获取微信的最新消息
@@ -86,11 +89,12 @@ public class WeiboNewsService {
             if (null != info.getRetweeted_status()) {
                 continue;
             }
+            //解析微博报文
+            MessageChain msgChain = parseWeiboBody(info);
+
             //给每个群发送报时
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group groupInfo : groupList) {
-                //解析微博报文
-                MessageChain msgChain = parseWeiboBody(info, groupInfo);
                 groupInfo.sendMessage(msgChain);
 
                 //每个群之间间隔半秒意思一下
@@ -155,12 +159,12 @@ public class WeiboNewsService {
      * @return 转化好的信息对象，包含图片信息
      * @throws IOException 处理异常
      */
-    public MessageChain parseWeiboBody(InfoStatuses info, Group subject) throws IOException {
+    public MessageChain parseWeiboBody(InfoStatuses info) throws IOException {
         MessageChain result = MessageUtils.newChain();
         //头像
         if (1312997677 != info.getUser().getId()) {
             //解析推主头像
-            Image userImgInfo = getMiraiImageByWeiboImgUrl(info.getUser().getProfile_image_url(), subject);
+            Image userImgInfo = getMiraiImageByWeiboImgUrl(info.getUser().getProfile_image_url());
             if (null != userImgInfo) {
                 result = result.plus("").plus(userImgInfo);
             } else {
@@ -192,7 +196,7 @@ public class WeiboNewsService {
             //获取原图地址
             String largeImageUrl = getImgLarge(picUrl.getThumbnail_pic());
             //上传图片并获取图片id
-            Image largeImagInfo = getMiraiImageByWeiboImgUrl(largeImageUrl, subject);
+            Image largeImagInfo = getMiraiImageByWeiboImgUrl(largeImageUrl);
             if (null != largeImagInfo) {
                 result = result.plus("\n").plus("").plus(largeImagInfo);
             }
@@ -215,7 +219,7 @@ public class WeiboNewsService {
     }
 
     //解析微博图片为miraiImage对象
-    private Image getMiraiImageByWeiboImgUrl(String imageUrl, Group subject) throws IOException {
+    private Image getMiraiImageByWeiboImgUrl(String imageUrl) throws IOException {
         if (StringUtil.isEmpty(imageUrl)) {
             return null;
         }
@@ -231,7 +235,6 @@ public class WeiboNewsService {
             return null;
         }
         //然后上传到服务器，获取imageId
-        ExternalImage externalImage = ExternalImageJvmKt.toExternalImage(new File(localImageUrl));
-        return subject.uploadImage(externalImage);
+        return rabbitBotService.uploadMiraiImage(localImageUrl);
     }
 }

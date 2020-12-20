@@ -92,7 +92,7 @@ public class PixivService {
             //根据pid获取图片信息
             PixivImageInfo pixivImageInfo = getPixivImgInfoById(rankImageInfo.getPid());
 
-            //下载图片到本地
+            //下载图片到本地 todo 改为下载一个pid发送一份结果，不然间隔太长了
             try {
                 parseImages(pixivImageInfo);
             } catch (SocketTimeoutException stockTimeoutEx) {

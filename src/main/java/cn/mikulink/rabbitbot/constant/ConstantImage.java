@@ -15,8 +15,6 @@ public class ConstantImage extends ConstantCommon {
     //酷Q的图片目录
     public static final String COOLQ_IMAGE_SAVE_PATH = "D:/酷Q Pro/data/image";
 
-    //酷Q所需要的图片CQ码 占位符处是文件名（带后缀）
-    public static String IMAGE_CQ = "[CQ:image,file=%s]";
     //经过处理的图片前缀
     public static String IMAGE_SCALE_PREFIX = "rabbit_scale_";
     //需要处理的大小阈值(mb)
@@ -43,9 +41,11 @@ public class ConstantImage extends ConstantCommon {
     public static final String IMAGE_SEARCH_NO_IMAGE_INPUT = "你得给我一张图";
     public static final String IMAGE_SEARCH_IMAGE_URL_PARSE_FAIL = "图片解析失败......啊咧？";
     public static final String IMAGE_GET_ERROR = "图片获取异常";
+    public static final String IMAGE_GET_TIMEOUT_ERROR = "图片获取超时";
 
     public static final String SAUCENAO_API_KEY = "saucenaoKey";
     public static final String SAUCENAO_API_KEY_EMPTY = "Saucenao Api Key为空";
+    public static final String SAUCENAO_API_TIMEOUT_FAIL = "Saucenao Api请求失败";
     public static final String SAUCENAO_API_SEARCH_FAIL = "Saucenao Api请求失败";
     public static final String SAUCENAO_API_REQUEST_ERROR = "Saucenao Api请求异常";
     public static final String SAUCENAO_SEARCH_FAIL = "Saucenao识图失败，没有任何结果";

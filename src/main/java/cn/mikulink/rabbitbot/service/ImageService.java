@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -217,6 +218,9 @@ public class ImageService {
                 searchResult = infoResult;
                 break;
             }
+        } catch (SocketTimeoutException timeoutException) {
+            logger.error(ConstantImage.SAUCENAO_API_TIMEOUT_FAIL + timeoutException.toString(), timeoutException);
+            throw new RabbitException(ConstantImage.SAUCENAO_API_TIMEOUT_FAIL);
         } catch (Exception ex) {
             logger.error(ConstantImage.SAUCENAO_API_REQUEST_ERROR + ex.toString(), ex);
             throw new RabbitException(ConstantImage.SAUCENAO_API_REQUEST_ERROR);
@@ -246,6 +250,9 @@ public class ImageService {
         } catch (FileNotFoundException fileNotFoundEx) {
             logger.warn(ConstantImage.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
             throw new RabbitException(ConstantImage.PIXIV_IMAGE_DELETE);
+        } catch (SocketTimeoutException timeoutException) {
+            logger.error(ConstantImage.IMAGE_GET_TIMEOUT_ERROR + timeoutException.toString(), timeoutException);
+            throw new RabbitException(ConstantImage.IMAGE_GET_TIMEOUT_ERROR);
         } catch (Exception ex) {
             logger.error(ConstantImage.IMAGE_GET_ERROR + ex.toString(), ex);
             throw new RabbitException(ConstantImage.IMAGE_GET_ERROR);
