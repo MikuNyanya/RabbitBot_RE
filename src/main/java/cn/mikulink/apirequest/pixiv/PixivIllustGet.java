@@ -3,6 +3,7 @@ package cn.mikulink.apirequest.pixiv;
 import cn.mikulink.apirequest.BaseRequest;
 import cn.mikulink.entity.pixiv.PixivImageInfo;
 import cn.mikulink.utils.HttpUtil;
+import cn.mikulink.utils.HttpsUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,10 +49,11 @@ public class PixivIllustGet extends BaseRequest {
         if (null == pixivId) return;
         //代理
         Proxy proxy = HttpUtil.getProxy();
-        //爬虫获取pid图片详情信息
-        String pidHtmlStr = HttpUtil.get(URL + pixivId, proxy);
+        //获取pid图片详情信息
+        byte[] resultBytes = HttpsUtil.doGet(URL + pixivId, proxy);
+        body = new String(resultBytes);
         //使用jsoup解析html
-        Document document = Jsoup.parse(pidHtmlStr);
+        Document document = Jsoup.parse(body);
 
         //这里从页面可以获取到图片详情信息，是一个超长的json字符串
         String pidJsonStr = document.getElementById("meta-preload-data").attr("content");

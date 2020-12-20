@@ -9,7 +9,7 @@ import cn.mikulink.service.greetings.*;
 import cn.mikulink.utils.RandomUtil;
 import cn.mikulink.utils.RegexUtil;
 import cn.mikulink.utils.StringUtil;
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -80,7 +80,7 @@ public class KeyWordService {
     private boolean groupRepeater(GroupMessageEvent event) {
         //接收到的群消息
         String groupMsg = event.getMessage().contentToString();
-        if("[图片]".equalsIgnoreCase(groupMsg)){
+        if ("[图片]".equalsIgnoreCase(groupMsg)) {
             return false;
         }
         Long groupId = event.getGroup().getId();

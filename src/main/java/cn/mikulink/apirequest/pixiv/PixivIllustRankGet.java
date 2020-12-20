@@ -3,6 +3,7 @@ package cn.mikulink.apirequest.pixiv;
 import cn.mikulink.apirequest.BaseRequest;
 import cn.mikulink.entity.pixiv.PixivRankImageInfo;
 import cn.mikulink.utils.HttpUtil;
+import cn.mikulink.utils.HttpsUtil;
 import cn.mikulink.utils.NumberUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -70,9 +71,10 @@ public class PixivIllustRankGet extends BaseRequest {
         //代理
         Proxy proxy = HttpUtil.getProxy();
         //爬虫获取排行榜信息
-        String pidHtmlStr = HttpUtil.get(URL + HttpUtil.parseUrlEncode(param), proxy);
+        byte[] resultBytes = HttpsUtil.doGet(URL + HttpUtil.parseUrlEncode(param), proxy);
+        body = new String(resultBytes);
         //使用jsoup解析html
-        Document document = Jsoup.parse(pidHtmlStr);
+        Document document = Jsoup.parse(body);
 
         //选择目标节点，类似于JS的选择器
         Elements rankElements = document.getElementsByClass("ranking-item");

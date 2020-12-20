@@ -5,6 +5,7 @@ import cn.mikulink.entity.pixiv.PixivImageInfo;
 import cn.mikulink.entity.pixiv.PixivImageUrlInfo;
 import cn.mikulink.exceptions.RabbitApiException;
 import cn.mikulink.utils.HttpUtil;
+import cn.mikulink.utils.HttpsUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
@@ -54,13 +55,13 @@ public class PixivIllustPagesGet extends BaseRequest {
         Proxy proxy = HttpUtil.getProxy();
 
         //获取pid图片列表 返回的是一个标准的json文本
-        String pidImagePageStr = HttpUtil.get(String.format(URL, pixivId), header, proxy);
-        body = pidImagePageStr;
+        byte[] resultBytes = HttpsUtil.doGet(String.format(URL, pixivId), header, proxy);
+        body = new String(resultBytes);
 
-        Map<?, ?> rootMap = JSONObject.parseObject(pidImagePageStr, HashMap.class);
+        Map<?, ?> rootMap = JSONObject.parseObject(body, HashMap.class);
         //接口调用异常
         if (null == rootMap || null == rootMap.get("error") || null == rootMap.get("body")) {
-            throw new RabbitApiException("报文解析失败,body:" + pidImagePageStr);
+            throw new RabbitApiException("报文解析失败,body:" + body);
         }
         //接口业务异常
         if (!"false".equalsIgnoreCase(rootMap.get("error").toString())) {

@@ -5,6 +5,8 @@ import cn.mikulink.utils.StringUtil;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
+import net.mamoe.mirai.utils.ExternalImage;
+import net.mamoe.mirai.utils.ExternalImageJvmKt;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -129,7 +131,8 @@ public class RabbitBotService {
         if (null != localImagesPath) {
             for (String localImagePath : localImagesPath) {
                 //上传 todo 目前没搞懂图片上传机制，这个上传速度很慢很慢很慢，没道理啊，难道上传到了第三方服务器了
-                Image tempMiraiImg = RabbitBot.getBot().getGroups().get(0).uploadImage(new File(localImagePath));
+                ExternalImage externalImage = ExternalImageJvmKt.toExternalImage(new File(localImagePath));
+                Image tempMiraiImg = RabbitBot.getBot().getGroups().get(0).uploadImage(externalImage);
                 miraiImgList.add(tempMiraiImg);
             }
         }

@@ -50,7 +50,8 @@ public class ImageSearchCommand implements EverywhereCommand {
         //mirai中原图链接在messageChain中的图片元素下，但是需要强转
         //我真看不太懂kotlin，先凑合着用吧,真正的对象是net.mamoe.mirai.qqandroid.message.OnlineGroupImageImpl，虽然可以运行，但代码报红，提示Usage of Kotlin internal declaration from different module
         //http://gchat.qpic.cn/gchatpic_new/455806936/3987173185-2655981981-FD4A1FC845F7A3A9FB8AC75AFE71C47E/0?term=2
-        String imgUrl = ((OnlineImage) messageChain.get(2)).getOriginUrl();
+//        String imgUrl = ((OnlineImage) messageChain.get(2)).getOriginUrl();
+        String imgUrl = null;
 
         if (StringUtil.isEmpty(imgUrl)) {
             return new PlainText(ConstantImage.IMAGE_SEARCH_IMAGE_URL_PARSE_FAIL);

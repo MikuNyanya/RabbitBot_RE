@@ -6,7 +6,7 @@ import cn.mikulink.event.MessageEvents;
 import cn.mikulink.filemanage.*;
 import cn.mikulink.sys.AnnotateScanner;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.BotFactoryJvm;
+import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
 import org.slf4j.Logger;
@@ -57,10 +57,11 @@ public class RabbitBot {
             logger.warn("*****未配置兔叽的账号或密码*****");
         }
 
-        Bot bot = BotFactoryJvm.newBot(botAccount, botPwd, new BotConfiguration() {
+        Bot bot = BotFactory.INSTANCE.newBot(botAccount, botPwd, new BotConfiguration() {
             {
                 //保存设备信息到文件deviceInfo.json文件里相当于是个设备认证信息
                 fileBasedDeviceInfo(deviceInfo);
+//                setProtocol(MiraiProtocol.ANDROID_PHONE); // 切换协议
             }
         });
         bot.login();

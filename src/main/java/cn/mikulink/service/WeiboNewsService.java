@@ -18,6 +18,8 @@ import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
+import net.mamoe.mirai.utils.ExternalImage;
+import net.mamoe.mirai.utils.ExternalImageJvmKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -231,7 +234,7 @@ public class WeiboNewsService {
             return null;
         }
         //然后上传到服务器，获取imageId
-        BufferedImage image = ImageIO.read(new FileInputStream(localImageUrl));
-        return subject.uploadImage(image);
+        ExternalImage externalImage = ExternalImageJvmKt.toExternalImage(new File(localImageUrl));
+        return subject.uploadImage(externalImage);
     }
 }

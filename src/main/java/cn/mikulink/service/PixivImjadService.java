@@ -21,6 +21,7 @@ import cn.mikulink.utils.StringUtil;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
+import net.mamoe.mirai.message.data.PlainText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -303,7 +304,7 @@ public class PixivImjadService {
             ImjadPixivResponse pixivResponse = getImgsByPixivId(pid);
             return parsePixivImgInfoByApiInfo(pixivResponse, null);
         } catch (RabbitException rex) {
-            return MessageUtils.newChain(rex.getMessage());
+            return MessageUtils.newChain(new PlainText(rex.getMessage()));
         }
     }
 

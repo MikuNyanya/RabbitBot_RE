@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Map;
 
 /**
  * create by MikuLink on 2020/02/19 14:54
@@ -43,6 +44,10 @@ public class HttpsUtil {
     }
 
     private static HttpsURLConnection getHttpsURLConnection(String uri, String method, Proxy proxy) throws IOException {
+        return getHttpsURLConnection(uri, method, null, proxy);
+    }
+
+    private static HttpsURLConnection getHttpsURLConnection(String uri, String method, Map<String, String> header, Proxy proxy) throws IOException {
         SSLContext ctx = null;
         try {
             ctx = SSLContext.getInstance("TLS");
@@ -66,6 +71,17 @@ public class HttpsUtil {
         httpsConn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
 //        httpsConn.setRequestProperty("Authorization", "username");
         httpsConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36");
+
+        if (null != header) {
+            //加入请求头
+            for (String key : header.keySet()) {
+                //忽略空的参数
+                if (StringUtil.isEmpty(key) || StringUtil.isEmpty(header.get(key))) {
+                    continue;
+                }
+                httpsConn.setRequestProperty(key, header.get(key));
+            }
+        }
         /*
         在握手期间，如果 URL 的主机名和服务器的标识主机名不匹配，
         则验证机制可以回调此接口的实现程序来确定是否应该允许此连接。
@@ -118,7 +134,11 @@ public class HttpsUtil {
     }
 
     public static byte[] doGet(String uri, Proxy proxy) throws IOException {
-        HttpsURLConnection httpsConn = getHttpsURLConnection(uri, "GET", proxy);
+        return doGet(uri, null, proxy);
+    }
+
+    public static byte[] doGet(String uri, Map<String, String> header, Proxy proxy) throws IOException {
+        HttpsURLConnection httpsConn = getHttpsURLConnection(uri, "GET", header, proxy);
         return getBytesFromStream(httpsConn.getInputStream());
     }
 
