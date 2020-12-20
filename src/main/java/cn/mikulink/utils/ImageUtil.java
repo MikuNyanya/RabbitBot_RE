@@ -6,6 +6,7 @@ import cn.mikulink.entity.ImageInfo;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
@@ -76,16 +77,8 @@ public class ImageUtil {
         }
 
         //创建连接
-        URL url = new URL(imageUrl);
-        HttpURLConnection conn = null;
-        if (null != proxy) {
-            //代理
-            conn = (HttpURLConnection) url.openConnection(proxy);
-        } else {
-            conn = (HttpURLConnection) url.openConnection();
-        }
-        //设置请求方式
-        conn.setRequestMethod("GET");
+        HttpsURLConnection conn = HttpsUtil.getHttpsURLConnection(imageUrl,"GET",header,proxy);
+
         //设置链接超时时间
 //        conn.setConnectTimeout(5 * 1000);
         //请求header
