@@ -8,8 +8,8 @@
     <!--扫描service-->
     <context:component-scan base-package="cn.mikulink"/>
 
-    <!--读取properties配置文件-->
-    <context:property-placeholder location="classpath:rabbitbot_re.properties"/>
+    <!--读取properties配置文件 采用utf-8解决中文乱码-->
+    <context:property-placeholder location="classpath:rabbitbot_re.properties" file-encoding="UTF-8"/>
 
     <!--定时器配置-->
     <import resource="spring-quartz.xml"/>

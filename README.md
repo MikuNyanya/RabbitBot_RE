@@ -1,7 +1,7 @@
 # RabbitBot_RE 兔叽
 -----
 RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很可惜，它没有挺过来(        
-但有幸遇到mirai，兔叽还有复活的机会(°∀°)ﾉ
+但有幸遇到 [mirai](https://github.com/mamoe/mirai) ，兔叽还有复活的机会(°∀°)ﾉ
 
     请注意，该项目不是群聊机器人框架，是建立在mirai框架上的一个完整的群聊机器人
     很多功能都是为自家群量身定制的，项目中部分功能需要去申请自己的token，比如 Saucenao搜图 微博消息获取等等
@@ -24,8 +24,8 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
  `清爽`   我不喜欢发出去的消息总是花里胡哨，简约实用才是好的，我也很希望代码上也能做到清爽...     
  `多变`   大部分回复并非一成不变，采用随机回复，让兔叽看起来不那么死板      
  `应景`   不能见到关键词就无脑回复，太low了，尽可能的要回复合适当前场景才行       
- `实用`   只会回复垃圾信息不能叫实用，主动推送微博新闻，让群友不错过任何一个steam喜加一，这就叫实用      
- `随机`   乐趣源于随机，随机发言，随机涩图，甚至复读都带有概率，这些就变成了一种值得期待的惊喜...当然这并不适用于所有人，但谁让兔叽是我养的呢     
+ `实用`   只会回复垃圾信息不能叫实用，主动推送微博内容，让群友不错过任何一个steam喜加一，这就叫实用      
+ `随机`   乐趣源于随机，随机发言，随机涩图，这些就变成了一种值得期待的惊喜...当然这并不适用于所有人，但谁让兔叽是我养的呢     
  `自动`   把群友想看的东西推到他们面前，而不是想起来的时候还要去手动触发     
  `兔子`   可爱的兔子+100 可爱的铃仙+1000 工程学+8 社会学+3
 
@@ -46,6 +46,16 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 * 整点报时
 * 摩斯电码转化
 * 生成二维码
+
+### 计划
+- [x] 自行解析pixiv，不再依靠第三方api
+- [x] 解析pixiv排行榜
+- [ ] 研究pixiv登录问题
+- [ ] pixiv根据tag搜索
+- [ ] pixiv根据user搜索
+- [ ] 接入tracemoe
+- [ ] 每日色图功能
+- [x] 鸽了，咕咕咕
 
 ### 指令
     RabbitBot_RE加入了指令模式，可以精准定位指令，并且杜绝日常聊天时频繁触发关键词的风险
@@ -68,9 +78,12 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 [mirai事件列表一览](https://github.com/mamoe/mirai/blob/dev/mirai-core-api/src/commonMain/kotlin/event/events/README.md)
 
 ### 日志
-2020年12月18日17:50
+2020年12月20日  
 淦，新疆这边老鼠好大只啊，身体都快成球了  
-
+mirai作者终于修复了登录问题，又可以继续开心的码代码了  
+HttpsUtil代码整理  
+ImageUtil针对http和https做兼容  
+色图功能接入自己的pixiv接口
 
 2020年12月18日<br/>
 imjad的pixiv接口又炸了...寄人篱下啊...果然还是自己的东西好用<br/>
@@ -79,11 +92,11 @@ pixiv和danbooru业务代码下沉<br/>
 其他api的token和key整合进properties配置文件
 定时任务并入spring配置文件
 
-2020年12月16日<br/>
+2020年12月16日  
 指令注册改为自动注册，省了不少事情<br/>
 尝试修复了一下搜图，应该可以用了<br/>
 
-2020年12月15日<br/>
+2020年12月15日  
 整体项目代码上传
 
 -----
