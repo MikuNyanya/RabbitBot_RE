@@ -2,6 +2,7 @@ package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
@@ -58,11 +59,11 @@ public class PixivRankCommand extends BaseEveryWhereCommand {
             //获取日榜
             List<PixivRankImageInfo> imageList = null;
             //是否走爬虫
-            String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_USE_API);
+            String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_USE_API);
             if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-                imageList = pixivService.getPixivIllustRank(ConstantImage.PIXIV_IMAGE_PAGESIZE);
+                imageList = pixivService.getPixivIllustRank(ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
             } else {
-                imageList = pixivImjadService.getPixivIllustRank(1, ConstantImage.PIXIV_IMAGE_PAGESIZE);
+                imageList = pixivImjadService.getPixivIllustRank(1, ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
             }
             //拼接一个发送一个，中间间隔几秒
             for (PixivRankImageInfo imageInfo : imageList) {
@@ -73,11 +74,11 @@ public class PixivRankCommand extends BaseEveryWhereCommand {
                 Thread.sleep(1000L * 2);
             }
         } catch (SocketTimeoutException stockTimeoutEx) {
-            logger.warn(ConstantImage.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
-            return new PlainText(ConstantImage.PIXIV_IMAGE_TIMEOUT);
+            logger.warn(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT);
         } catch (Exception ex) {
-            logger.error(ConstantImage.PIXIV_IMAGE_RANK_ERROR + ex.toString(), ex);
-            return new PlainText(ConstantImage.PIXIV_IMAGE_RANK_ERROR);
+            logger.error(ConstantPixiv.PIXIV_IMAGE_RANK_ERROR + ex.toString(), ex);
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_RANK_ERROR);
         }
         return null;
     }

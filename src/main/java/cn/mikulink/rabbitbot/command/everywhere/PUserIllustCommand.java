@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.apirequest.imjad.ImjadPixivResponse;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
@@ -64,7 +64,7 @@ public class PUserIllustCommand extends BaseEveryWhereCommand {
         PIXIV_USER_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
 
         if (null == args || args.size() == 0) {
-            return new PlainText(ConstantImage.PIXIV_MEMBER_IS_EMPTY);
+            return new PlainText(ConstantPixiv.PIXIV_MEMBER_IS_EMPTY);
         }
         //基本输入校验
         String memberName = "";
@@ -73,13 +73,13 @@ public class PUserIllustCommand extends BaseEveryWhereCommand {
         }
         memberName = StringUtil.trim(memberName);
         if (StringUtil.isEmpty(memberName)) {
-            return new PlainText(ConstantImage.PIXIV_MEMBER_IS_EMPTY);
+            return new PlainText(ConstantPixiv.PIXIV_MEMBER_IS_EMPTY);
         }
 
         try {
             List<ImjadPixivResponse> randIllustList = pixivImjadService.getPixivIllustByMember(memberName);
             if (null == randIllustList) {
-                return new PlainText(ConstantImage.PIXIV_MEMBER_NO_ILLUST);
+                return new PlainText(ConstantPixiv.PIXIV_MEMBER_NO_ILLUST);
             }
 
             //拼装作品信息
@@ -89,16 +89,16 @@ public class PUserIllustCommand extends BaseEveryWhereCommand {
             }
             return null;
         } catch (RabbitException rabbitEx) {
-            logger.info("PUserIllustCommand " + ConstantImage.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE + rabbitEx.toString());
-            return new PlainText(ConstantImage.PIXIV_IMAGE_TIMEOUT + ":" + rabbitEx.toString());
+            logger.info("PUserIllustCommand " + ConstantPixiv.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE + rabbitEx.toString());
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + ":" + rabbitEx.toString());
         } catch (SocketTimeoutException stockTimeoutEx) {
-            logger.error("PUserIllustCommand " + ConstantImage.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
-            return new PlainText(ConstantImage.PIXIV_IMAGE_TIMEOUT);
+            logger.error("PUserIllustCommand " + ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT);
         } catch (Exception ex) {
-            logger.error("PUserIllustCommand " + ConstantImage.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
+            logger.error("PUserIllustCommand " + ConstantPixiv.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
             //异常后清除间隔允许再次操作
             PIXIV_USER_SPLIT_MAP.remove(sender.getId());
-            return new PlainText(ConstantImage.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE);
+            return new PlainText(ConstantPixiv.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE);
         }
     }
 

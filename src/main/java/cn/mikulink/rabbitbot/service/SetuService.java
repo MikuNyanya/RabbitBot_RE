@@ -3,6 +3,7 @@ package cn.mikulink.rabbitbot.service;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.filemanage.FileManagerSetu;
@@ -31,7 +32,6 @@ public class SetuService {
 
     /**
      * 来张色图
-     *
      */
     public MessageChain getSetu() throws IOException {
         //获取一个pid
@@ -40,7 +40,7 @@ public class SetuService {
         //走pixiv图片id获取流程
         MessageChain resultChain = null;
         //是否走爬虫
-        String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_USE_API);
+        String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_USE_API);
         if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
             PixivImageInfo imageInfo = pixivService.getPixivImgInfoById(setu_pid);
             resultChain = pixivService.parsePixivImgInfoByApiInfo(imageInfo);
@@ -61,8 +61,8 @@ public class SetuService {
     public ReString setuTimeCheck(Long userId, String userNick) {
         ReString reString = new ReString(true);
         //操作间隔判断
-        String timeCheck = rabbitBotService.commandTimeSplitCheck(ConstantFile.SETU_PID_SPLIT_MAP, userId, userNick,
-                ConstantFile.SETU_PID_SPLIT_TIME, RandomUtil.rollStrFromList(ConstantFile.SETU_SPLIT_ERROR_LIST));
+        String timeCheck = rabbitBotService.commandTimeSplitCheck(ConstantPixiv.SETU_PID_SPLIT_MAP, userId, userNick,
+                ConstantPixiv.SETU_PID_SPLIT_TIME, RandomUtil.rollStrFromList(ConstantPixiv.SETU_SPLIT_ERROR_LIST));
         if (StringUtil.isNotEmpty(timeCheck)) {
             reString = new ReString(false, timeCheck);
         }
@@ -76,15 +76,15 @@ public class SetuService {
      */
     public String randOneSetuPid() {
         //集合为空时，重新加载一次色图文件
-        if (ConstantFile.List_SETU_PID.size() == 0) {
+        if (ConstantPixiv.List_SETU_PID.size() == 0) {
             FileManagerSetu.doCommand(ConstantFile.FILE_COMMAND_LOAD, null);
         }
         //随机色图
-        String setuPid = RandomUtil.rollStrFromList(ConstantFile.List_SETU_PID);
+        String setuPid = RandomUtil.rollStrFromList(ConstantPixiv.List_SETU_PID);
         //删除这个沙壤土，实现伪随机
-        ConstantFile.List_SETU_PID.remove(setuPid);
+        ConstantPixiv.List_SETU_PID.remove(setuPid);
         //元素少于1/6的时候，重新加载
-        if (ConstantFile.List_SETU_PID.size() < ConstantFile.SETU_PID_SPLIT_TIME / 6) {
+        if (ConstantPixiv.List_SETU_PID.size() < ConstantPixiv.SETU_PID_LIST_MAX_SIZE / 6) {
             FileManagerSetu.doCommand(ConstantFile.FILE_COMMAND_LOAD, null);
         }
         return setuPid;

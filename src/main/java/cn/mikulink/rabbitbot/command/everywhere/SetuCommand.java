@@ -2,6 +2,7 @@ package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.service.SetuService;
@@ -54,14 +55,14 @@ public class SetuCommand implements EverywhereCommand {
             //来张色图
             return setuService.getSetu();
         } catch (FileNotFoundException fileNotFoundEx) {
-            logger.warn(ConstantImage.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
-            return new PlainText(ConstantImage.PIXIV_IMAGE_DELETE);
+            logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_DELETE);
         } catch (SocketTimeoutException stockTimeoutEx) {
-            logger.warn(ConstantImage.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString(), stockTimeoutEx);
-            return new PlainText(ConstantImage.PIXIV_IMAGE_TIMEOUT);
+            logger.warn(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString(), stockTimeoutEx);
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT);
         } catch (Exception ex) {
-            logger.error(ConstantImage.PIXIV_ID_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
-            return new PlainText(ConstantImage.PIXIV_ID_GET_ERROR_GROUP_MESSAGE);
+            logger.error(ConstantPixiv.PIXIV_ID_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
+            return new PlainText(ConstantPixiv.PIXIV_ID_GET_ERROR_GROUP_MESSAGE);
         }
     }
 

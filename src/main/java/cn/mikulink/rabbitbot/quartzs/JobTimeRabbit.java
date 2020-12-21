@@ -4,12 +4,14 @@ import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.command.group.RPCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
-import cn.mikulink.rabbitbot.service.PixivService;
-import cn.mikulink.rabbitbot.service.WeatherService;
 import cn.mikulink.rabbitbot.service.PixivImjadService;
-import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.service.PixivService;
+import cn.mikulink.rabbitbot.service.SetuService;
+import cn.mikulink.rabbitbot.service.WeatherService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
+import cn.mikulink.rabbitbot.utils.RandomUtil;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -29,12 +31,14 @@ import java.util.List;
  * 1小时执行一次的定时器
  */
 @Component
-public class JobTimeRabbit{
+public class JobTimeRabbit {
     private static final Logger logger = LoggerFactory.getLogger(JobTimeRabbit.class);
 
     //兔叽
     @Value("${bot.name.cn:兔叽}")
     public String rabbit_bot_name;
+    //当前时间，方便其他地方使用
+    private int hour_now = 0;
 
     @Autowired
     private WeatherService weatherService;
@@ -43,9 +47,12 @@ public class JobTimeRabbit{
     @Autowired
     private PixivService pixivService;
     @Autowired
-    private RabbitBotService rabbitBotService;
+    private SetuService setuService;
 
     public void execute() {
+        //刷新当前时间
+        hour_now = DateUtil.getHour();
+
         //报时兔子
         timeRabbit();
         //天气
@@ -54,6 +61,9 @@ public class JobTimeRabbit{
         //0点清理
         //RP缓存
         clearRPMap();
+
+        //每日色图
+        setuOnDay();
 
         //pixiv日榜，最好放在最后执行，要下载图片
         //也可以另起一个线程，但我懒
@@ -80,9 +90,7 @@ public class JobTimeRabbit{
 
     //获取附加短语，可以放一些彩蛋性质的东西，会附带在报时消息尾部
     private String getMsgEx() {
-        int hour = DateUtil.getHour();
-
-        switch (hour) {
+        switch (hour_now) {
             //半夜0点
             case 0:
                 return ConstantCommon.NEXT_LINE + "新的一天开始啦ヽ(#`Д´)ノ";
@@ -111,7 +119,7 @@ public class JobTimeRabbit{
     //清除RP缓存，不然第二天RP值不会重置
     private void clearRPMap() {
         //0点清除
-        if (DateUtil.getHour() != 0) {
+        if (hour_now != 0) {
             return;
         }
 
@@ -122,8 +130,7 @@ public class JobTimeRabbit{
     //天气兔子
     private void weatherRabbit() {
         //每天9点，13点，19点进行自动播报
-        int hour = DateUtil.getHour();
-        if (hour != 9 && hour != 13 && hour != 19) {
+        if (hour_now != 9 && hour_now != 13 && hour_now != 19) {
             return;
         }
 
@@ -141,11 +148,28 @@ public class JobTimeRabbit{
         }
     }
 
+    //每日色图
+    private void setuOnDay() {
+        if (hour_now != 20) {
+            return;
+        }
+        try {
+            MessageChain messageChain = setuService.getSetu();
+            //给每个群发送消息
+            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
+            for (Group groupInfo : groupList) {
+                groupInfo.sendMessage(RandomUtil.rollStrFromList(ConstantPixiv.SETU_DAY_EX_MSG_List));
+                groupInfo.sendMessage(messageChain);
+            }
+        } catch (Exception ex) {
+            logger.error(ConstantPixiv.SETU_DAY_ERROR + ex.toString(), ex);
+        }
+    }
+
     //P站日榜兔子
     private void pixivRankDay() {
-        //每天晚上20点推送日榜信息
-        int hour = DateUtil.getHour();
-        if (hour != 20) {
+        //每天晚上18点推送日榜信息
+        if (hour_now != 18) {
             return;
         }
 
@@ -153,11 +177,11 @@ public class JobTimeRabbit{
             //获取日榜
             List<PixivRankImageInfo> imageList = null;
             //是否走爬虫
-            String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_USE_API);
+            String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_USE_API);
             if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-                imageList = pixivService.getPixivIllustRank(ConstantImage.PIXIV_IMAGE_PAGESIZE);
+                imageList = pixivService.getPixivIllustRank(ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
             } else {
-                imageList = pixivImjadService.getPixivIllustRank(1, ConstantImage.PIXIV_IMAGE_PAGESIZE);
+                imageList = pixivImjadService.getPixivIllustRank(1, ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
             }
             for (PixivRankImageInfo imageInfo : imageList) {
                 //上传图片
@@ -176,7 +200,7 @@ public class JobTimeRabbit{
                 Thread.sleep(1000L * 2);
             }
         } catch (Exception ex) {
-            logger.error(ConstantImage.PIXIV_IMAGE_RANK_JOB_ERROR + ex.toString(), ex);
+            logger.error(ConstantPixiv.PIXIV_IMAGE_RANK_JOB_ERROR + ex.toString(), ex);
         }
     }
 }

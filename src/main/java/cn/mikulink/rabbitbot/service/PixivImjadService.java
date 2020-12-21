@@ -7,6 +7,7 @@ import cn.mikulink.rabbitbot.apirequest.imjad.PixivImjadMemberIllustGet;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.apirequest.imjad.*;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
@@ -130,7 +131,7 @@ public class PixivImjadService {
      */
     public ReString getPixivIllustByTag(String tag) throws IOException {
         if (StringUtil.isEmpty(tag)) {
-            return new ReString(false, ConstantImage.PIXIV_IMAGE_TAG_IS_EMPTY);
+            return new ReString(false, ConstantPixiv.PIXIV_IMAGE_TAG_IS_EMPTY);
         }
 
         int pageSize = 30;
@@ -143,7 +144,7 @@ public class PixivImjadService {
         //总结果数量
         int total = pagination.getTotal();
         if (0 >= total) {
-            return new ReString(false, ConstantImage.PIXIV_IMAGE_TAG_NO_RESULT);
+            return new ReString(false, ConstantPixiv.PIXIV_IMAGE_TAG_NO_RESULT);
         }
 
         //2.随机获取结果中的一条
@@ -190,7 +191,7 @@ public class PixivImjadService {
             imgRspMap.put(response.getId(), response);
         }
         if (0 >= scoredMap.size()) {
-            return new ReString(false, ConstantImage.PIXIV_IMAGE_TAG_ALL_R18);
+            return new ReString(false, ConstantPixiv.PIXIV_IMAGE_TAG_ALL_R18);
         }
 
         //计算权重
@@ -226,7 +227,7 @@ public class PixivImjadService {
 
         Long memberId = null;
         //查看当前本地作者缓存
-        for (String memberLocalStr : ConstantImage.PIXIV_MEMBER_LIST) {
+        for (String memberLocalStr : ConstantPixiv.PIXIV_MEMBER_LIST) {
             String[] memberLocalInfos = memberLocalStr.split(",");
             //忽略异常数据
             if (memberLocalInfos.length < 2) {
@@ -243,7 +244,7 @@ public class PixivImjadService {
 
         //都查不到返回结果
         if (null == memberId) {
-            throw new RabbitException(ConstantImage.PIXIV_MEMBER_NOT_FOUND + "[" + memberName + "]");
+            throw new RabbitException(ConstantPixiv.PIXIV_MEMBER_NOT_FOUND + "[" + memberName + "]");
         }
 
         int pageSize = 10;
@@ -259,7 +260,7 @@ public class PixivImjadService {
         //总结果数量
         int total = pagination.getTotal();
         if (0 >= total) {
-            throw new RabbitException("[" + memberName + "]" + ConstantImage.PIXIV_MEMBER_NO_ILLUST);
+            throw new RabbitException("[" + memberName + "]" + ConstantPixiv.PIXIV_MEMBER_NO_ILLUST);
         }
 
         //2.随机获取作者作品中的三个
@@ -321,7 +322,7 @@ public class PixivImjadService {
         request.doRequest();
         ImjadPixivResult pixivResult = request.getEntity();
         if (null == pixivResult) {
-            throw new RabbitException(ConstantImage.PIXIV_ID_GET_FAIL_GROUP_MESSAGE + "(" + pixivId + ")");
+            throw new RabbitException(ConstantPixiv.PIXIV_ID_GET_FAIL_GROUP_MESSAGE + "(" + pixivId + ")");
         }
         if (null != pixivResult.getHas_error() && pixivResult.getHas_error()) {
             //接口错误信息
@@ -349,7 +350,7 @@ public class PixivImjadService {
         if ("r18".equalsIgnoreCase(response.getAge_limit())) {
             String configR18 = ConstantConfig.common_config.get(ConstantConfig.CONFIG_R18);
             if (StringUtil.isEmpty(configR18) || ConstantCommon.OFF.equalsIgnoreCase(configR18)) {
-                result = result.plus(ConstantImage.PIXIV_IMAGE_R18);
+                result = result.plus(ConstantPixiv.PIXIV_IMAGE_R18);
                 showImage = false;
             }
         }
@@ -407,12 +408,12 @@ public class PixivImjadService {
         int total = result.getPagination().getTotal();
         List<ImjadPixivResponse> tempList = result.getResponse();
         //如果小于等于指定阈值，直接展示所有
-        if (total <= ConstantImage.PIXIV_MEMBER_ILLUST_SHOW_COUNT) {
+        if (total <= ConstantPixiv.PIXIV_MEMBER_ILLUST_SHOW_COUNT) {
             return tempList;
         }
 
         //随机出指定数目以内不重复的数字，结果为下标
-        List<Integer> randNumList = RandomUtil.roll(tempList.size() - 1, ConstantImage.PIXIV_MEMBER_ILLUST_SHOW_COUNT);
+        List<Integer> randNumList = RandomUtil.roll(tempList.size() - 1, ConstantPixiv.PIXIV_MEMBER_ILLUST_SHOW_COUNT);
         if (null == randNumList) {
             return tempList;
         }
@@ -452,7 +453,7 @@ public class PixivImjadService {
                 reslutList.add(responseList.get(index));
             }
             i++;
-        } while (i <= ConstantImage.PIXIV_MEMBER_ILLUST_SHOW_COUNT);
+        } while (i <= ConstantPixiv.PIXIV_MEMBER_ILLUST_SHOW_COUNT);
         return reslutList;
     }
 
@@ -468,7 +469,7 @@ public class PixivImjadService {
                 if (StringUtil.isEmpty(tag)) {
                     continue;
                 }
-                if (ConstantImage.PIXIV_TAG_LIST.contains(tag)) {
+                if (ConstantPixiv.PIXIV_TAG_LIST.contains(tag)) {
                     continue;
                 }
 
@@ -478,7 +479,7 @@ public class PixivImjadService {
             FileManagerPixivTags.addTags(tagsTamp);
         } catch (Exception ex) {
             //异常不上抛，不是主要业务
-            logger.error(ConstantImage.PIXIV_TAG_SAVE_ERROR + " " + ex.toString(), ex);
+            logger.error(ConstantPixiv.PIXIV_TAG_SAVE_ERROR + " " + ex.toString(), ex);
         }
     }
 
@@ -492,7 +493,7 @@ public class PixivImjadService {
             String memberStr = String.format("%s,%s,%s", user.getId(), user.getName(), user.getAccount());
 
             //判重
-            if (ConstantImage.PIXIV_MEMBER_LIST.contains(memberStr)) {
+            if (ConstantPixiv.PIXIV_MEMBER_LIST.contains(memberStr)) {
                 return;
             }
 
@@ -500,7 +501,7 @@ public class PixivImjadService {
             FileManagerPixivMember.addMemberInfo(memberStr);
         } catch (Exception ex) {
             //不影响主业务
-            logger.error(ConstantImage.PIXIV_MEMBER_SAVE_ERROR + ex.toString(), ex);
+            logger.error(ConstantPixiv.PIXIV_MEMBER_SAVE_ERROR + ex.toString(), ex);
         }
     }
 }

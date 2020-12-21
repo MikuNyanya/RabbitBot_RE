@@ -2,6 +2,7 @@ package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.service.PixivImjadService;
@@ -47,21 +48,21 @@ public class PidCommand extends BaseEveryWhereCommand {
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
         if (null == args || args.size() == 0) {
-            return new PlainText(ConstantImage.PIXIV_IMAGE_ID_IS_EMPTY);
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_ID_IS_EMPTY);
         }
         //基本输入校验
         String pid = args.get(0);
         if (StringUtil.isEmpty(pid)) {
-            return new PlainText(ConstantImage.PIXIV_IMAGE_ID_IS_EMPTY);
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_ID_IS_EMPTY);
         }
         if (!NumberUtil.isNumberOnly(pid)) {
-            return new PlainText(ConstantImage.PIXIV_IMAGE_ID_IS_NUMBER_ONLY);
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_ID_IS_NUMBER_ONLY);
         }
 
         try {
             MessageChain resultChain = null;
             //是否走爬虫
-            String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_USE_API);
+            String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_USE_API);
             if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
                 PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById(NumberUtil.toLong(pid));
                 resultChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
@@ -70,14 +71,14 @@ public class PidCommand extends BaseEveryWhereCommand {
             }
             return resultChain;
         } catch (FileNotFoundException fileNotFoundEx) {
-            logger.warn(ConstantImage.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
-            return new PlainText(ConstantImage.PIXIV_IMAGE_DELETE);
+            logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_DELETE);
         } catch (SocketTimeoutException stockTimeoutEx) {
-            logger.warn(ConstantImage.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
-            return new PlainText(ConstantImage.PIXIV_IMAGE_TIMEOUT);
+            logger.warn(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT);
         } catch (Exception ex) {
-            logger.error(ConstantImage.PIXIV_ID_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
-            return new PlainText(ConstantImage.PIXIV_ID_GET_ERROR_GROUP_MESSAGE);
+            logger.error(ConstantPixiv.PIXIV_ID_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
+            return new PlainText(ConstantPixiv.PIXIV_ID_GET_ERROR_GROUP_MESSAGE);
         }
     }
 }

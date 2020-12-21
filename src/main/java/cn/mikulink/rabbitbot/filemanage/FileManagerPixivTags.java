@@ -1,9 +1,8 @@
 package cn.mikulink.rabbitbot.filemanage;
 
 
-
 import cn.mikulink.rabbitbot.constant.ConstantFile;
-import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.utils.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +65,7 @@ public class FileManagerPixivTags {
             while ((tag = reader.readLine()) != null) {
                 //过滤掉空行
                 if (tag.length() <= 0) continue;
-                ConstantImage.PIXIV_TAG_RABBIT_LIST.add(tag);
+                ConstantPixiv.PIXIV_TAG_RABBIT_LIST.add(tag);
             }
             //关闭读取器
             reader.close();
@@ -89,7 +88,7 @@ public class FileManagerPixivTags {
             while ((tag = reader.readLine()) != null) {
                 //过滤掉空行
                 if (tag.length() <= 0) continue;
-                ConstantImage.PIXIV_TAG_LIST.add(tag);
+                ConstantPixiv.PIXIV_TAG_LIST.add(tag);
             }
             //关闭读取器
             reader.close();
@@ -118,7 +117,7 @@ public class FileManagerPixivTags {
         out.close();
 
         //刷新内存中的列表
-        ConstantImage.PIXIV_TAG_LIST.addAll(tags);
+        ConstantPixiv.PIXIV_TAG_LIST.addAll(tags);
     }
 
 }

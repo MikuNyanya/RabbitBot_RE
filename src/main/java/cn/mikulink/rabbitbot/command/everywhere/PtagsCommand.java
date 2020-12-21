@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
@@ -37,8 +37,8 @@ public class PtagsCommand extends BaseEveryWhereCommand {
         //随机返回一定数量的tag，直接随机
         StringBuilder tagStr = new StringBuilder();
         tagStr.append("=====Pixiv tag=====");
-        if (0 == ConstantImage.PIXIV_TAG_RABBIT_LIST.size()) {
-            tagStr.append(ConstantImage.PIXIV_TAG_IS_EMPTY);
+        if (0 == ConstantPixiv.PIXIV_TAG_RABBIT_LIST.size()) {
+            tagStr.append(ConstantPixiv.PIXIV_TAG_IS_EMPTY);
             tagStr.append("===================");
             return new PlainText(tagStr.toString());
         }
@@ -46,8 +46,8 @@ public class PtagsCommand extends BaseEveryWhereCommand {
         int i = 0;
         List<String> tempTagList = new ArrayList<>();
         do {
-            if (ConstantImage.PIXIV_TAG_RABBIT_LIST.size() < SHOW_TAG_QTY) {
-                tempTagList.addAll(ConstantImage.PIXIV_TAG_RABBIT_LIST);
+            if (ConstantPixiv.PIXIV_TAG_RABBIT_LIST.size() < SHOW_TAG_QTY) {
+                tempTagList.addAll(ConstantPixiv.PIXIV_TAG_RABBIT_LIST);
                 break;
             }
             //防止死循环
@@ -56,7 +56,7 @@ public class PtagsCommand extends BaseEveryWhereCommand {
             }
 
             //从内存里随机出一个tag
-            String tag = RandomUtil.rollStrFromList(ConstantImage.PIXIV_TAG_RABBIT_LIST);
+            String tag = RandomUtil.rollStrFromList(ConstantPixiv.PIXIV_TAG_RABBIT_LIST);
             //随机到重复的则再随机一次
             if (tempTagList.contains(tag)) {
                 continue;

@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.apirequest.imjad.ImjadPixivResponse;
@@ -63,7 +63,7 @@ public class PtagCommand extends BaseEveryWhereCommand {
         PIXIV_TAG_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
 
         if (null == args || args.size() == 0) {
-            return new PlainText(ConstantImage.PIXIV_IMAGE_TAG_IS_EMPTY);
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TAG_IS_EMPTY);
         }
         //基本输入校验
         StringBuilder tagSB = new StringBuilder();
@@ -73,7 +73,7 @@ public class PtagCommand extends BaseEveryWhereCommand {
         }
         String tag = StringUtil.trim(tagSB.toString());
         if (StringUtil.isEmpty(tag)) {
-            return new PlainText(ConstantImage.PIXIV_IMAGE_TAG_IS_EMPTY);
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TAG_IS_EMPTY);
         }
 
 
@@ -87,13 +87,13 @@ public class PtagCommand extends BaseEveryWhereCommand {
             //转化为返回对象
             return pixivImjadService.parsePixivImgInfoByApiInfo(response, null);
         } catch (SocketTimeoutException stockTimeoutEx) {
-            logger.warn(ConstantImage.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
-            return new PlainText(ConstantImage.PIXIV_IMAGE_TIMEOUT);
+            logger.warn(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT);
         } catch (Exception ex) {
-            logger.error(ConstantImage.PIXIV_TAG_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
+            logger.error(ConstantPixiv.PIXIV_TAG_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
             //异常后清除间隔允许再次操作
             PIXIV_TAG_SPLIT_MAP.remove(sender.getId());
-            return new PlainText(ConstantImage.PIXIV_TAG_GET_ERROR_GROUP_MESSAGE);
+            return new PlainText(ConstantPixiv.PIXIV_TAG_GET_ERROR_GROUP_MESSAGE);
         }
     }
 }

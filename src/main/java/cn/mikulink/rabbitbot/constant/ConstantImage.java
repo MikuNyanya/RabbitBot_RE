@@ -52,53 +52,6 @@ public class ConstantImage extends ConstantCommon {
     public static final String SAUCENAO_SEARCH_FAIL_PART = "Saucenao识图失败，没有在P站和Danbooru获得结果";
     public static final String SAUCENAO_SEARCH_FAIL_PARAM = "Saucenao识图失败，没有符合条件的结果:[源于P站或Danbooru，相似度50%以上]";
 
-    public static final String IMJAD_PIXIV_ID_API_ERROR = "imjad Pixiv Api请求异常";
-    public static final String IMJAD_PIXIV_ID_API_FAIL = "imjad Pixiv Api请求失败";
-
-    //配置，p站
-    public static final int PIXIV_IMAGE_PAGESIZE = 5;
-    public static final String PIXIV_CONFIG_USE_API = "usePixivApi";
-    public static final String PIXIV_CONFIG_IMAGE_IGNORE = "pixivImageIgnore";
-    public static final String PIXIV_IMAGE_IGNORE_WARNING = "[P站图片已忽略加载]";
-    public static final String PIXIV_IMAGE_DOWNLOAD_FAIL = "[P站图片下载失败]";
-    public static final String PIXIV_IMAGE_DELETE = "[P站图片已被删除]";
-    public static final String PIXIV_IMAGE_TIMEOUT = "P站图片获取超时，请重试";
-    public static final String PIXIV_IMAGE_RANK_ERROR = "P站日榜信息获取异常";
-    public static final String PIXIV_IMAGE_RANK_JOB_ERROR = "P站日榜信息推送异常";
-    public static final String PIXIV_IMAGE_ID_IS_EMPTY = "你得给我一个p站图片id";
-    public static final String PIXIV_IMAGE_ID_IS_NUMBER_ONLY = "p站图片id只会是纯数字";
-    public static final String PIXIV_IMAGE_R18 = "[该图片为R18，不予展示]";
-
-    public static final String PIXIV_IMAGE_TAG_IS_EMPTY = "你得给我一个p站图片tag";
-    public static final String PIXIV_IMAGE_TAG_NO_RESULT = "[这个tag没有搜索结果]";
-    public static final String PIXIV_IMAGE_TAG_ALL_R18 = "[这个页全是R18，不予展示]";
-    public static final String PIXIV_TAG_GET_ERROR_GROUP_MESSAGE = "根据P站图片tag获取信息异常";
-
-    public static final String PIXIV_ID_GET_FAIL_GROUP_MESSAGE = "根据P站图片id获取信息失败";
-    public static final String PIXIV_ID_GET_ERROR_GROUP_MESSAGE = "根据P站图片id获取信息异常";
-
-    public static final String PIXIV_CONFIG_IMAGES_SHOW_COUNT = "pixivImagesShowCount";
-    public static final String PIXIV_CONFIG_IMAGES_SHOW_COUNT_DEFAULT = "3";
-    public static final String PIXIV_IMAGES_NOT_LEGAL = "这不是一个多图Pid";
-
-    //p站tag相关
-    //所有已收集tag
-    public static ArrayList<String> PIXIV_TAG_LIST = new ArrayList<>();
-    //已经经过整理的tag，数据格式和上面不同
-    public static ArrayList<String> PIXIV_TAG_RABBIT_LIST = new ArrayList<>();
-    public static final String PIXIV_TAG_SAVE_ERROR = "P站图片tag保存异常";
-    public static final String PIXIV_TAG_IS_EMPTY = "P站tag资料库里空空如也";
-
-    //p站作者相关
-    public static ArrayList<String> PIXIV_MEMBER_LIST = new ArrayList<>();
-    //每次使用作者搜图，展示多少张图片
-    public static final Integer PIXIV_MEMBER_ILLUST_SHOW_COUNT = 3;
-    public static final String PIXIV_MEMBER_IS_EMPTY = "你得给我一个p站作者名称";
-    public static final String PIXIV_MEMBER_NOT_FOUND = "没有查到这个作者的相关信息";
-    public static final String PIXIV_MEMBER_NO_ILLUST = "这个作者没有作品";
-    public static final String PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE = "根据P站作者获取信息异常";
-    public static final String PIXIV_MEMBER_SAVE_ERROR = "Pixiv作者信息保存异常";
-
     ///Danbooru
     public static final String DANBOORU_ID_GET_NOT_FOUND = "根据Danbooru图片id没有找到图片";
     public static final String DANBOORU_IMAGE_DOWNLOAD_FAIL = "Danbooru图片下载失败";

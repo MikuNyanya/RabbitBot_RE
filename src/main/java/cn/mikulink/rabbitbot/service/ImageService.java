@@ -4,6 +4,7 @@ import cn.mikulink.rabbitbot.apirequest.saucenao.SaucenaoImageSearch;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ImageInfo;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchResult;
@@ -236,7 +237,7 @@ public class ImageService {
             if (5 == searchResult.getHeader().getIndex_id()) {
                 //pixiv
                 //是否走爬虫
-                String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_USE_API);
+                String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_USE_API);
                 if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
                     PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById((long) searchResult.getData().getPixiv_id());
                     return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo, searchResult.getHeader().getSimilarity());
@@ -248,8 +249,8 @@ public class ImageService {
                 return danbooruService.parseDanbooruImgRequest(searchResult);
             }
         } catch (FileNotFoundException fileNotFoundEx) {
-            logger.warn(ConstantImage.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
-            throw new RabbitException(ConstantImage.PIXIV_IMAGE_DELETE);
+            logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
+            throw new RabbitException(ConstantPixiv.PIXIV_IMAGE_DELETE);
         } catch (SocketTimeoutException timeoutException) {
             logger.error(ConstantImage.IMAGE_GET_TIMEOUT_ERROR + timeoutException.toString(), timeoutException);
             throw new RabbitException(ConstantImage.IMAGE_GET_TIMEOUT_ERROR);

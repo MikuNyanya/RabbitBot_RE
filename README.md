@@ -54,7 +54,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 - [ ] pixiv根据tag搜索
 - [ ] pixiv根据user搜索
 - [ ] 接入tracemoe
-- [ ] 每日色图功能
+- [x] 每日色图功能
 - [x] 鸽了，咕咕咕
 
 ### 指令
@@ -78,6 +78,9 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 [mirai事件列表一览](https://github.com/mamoe/mirai/blob/dev/mirai-core-api/src/commonMain/kotlin/event/events/README.md)
 
 ### 日志
+2020年12月21日  
+添加每日色图功能
+
 2020年12月20日  
 淦，新疆这边老鼠好大只啊，身体都快成球了  
 mirai作者终于修复了登录问题，又可以继续开心的码代码了  

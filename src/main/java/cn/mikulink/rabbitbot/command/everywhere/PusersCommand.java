@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
@@ -44,23 +44,23 @@ public class PusersCommand extends BaseEveryWhereCommand {
 
         //传入作者名称参数为空，随机返回指定数目作者信息
         if (StringUtil.isEmpty(memberName)) {
-            int localMemberListSize = ConstantImage.PIXIV_MEMBER_LIST.size();
+            int localMemberListSize = ConstantPixiv.PIXIV_MEMBER_LIST.size();
             if (localMemberListSize <= SHOW_COUNT) {
-                tempList = ConstantImage.PIXIV_MEMBER_LIST;
+                tempList = ConstantPixiv.PIXIV_MEMBER_LIST;
             } else {
                 List<Integer> randNumList = RandomUtil.roll(localMemberListSize - 1, SHOW_COUNT);
                 if (null == randNumList) {
                     randNumList = new ArrayList<>();
                 }
                 for (Integer index : randNumList) {
-                    tempList.add(ConstantImage.PIXIV_MEMBER_LIST.get(index));
+                    tempList.add(ConstantPixiv.PIXIV_MEMBER_LIST.get(index));
                 }
             }
         }
 
         //传入作者不为空，去模糊搜索用户名 todo 全搜索本地，不存在则请求pixiv搜索用户
         if (StringUtil.isNotEmpty(memberName)) {
-            for (String localMemberStr : ConstantImage.PIXIV_MEMBER_LIST) {
+            for (String localMemberStr : ConstantPixiv.PIXIV_MEMBER_LIST) {
                 String[] memberStrs = localMemberStr.split(",");
                 if (memberStrs.length < 2) {
                     continue;

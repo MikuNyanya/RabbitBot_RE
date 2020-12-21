@@ -3,6 +3,7 @@ package cn.mikulink.rabbitbot.filemanage;
 
 
 import cn.mikulink.rabbitbot.constant.ConstantFile;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import org.slf4j.Logger;
@@ -65,7 +66,7 @@ public class FileManagerSetu {
      */
     private static void loadFile() throws IOException {
         //初始化集合
-        ConstantFile.List_SETU_PID = new ArrayList<>();
+        ConstantPixiv.List_SETU_PID = new ArrayList<>();
 
         //创建读取器
         BufferedReader reader = new BufferedReader(new FileReader(setuFile));
@@ -74,12 +75,12 @@ public class FileManagerSetu {
         while ((setuPid = reader.readLine()) != null) {
             //过滤掉空行
             if (setuPid.length() <= 0) continue;
-            ConstantFile.List_SETU_PID.add(setuPid);
+            ConstantPixiv.List_SETU_PID.add(setuPid);
         }
         //关闭读取器
         reader.close();
         //刷新最大元素数目
-        ConstantFile.SETU_PID_LIST_MAX_SIZE = ConstantFile.List_SETU_PID.size();
+        ConstantPixiv.SETU_PID_LIST_MAX_SIZE = ConstantPixiv.List_SETU_PID.size();
     }
 
     /**
@@ -99,9 +100,9 @@ public class FileManagerSetu {
         //写入内容 写一行换一行
         out.write("\r\n" + text);
         //同时把新加的内容同步到系统
-        ConstantFile.List_SETU_PID.add(text);
+        ConstantPixiv.List_SETU_PID.add(text);
         //刷新最大数目
-        ConstantFile.SETU_PID_LIST_MAX_SIZE++;
+        ConstantPixiv.SETU_PID_LIST_MAX_SIZE++;
 
         //关闭写入流
         out.close();

@@ -4,11 +4,12 @@ import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.command.group.RPCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
-import cn.mikulink.rabbitbot.service.PixivService;
-import cn.mikulink.rabbitbot.service.WeatherService;
 import cn.mikulink.rabbitbot.service.PixivImjadService;
+import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.service.WeatherService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
@@ -170,11 +171,11 @@ public class JobTimeRabbit implements Job {
             //获取日榜
             List<PixivRankImageInfo> imageList = null;
             //是否走爬虫
-            String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_USE_API);
+            String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_USE_API);
             if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-                imageList = pixivService.getPixivIllustRank(ConstantImage.PIXIV_IMAGE_PAGESIZE);
+                imageList = pixivService.getPixivIllustRank(ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
             } else {
-                imageList = pixivImjadService.getPixivIllustRank(1, ConstantImage.PIXIV_IMAGE_PAGESIZE);
+                imageList = pixivImjadService.getPixivIllustRank(1, ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
             }
             for (PixivRankImageInfo imageInfo : imageList) {
                 //上传图片
@@ -193,7 +194,7 @@ public class JobTimeRabbit implements Job {
                 Thread.sleep(1000L * 2);
             }
         } catch (Exception ex) {
-            logger.error(ConstantImage.PIXIV_IMAGE_RANK_JOB_ERROR + ex.toString(), ex);
+            logger.error(ConstantPixiv.PIXIV_IMAGE_RANK_JOB_ERROR + ex.toString(), ex);
         }
     }
 }

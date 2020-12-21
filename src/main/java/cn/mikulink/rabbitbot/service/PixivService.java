@@ -6,6 +6,7 @@ import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustRankGet;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageUrlInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
@@ -96,7 +97,7 @@ public class PixivService {
             try {
                 parseImages(pixivImageInfo);
             } catch (SocketTimeoutException stockTimeoutEx) {
-                logger.warn("PixivService getPixivIllustRank {}", ConstantImage.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString(),stockTimeoutEx);
+                logger.warn("PixivService getPixivIllustRank {}", ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString(), stockTimeoutEx);
             }
 
             //信息合并
@@ -148,7 +149,7 @@ public class PixivService {
         if (null != xRestrict && 1 == xRestrict) {
             String configR18 = ConstantConfig.common_config.get(ConstantConfig.CONFIG_R18);
             if (StringUtil.isEmpty(configR18) || ConstantCommon.OFF.equalsIgnoreCase(configR18)) {
-                result = result.plus(ConstantImage.PIXIV_IMAGE_R18);
+                result = result.plus(ConstantPixiv.PIXIV_IMAGE_R18);
                 showImage = false;
             }
         }
@@ -190,7 +191,7 @@ public class PixivService {
         if (null != xRestrict && 1 == xRestrict) {
             String configR18 = ConstantConfig.common_config.get(ConstantConfig.CONFIG_R18);
             if (StringUtil.isEmpty(configR18) || ConstantCommon.OFF.equalsIgnoreCase(configR18)) {
-                result = result.plus(ConstantImage.PIXIV_IMAGE_R18);
+                result = result.plus(ConstantPixiv.PIXIV_IMAGE_R18);
                 showImage = false;
             }
         }
@@ -252,7 +253,7 @@ public class PixivService {
         }
 
         //是否不加载p站图片，由于从p站本体拉数据，还没代理，很慢
-        String pixiv_image_ignore = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_IMAGE_IGNORE);
+        String pixiv_image_ignore = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_IMAGE_IGNORE);
         if ("1".equalsIgnoreCase(pixiv_image_ignore)) {
             return null;
         }
@@ -266,11 +267,11 @@ public class PixivService {
             }
             if (StringUtil.isEmpty(scaleForceLocalUrl)) {
                 //图片下载或压缩失败
-                logger.warn(String.format("PixivImjadService downloadPixivImg %s url:%s", ConstantImage.PIXIV_IMAGE_DOWNLOAD_FAIL, url));
+                logger.warn(String.format("PixivImjadService downloadPixivImg %s url:%s", ConstantPixiv.PIXIV_IMAGE_DOWNLOAD_FAIL, url));
             }
         } catch (FileNotFoundException fileNotFoundEx) {
             //图片被删了
-            logger.warn(String.format("PixivImjadService downloadPixivImg %s pixivId:%s", ConstantImage.PIXIV_IMAGE_DELETE, pixivId));
+            logger.warn(String.format("PixivImjadService downloadPixivImg %s pixivId:%s", ConstantPixiv.PIXIV_IMAGE_DELETE, pixivId));
         }
         return scaleForceLocalUrl;
     }
@@ -284,9 +285,9 @@ public class PixivService {
         List<String> localImagesPath = new ArrayList<>();
 
         //查看多图展示数量配置，默认为3
-        String pixiv_config_images_show_count = ConstantCommon.common_config.get(ConstantImage.PIXIV_CONFIG_IMAGES_SHOW_COUNT);
+        String pixiv_config_images_show_count = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_IMAGES_SHOW_COUNT);
         if (!NumberUtil.isNumberOnly(pixiv_config_images_show_count)) {
-            pixiv_config_images_show_count = ConstantImage.PIXIV_CONFIG_IMAGES_SHOW_COUNT_DEFAULT;
+            pixiv_config_images_show_count = ConstantPixiv.PIXIV_CONFIG_IMAGES_SHOW_COUNT_DEFAULT;
         }
         Integer showCount = NumberUtil.toInt(pixiv_config_images_show_count);
 
