@@ -74,7 +74,7 @@ public class RandomUtil {
      */
     public static boolean rollBoolean(int addition) {
         //随机0-199整数(加上0一共200个数字)
-        int randNum = new Random().nextInt(200);
+        int randNum = roll(200);
         //把范围限制在-100~100之间
         randNum -= 100;
         //两个绝对的结果

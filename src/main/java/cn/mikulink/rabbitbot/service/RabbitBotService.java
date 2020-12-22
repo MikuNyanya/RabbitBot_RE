@@ -153,6 +153,18 @@ public class RabbitBotService {
     }
 
     /**
+     * 单图拼接成消息连做的代码封装方法
+     *
+     * @param imgInfo mirai图片
+     * @return 消息链
+     */
+    public MessageChain parseMsgChainByImg(Image imgInfo) {
+        MessageChain messageChain = MessageUtils.newChain();
+        messageChain = messageChain.plus("").plus(imgInfo).plus("\n");
+        return messageChain;
+    }
+
+    /**
      * 针对多张图拼接成消息连做的代码封装方法
      *
      * @param imgList mirai图片集合

@@ -99,25 +99,32 @@ public class FileManagerConfig {
      * 资源文件初始化
      */
     public static void dataFileInit() {
-        //配置
-        doCommand(ConstantFile.FILE_COMMAND_LOAD);
-        //日常语句
-        FileManagerFreeTime.doCommand(ConstantFile.FILE_COMMAND_LOAD);
-        //关键词匹配-全匹配
-        FileManagerKeyWordNormal.doCommand(ConstantFile.FILE_COMMAND_LOAD);
-        //关键词匹配-模糊匹配
-        FileManagerKeyWordLike.doCommand(ConstantFile.FILE_COMMAND_LOAD);
-        //高德地图接口区域代码信息
-        FileManagerAmapAdcode.doCommand(ConstantFile.FILE_COMMAND_LOAD);
-        //摩尔斯电码
-        FileManagerMorseCode.loadFile();
-        //pixiv图片所有tag
-        FileManagerPixivTags.loadFile();
-        //pixiv图片已整理的tag
-        FileManagerPixivTags.loadRabbitFile();
-        //pixiv用户信息
-        FileManagerPixivMember.loadFile();
-        //压缩图片文件夹检测
-        FileUtil.fileDirsCheck(ConstantImage.DEFAULT_IMAGE_SCALE_SAVE_PATH);
+        try {
+            //配置
+            doCommand(ConstantFile.FILE_COMMAND_LOAD);
+            //日常语句
+            FileManagerFreeTime.doCommand(ConstantFile.FILE_COMMAND_LOAD);
+            //关键词匹配-全匹配
+            FileManagerKeyWordNormal.doCommand(ConstantFile.FILE_COMMAND_LOAD);
+            //关键词匹配-模糊匹配
+            FileManagerKeyWordLike.doCommand(ConstantFile.FILE_COMMAND_LOAD);
+            //高德地图接口区域代码信息
+            FileManagerAmapAdcode.loadFile();
+            //摩尔斯电码
+            FileManagerMorseCode.loadFile();
+            //pixiv图片所有tag
+            FileManagerPixivTags.loadFile();
+            //pixiv图片已整理的tag
+            FileManagerPixivTags.loadRabbitFile();
+            //pixiv用户信息
+            FileManagerPixivMember.loadFile();
+            //塔罗牌
+            FileManagerTarot.loadFile();
+
+            //压缩图片文件夹检测
+            FileUtil.fileDirsCheck(ConstantImage.DEFAULT_IMAGE_SCALE_SAVE_PATH);
+        } catch (Exception ex) {
+            logger.error("资源文件读取异常:{}", ex.getMessage(), ex);
+        }
     }
 }

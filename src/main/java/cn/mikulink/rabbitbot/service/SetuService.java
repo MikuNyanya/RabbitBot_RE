@@ -1,7 +1,6 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
@@ -74,10 +73,10 @@ public class SetuService {
      *
      * @return 色图pid
      */
-    public String randOneSetuPid() {
+    public String randOneSetuPid() throws IOException {
         //集合为空时，重新加载一次色图文件
         if (ConstantPixiv.List_SETU_PID.size() == 0) {
-            FileManagerSetu.doCommand(ConstantFile.FILE_COMMAND_LOAD, null);
+            FileManagerSetu.loadFile();
         }
         //随机色图
         String setuPid = RandomUtil.rollStrFromList(ConstantPixiv.List_SETU_PID);
@@ -85,7 +84,7 @@ public class SetuService {
         ConstantPixiv.List_SETU_PID.remove(setuPid);
         //元素少于1/6的时候，重新加载
         if (ConstantPixiv.List_SETU_PID.size() < ConstantPixiv.SETU_PID_LIST_MAX_SIZE / 6) {
-            FileManagerSetu.doCommand(ConstantFile.FILE_COMMAND_LOAD, null);
+            FileManagerSetu.loadFile();
         }
         return setuPid;
     }

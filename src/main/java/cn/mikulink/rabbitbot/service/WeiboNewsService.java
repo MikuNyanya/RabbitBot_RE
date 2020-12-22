@@ -4,6 +4,7 @@ import cn.mikulink.rabbitbot.apirequest.weibo.WeiboHomeTimelineGet;
 import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantFile;
+import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoPicUrl;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
@@ -230,7 +231,7 @@ public class WeiboNewsService {
         String imageName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 
         //先把图片下载下来
-        String localImageUrl = ImageUtil.downloadImage(imageUrl);
+        String localImageUrl = ImageUtil.downloadImage(imageUrl, ConstantImage.IMAGE_WEIBO_SAVE_PATH, null);
         if (StringUtil.isEmpty(localImageUrl)) {
             return null;
         }
