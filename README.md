@@ -78,7 +78,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 [mirai事件列表一览](https://github.com/mamoe/mirai/blob/dev/mirai-core-api/src/commonMain/kotlin/event/events/README.md)
 
 ### 日志
-2020年12月22日
+2020年12月22日     
 添加塔罗牌功能
 
 2020年12月21日  
@@ -121,4 +121,5 @@ pixiv和danbooru业务代码下沉<br/>
 只能说，新疆恶劣的环境，让我认识到了什么叫美好生活<br/>
 于是我决定修复RabbitBot，代码也开始认真写起来了<br/>
 还有很多旧功能没修复，还有很多新功能没实现，还有很多问题没解决<br/>
-但我都会搞定的，嗯
+但我都会搞定的，嗯       
+联系兔子：q群(857489126)
