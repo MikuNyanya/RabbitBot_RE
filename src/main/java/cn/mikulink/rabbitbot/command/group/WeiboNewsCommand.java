@@ -10,6 +10,7 @@ import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.WeiboNewsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
+import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
@@ -125,7 +126,11 @@ public class WeiboNewsCommand implements GroupCommand {
             //在当前群推一遍咨询
             for (InfoStatuses info : statusesList) {
                 //过滤转发微博
-                if (null != info.getRetweeted_status()) {
+//                if (null != info.getRetweeted_status()) {
+//                    continue;
+//                }
+                //过滤没有图片的微博，因为观看感受差
+                if(CollectionUtil.isEmpty(info.getPic_urls())){
                     continue;
                 }
                 //解析微博报文
