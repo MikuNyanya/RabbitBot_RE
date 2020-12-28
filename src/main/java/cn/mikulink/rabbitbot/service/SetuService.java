@@ -11,6 +11,7 @@ import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,6 +23,10 @@ import java.io.IOException;
  */
 @Service
 public class SetuService {
+    //pixiv色图操作间隔
+    @Value("${setu.split.time:60000}")
+    public Long SETU_PID_SPLIT_TIME = 1000L * 60;
+
     @Autowired
     private PixivImjadService pixivImjadService;
     @Autowired
@@ -61,7 +66,7 @@ public class SetuService {
         ReString reString = new ReString(true);
         //操作间隔判断
         String timeCheck = rabbitBotService.commandTimeSplitCheck(ConstantPixiv.SETU_PID_SPLIT_MAP, userId, userNick,
-                ConstantPixiv.SETU_PID_SPLIT_TIME, RandomUtil.rollStrFromList(ConstantPixiv.SETU_SPLIT_ERROR_LIST));
+                SETU_PID_SPLIT_TIME, RandomUtil.rollStrFromList(ConstantPixiv.SETU_SPLIT_ERROR_LIST));
         if (StringUtil.isNotEmpty(timeCheck)) {
             reString = new ReString(false, timeCheck);
         }

@@ -65,9 +65,7 @@ public class ConstantPixiv extends ConstantCommon {
     public static List<String> List_SETU_PID = Arrays.asList();
     //pixiv色图操作间隔 账号，操作时间戳
     public static Map<Long, Long> SETU_PID_SPLIT_MAP = new HashMap<>();
-    //pixiv色图操作间隔
-    @Value("${setu.split.time:60000}")
-    public Long SETU_PID_SPLIT_TIME = 1000L * 60;
+
     //pixiv色图集合总长度
     public static Integer SETU_PID_LIST_MAX_SIZE = 0;
     //色图操作间隔提示
