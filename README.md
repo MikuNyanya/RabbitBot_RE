@@ -77,7 +77,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 ### 其他
 [mirai事件列表一览](https://github.com/mamoe/mirai/blob/dev/mirai-core-api/src/commonMain/kotlin/event/events/README.md)
 
-### 日志
+### 日志		
 2020年12月24日
 尝试优化微博消息阅读体验   
 计划过滤掉没有配图的微博，因为视频QQ里没法加载  
@@ -126,4 +126,6 @@ pixiv和danbooru业务代码下沉<br/>
 只能说，新疆恶劣的环境，让我认识到了什么叫美好生活<br/>
 于是我决定修复RabbitBot，代码也开始认真写起来了<br/>
 还有很多旧功能没修复，还有很多新功能没实现，还有很多问题没解决<br/>
-但我都会搞定的，嗯
+但我都会搞定的，嗯      		
+
+__联系兔子：q群(857489126)__
