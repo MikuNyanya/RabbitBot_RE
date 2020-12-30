@@ -23,5 +23,5 @@ public class InfoStatuses {
     //用户信息
     private InfoUser user;
     //转发微博
-    private InfoRetweetedStatus retweeted_status;
+    private InfoStatuses retweeted_status;
 }

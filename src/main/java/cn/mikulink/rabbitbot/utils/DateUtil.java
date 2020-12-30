@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by MikuLink on 2017/7/14.
@@ -17,6 +18,7 @@ public class DateUtil {
      * yyyy-MM-dd'T'HH:mm:ss.SSSXXX         2017-08-10T16:17:48.303+08:00           (iso 8601 时间格式)
      * yyyy-MM-dd HH:mm:ss
      * yyyy/MM/dd HH:mm:ss
+     * EEE MMM dd HH:mm:ss Z yyyy           Wed Dec 30 20:49:47 +0800 2020          需要搭配Locale.ENGLISH
      *
      * @param date
      * @return
@@ -30,19 +32,29 @@ public class DateUtil {
         return toString(date, "yyyy-MM-dd HH:mm:ss");
     }
 
+    public static Date toDate(String dateStr) throws ParseException {
+        return toDate(dateStr, "yyyy-MM-dd HH:mm:ss");
+    }
+
+    /**
+     * 转化为时间
+     */
+    public static Date toDate(String dateStr, String pattern) throws ParseException {
+        return toDate(dateStr, pattern, Locale.CHINESE);
+    }
+
     /**
      * 转化为时间
      *
-     * @param dateStr
-     * @return
+     * @param dateStr 时间字符串
+     * @param pattern 时间格式
+     * @param locale  语言，该参数会影响转化，比如月份Dec，就必须传Locale.ENGLISH
+     * @return 时间
+     * @throws ParseException 转化异常
      */
-    public static Date toDate(String dateStr, String pattern) throws ParseException {
-        DateFormat df = new SimpleDateFormat(pattern);
+    public static Date toDate(String dateStr, String pattern, Locale locale) throws ParseException {
+        DateFormat df = new SimpleDateFormat(pattern, locale);
         return df.parse(dateStr);
-    }
-
-    public static Date toDate(String dateStr) throws ParseException {
-        return toDate(dateStr, "yyyy-MM-dd HH:mm:ss");
     }
 
     /**

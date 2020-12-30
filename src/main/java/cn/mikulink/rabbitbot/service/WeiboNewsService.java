@@ -11,6 +11,7 @@ import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
+import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.ImageUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
@@ -19,17 +20,17 @@ import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
-import net.mamoe.mirai.utils.ExternalImage;
-import net.mamoe.mirai.utils.ExternalImageJvmKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * create by MikuLink on 2020/1/9 16:42
@@ -86,12 +87,12 @@ public class WeiboNewsService {
 
         //发送微博
         for (InfoStatuses info : statuses) {
-            //过滤转发微博
-            if (null != info.getRetweeted_status()) {
-                continue;
-            }
             //解析微博报文
             MessageChain msgChain = parseWeiboBody(info);
+            if (null != info.getRetweeted_status()) {
+                //追加被转发的微博消息
+                msgChain.plus(parseWeiboBody(info, true));
+            }
 
             //给每个群发送报时
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
@@ -161,7 +162,25 @@ public class WeiboNewsService {
      * @throws IOException 处理异常
      */
     public MessageChain parseWeiboBody(InfoStatuses info) throws IOException {
+        return parseWeiboBody(info, false);
+    }
+
+    /**
+     * 解析微博信息
+     *
+     * @param info            微博信息
+     * @param retweetedStatus 是否为被转发的微博
+     * @return 转化好的信息对象，包含图片信息
+     * @throws IOException 处理异常
+     */
+    public MessageChain parseWeiboBody(InfoStatuses info, boolean retweetedStatus) throws IOException {
         MessageChain result = MessageUtils.newChain();
+
+        //如果是转发微博
+        if (retweetedStatus) {
+            result = result.plus("\n-----------↓转发微博↓----------\n");
+        }
+
         //头像
         if (1312997677 != info.getUser().getId()) {
             //解析推主头像
@@ -176,20 +195,17 @@ public class WeiboNewsService {
         }
         //推主名
         result = result.plus("[" + info.getUser().getName() + "]\n");
-        //微博id
-        result = result.plus("[" + info.getUser().getId() + "]\n");
         //推文时间
-        result = result.plus("[" + info.getCreated_at() + "]\n");
-        result = result.plus("====================\n");
+        result = result.plus("[" + parseWeiboDate(info.getCreated_at()) + "]\n");
+        result = result.plus("========================\n");
         //正文
         result = result.plus(info.getText());
 
         //拼接推文图片
         List<InfoPicUrl> picList = info.getPic_urls();
-        if (null == picList || picList.size() <= 0) {
+        if (null == picList) {
             return result;
         }
-
         for (InfoPicUrl picUrl : picList) {
             if (StringUtil.isEmpty(picUrl.getThumbnail_pic())) {
                 continue;
@@ -237,5 +253,16 @@ public class WeiboNewsService {
         }
         //然后上传到服务器，获取imageId
         return rabbitBotService.uploadMiraiImage(localImageUrl);
+    }
+
+    //转化微博接口的时间字段
+    private String parseWeiboDate(String dateStr) {
+        try {
+            Date tempDate = DateUtil.toDate(dateStr, "EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
+            return DateUtil.toString(tempDate);
+        } catch (ParseException parseEx) {
+            logger.error("微博时间转化失败:{}", dateStr, parseEx);
+            return dateStr;
+        }
     }
 }

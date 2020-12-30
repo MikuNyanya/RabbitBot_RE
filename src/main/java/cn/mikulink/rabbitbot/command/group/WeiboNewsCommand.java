@@ -4,17 +4,17 @@ import cn.mikulink.rabbitbot.command.GroupCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
+import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
 import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.WeiboNewsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import cn.mikulink.rabbitbot.entity.CommandProperties;
+import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.Message;
@@ -23,9 +23,9 @@ import net.mamoe.mirai.message.data.PlainText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -125,16 +125,12 @@ public class WeiboNewsCommand implements GroupCommand {
 
             //在当前群推一遍咨询
             for (InfoStatuses info : statusesList) {
-                //过滤转发微博
-//                if (null != info.getRetweeted_status()) {
-//                    continue;
-//                }
-                //过滤没有图片的微博，因为观看感受差
-                if(CollectionUtil.isEmpty(info.getPic_urls())){
-                    continue;
-                }
                 //解析微博报文
                 MessageChain msgChain = weiboNewsService.parseWeiboBody(info);
+                if (null != info.getRetweeted_status()) {
+                    //追加被转发的微博消息
+                    msgChain = msgChain.plus(weiboNewsService.parseWeiboBody(info.getRetweeted_status(), true));
+                }
                 //发送微博信息
                 subject.sendMessage(msgChain);
                 //每次发送之间间隔一点时间，免得瞬间刷屏太厉害
