@@ -1,7 +1,5 @@
 package cn.mikulink.rabbitbot.service;
 
-import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
@@ -28,8 +26,6 @@ public class SetuService {
     public Long SETU_PID_SPLIT_TIME = 1000L * 60;
 
     @Autowired
-    private PixivImjadService pixivImjadService;
-    @Autowired
     private PixivService pixivService;
     @Autowired
     private RabbitBotService rabbitBotService;
@@ -42,16 +38,8 @@ public class SetuService {
         Long setu_pid = NumberUtil.toLong(randOneSetuPid());
 
         //走pixiv图片id获取流程
-        MessageChain resultChain = null;
-        //是否走爬虫
-        String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_USE_API);
-        if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-            PixivImageInfo imageInfo = pixivService.getPixivImgInfoById(setu_pid);
-            resultChain = pixivService.parsePixivImgInfoByApiInfo(imageInfo);
-        } else {
-            resultChain = pixivImjadService.searchPixivImgById(setu_pid);
-        }
-        return resultChain;
+        PixivImageInfo imageInfo = pixivService.getPixivImgInfoById(setu_pid);
+        return pixivService.parsePixivImgInfoByApiInfo(imageInfo);
     }
 
 

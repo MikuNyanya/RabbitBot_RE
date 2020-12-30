@@ -1,11 +1,8 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
-import cn.mikulink.rabbitbot.service.PixivImjadService;
 import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
@@ -36,8 +33,6 @@ public class PidCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(PidCommand.class);
 
     @Autowired
-    private PixivImjadService pixivImjadService;
-    @Autowired
     private PixivService pixivService;
 
     @Override
@@ -60,16 +55,8 @@ public class PidCommand extends BaseEveryWhereCommand {
         }
 
         try {
-            MessageChain resultChain = null;
-            //是否走爬虫
-            String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_USE_API);
-            if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-                PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById(NumberUtil.toLong(pid));
-                resultChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
-            } else {
-                resultChain = pixivImjadService.searchPixivImgById(NumberUtil.toLong(pid));
-            }
-            return resultChain;
+            PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById(NumberUtil.toLong(pid));
+            return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
         } catch (FileNotFoundException fileNotFoundEx) {
             logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
             return new PlainText(ConstantPixiv.PIXIV_IMAGE_DELETE);

@@ -103,6 +103,20 @@ public class RandomUtil {
     }
 
     /**
+     * 返回列表中的一条随机元素
+     *
+     * @param strList 目标列表
+     * @return 列表中的随机一条
+     */
+    public static <T>T rollObjFromList(List<T> strList) {
+        if (null == strList || strList.size() <= 0) {
+            return null;
+        }
+        //获取随机元素
+        return strList.get(RandomUtil.roll(strList.size() - 1));
+    }
+
+    /**
      * 返回列表中的一条随机字符串，并从列表中移除这条
      *
      * @param strList 目标列表

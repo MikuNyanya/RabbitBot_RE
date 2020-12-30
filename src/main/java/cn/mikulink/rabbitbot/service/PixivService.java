@@ -3,6 +3,7 @@ package cn.mikulink.rabbitbot.service;
 import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustGet;
 import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustPagesGet;
 import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustRankGet;
+import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustTagGet;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
@@ -11,6 +12,7 @@ import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageUrlInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
+import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.utils.*;
 import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.message.data.Image;
@@ -46,6 +48,8 @@ public class PixivService {
     private String pixivAccount;
     @Value("${pixiv.pwd}")
     private String pixivPwd;
+    @Value("${pixiv.cookie:0}")
+    private String pixivCookie;
 
 
     @Autowired
@@ -69,6 +73,95 @@ public class PixivService {
         PixivIllustGet request = new PixivIllustGet(pid);
         request.doRequest();
         return request.getPixivImageInfo();
+    }
+
+    /**
+     * 根据标签，搜索出一张图片
+     * 会从所有结果中随机出一张
+     * 根据图片分数会有不同的随机权重
+     *
+     * @param tag 标签 参数在上一层过滤好再进来
+     * @return 结果对象
+     */
+    public PixivImageInfo getPixivIllustByTag(String tag) throws RabbitException, IOException {
+        //1.查询这个tag下的总结果
+        PixivIllustTagGet request = new PixivIllustTagGet();
+        request.setWord(tag);
+        request.setP(1);
+        request.doRequest();
+        //总结果数量
+        int total = request.getTotal();
+        if (0 >= total) {
+            throw new RabbitException(ConstantPixiv.PIXIV_IMAGE_TAG_NO_RESULT);
+        }
+
+        //2.随机获取结果中的一条
+        //先按照指定页数算出有多少页，随机其中一页 (模拟页面，每页默认60条数据)
+//        int totalPage = NumberUtil.toIntUp(total / 60 * 1.0);
+//        //最多只能获取到第1000页
+//        if (totalPage > 1000) {
+//            totalPage = 1000;
+//        }
+//        //随机一个页数
+//        int randomPage = RandomUtil.roll(totalPage);
+//        if (0 >= randomPage) {
+//            randomPage = 1;
+//        }
+        //todo 由于未登录，只允许获取前10页 所以随机10页内的元素
+        int randomPage = RandomUtil.roll(10);
+        if (0 >= randomPage) {
+            randomPage = 1;
+        }
+
+        //获取该页数的数据
+        request = new PixivIllustTagGet();
+        request.setWord(tag);
+        request.setP(randomPage);
+        request.doRequest();
+        List<PixivImageInfo> responses = request.parseImageList();
+
+        //todo 页面上没有作品评分，如果真做就需要去获取每个pid的评分，这一页就是60个pid，那就是近乎瞬间60次页面请求，也需要保存60个Obj
+        //累积得分
+//        Integer scoredCount = 0;
+//        Map<Long, Integer> scoredMap = new HashMap<>();
+//        Map<Object, Double> additionMap = new HashMap<>();
+//        Map<Long, ImjadPixivResponse> imgRspMap = new HashMap<>();
+//
+//        for (PixivImageInfo response : responses) {
+//            //r18过滤
+//            if (1 == response.getXRestrict()) {
+//                String configR18 = ConstantConfig.common_config.get(ConstantConfig.CONFIG_R18);
+//                if (StringUtil.isEmpty(configR18) || ConstantCommon.OFF.equalsIgnoreCase(configR18)) {
+//                    continue;
+//                }
+//            }
+//
+//            Integer scored = response.getStats().getScored_count();
+//            scoredCount += scored;
+//            scoredMap.put(response.getId(), scored);
+//            imgRspMap.put(response.getId(), response);
+//        }
+//        if (0 >= scoredMap.size()) {
+//            return new ReString(false, ConstantPixiv.PIXIV_IMAGE_TAG_ALL_R18);
+//        }
+//
+//        //计算权重
+//        for (Long pixivId : scoredMap.keySet()) {
+//            Integer score = scoredMap.get(pixivId);
+//            //结果肯定介于0-1之间，然后换算成百分比，截取两位小数
+//            Double addition = NumberUtil.keepDecimalPoint((score * 1.0) / scoredCount * 100.0, 2);
+//            additionMap.put(pixivId, addition);
+//        }
+//
+//        //根据权重随机出一个元素
+//        Object obj = RandomUtil.rollObjByAddition(additionMap);
+
+        PixivImageInfo pixivImageInfo = RandomUtil.rollObjFromList(responses);
+
+        //3.获取该图片信息
+        Long pixivId = NumberUtil.toLong(pixivImageInfo.getId());
+        //todo 如果真要做评分，直接返回之前查询的元素即可，没必要再次请求一次
+        return getPixivImgInfoById(pixivId);
     }
 
     /**
@@ -204,7 +297,7 @@ public class PixivService {
 
         StringBuilder resultStr = new StringBuilder();
         if (1 < imageInfo.getPageCount()) {
-            resultStr.append("\n该Pid包含多张图片");
+            resultStr.append("\n该Pid包含").append(imageInfo.getPageCount()).append("张图片");
         }
         resultStr.append("\n[排名] ").append(imageInfo.getRank());
         resultStr.append("\n[昨日排名] ").append(imageInfo.getPreviousRank());
@@ -296,8 +389,7 @@ public class PixivService {
         try {
             //如果是登录可见图片，必须附带cookie，不然会抛出404异常
             Map<String, String> header = new HashMap<>();
-            //todo 研究pixiv登录，并刷新cookie
-            header.put("cookie", "__cfduid=d0ff4b4cc2b7f1867df7f963b0b369f371606650332; first_visit_datetime_pc=2020-11-29+20%3A45%3A32; yuid_b=JiZFMGQ; p_ab_id=8; p_ab_id_2=8; p_ab_d_id=2116786429; __utmz=235335808.1606650336.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); _fbp=fb.1.1606650344862.1495176799; _ga=GA1.2.1499363042.1606650336; PHPSESSID=3151313_l23wvfqAygH2aAZip9krEfxARA5cmaA2; device_token=d706869bc7f0145f46f23e5d5bc9f30d; c_type=25; privacy_policy_agreement=2; a_type=0; b_type=1; adr_id=mEDklBY4J9f9IjkJdru78T81ooMGKVPY0NncuJFRogE2kRba; ki_r=; ki_s=212334%3A0.0.0.0.2; login_ever=yes; __utmv=235335808.|2=login%20ever=yes=1^3=plan=normal=1^5=gender=male=1^6=user_id=3151313=1^9=p_ab_id=8=1^10=p_ab_id_2=8=1^11=lang=zh=1; ki_t=1607946070172%3B1607946070172%3B1607952493085%3B1%3B3; __utmc=235335808; categorized_tags=kP7msdIeEU~m3EJRa33xU; __cf_bm=b907d56848f61b19aa2d9971a9f0e48446e7ee5b-1608236179-1800-AR8iS6al4gcPt7JMH3pXSE9TwL92qdx/y5UkQBc62U4TXmE1HwpLQFLsZy+uuORzvezpYDntPrh9xeehu284/bEwg4PWTHhKMgTHTkXPjowT6oP128v4HVJq1mCKz5BQaTW6Of5ZMX8Yvr3PjcGXQ/Dt2g6OM5piYuCgLOXYIOAd; __utma=235335808.1499363042.1606650336.1608211250.1608236186.6; tag_view_ranking=zIv0cf5VVk~0xsDLqCEW6~_7r4EMWAAx~xgA3yCXKWS~m3EJRa33xU~n4OVgsIt_C~Kzwb_D669F~kP7msdIeEU~OT4SuGenFI~gpglyfLkWs~WjRN9ve4kb~Aa5GphyXq3~HlDdLQY3rl~2tBmt-ssFk~WzEZN2jz2H~_hSAdpN9rx~Q93StGtvUH~Ce-EdaHA-3~Bd2L9ZBE8q~RTJMXD26Ak~zyKU3Q5L4C~NE-E8kJhx6~3cT9FM3R6t~KN7uxuR89w; __utmt=1; __utmb=235335808.1.10.1608236186; tags_sended=1");
+            header.put("cookie", pixivCookie);
             request.setHeader(header);
             request.doRequest();
         } catch (RabbitApiException rabApiEx) {

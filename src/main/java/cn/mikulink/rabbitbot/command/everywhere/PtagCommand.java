@@ -2,9 +2,8 @@ package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
-import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.entity.apirequest.imjad.ImjadPixivResponse;
-import cn.mikulink.rabbitbot.service.PixivImjadService;
+import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
@@ -41,8 +40,6 @@ public class PtagCommand extends BaseEveryWhereCommand {
     public static final String PIXIV_TAG_SPLIT_ERROR = "[%s]%s秒后可以使用tag搜索";
 
     @Autowired
-    private PixivImjadService pixivImjadService;
-    @Autowired
     private PixivService pixivService;
     @Autowired
     private RabbitBotService rabbitBotService;
@@ -76,16 +73,12 @@ public class PtagCommand extends BaseEveryWhereCommand {
             return new PlainText(ConstantPixiv.PIXIV_IMAGE_TAG_IS_EMPTY);
         }
 
-
         try {
             //根据tag获取接口返回信息
-            ReString tagResult = pixivImjadService.getPixivIllustByTag(tag);
-            if (!tagResult.isSuccess()) {
-                return new PlainText(tagResult.getMessage());
-            }
-            ImjadPixivResponse response = (ImjadPixivResponse) tagResult.getData();
-            //转化为返回对象
-            return pixivImjadService.parsePixivImgInfoByApiInfo(response, null);
+            PixivImageInfo pixivImageInfo = pixivService.getPixivIllustByTag(tag);
+            return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
+        } catch (RabbitException rabEx) {
+            return new PlainText(rabEx.getMessage());
         } catch (SocketTimeoutException stockTimeoutEx) {
             logger.warn(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
             return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT);

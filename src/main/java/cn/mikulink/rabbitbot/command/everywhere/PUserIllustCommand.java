@@ -33,6 +33,7 @@ import java.util.Map;
  * 根据pixiv用户随机展示图片
  */
 @Command
+@Deprecated
 public class PUserIllustCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(PUserIllustCommand.class);
     //操作间隔 账号，操作时间戳

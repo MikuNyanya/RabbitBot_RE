@@ -41,8 +41,6 @@ public class ImageService {
     private String saucenaoKey;
 
     @Autowired
-    private PixivImjadService pixivImjadService;
-    @Autowired
     private PixivService pixivService;
     @Autowired
     private DanbooruService danbooruService;
@@ -236,14 +234,8 @@ public class ImageService {
             //获取信息，并返回结果
             if (5 == searchResult.getHeader().getIndex_id()) {
                 //pixiv
-                //是否走爬虫
-                String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_USE_API);
-                if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-                    PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById((long) searchResult.getData().getPixiv_id());
-                    return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo, searchResult.getHeader().getSimilarity());
-                } else {
-                    return pixivImjadService.parsePixivImgRequest(searchResult);
-                }
+                PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById((long) searchResult.getData().getPixiv_id());
+                return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo, searchResult.getHeader().getSimilarity());
             } else {
                 //Danbooru
                 return danbooruService.parseDanbooruImgRequest(searchResult);

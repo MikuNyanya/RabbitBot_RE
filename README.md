@@ -51,7 +51,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 - [x] 自行解析pixiv，不再依靠第三方api
 - [x] 解析pixiv排行榜
 - [ ] 研究pixiv登录问题
-- [ ] pixiv根据tag搜索
+- [x] pixiv根据tag搜索
 - [ ] pixiv根据user搜索
 - [ ] 接入tracemoe
 - [x] 每日色图功能
@@ -78,6 +78,13 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 [mirai事件列表一览](https://github.com/mamoe/mirai/blob/dev/mirai-core-api/src/commonMain/kotlin/event/events/README.md)
 
 ### 日志		
+2020年12月30日     
+删除掉Imjad相关业务代码，Imjad页面已经把Pixiv接口划掉了     
+尝试修复根据tag搜图，但遇到不少问题     
+首先是没登录的话，只能搜索前十页，并且没有r18图片      
+然后是这下是真正的随机抽图了，因为页面上没有每个图片的评价分数     
+还在想办法搞到评分，搜索结果倾向于高评分的作品体验才算好        
+
 2020年12月24日     
 尝试优化微博消息阅读体验   
 计划过滤掉没有配图的微博，因为视频QQ里没法加载  

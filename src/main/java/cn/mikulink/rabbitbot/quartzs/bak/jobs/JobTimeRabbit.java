@@ -3,12 +3,9 @@ package cn.mikulink.rabbitbot.quartzs.bak.jobs;
 import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.command.group.RPCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
-import cn.mikulink.rabbitbot.service.PixivImjadService;
 import cn.mikulink.rabbitbot.service.PixivService;
-import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.WeatherService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import net.mamoe.mirai.contact.ContactList;
@@ -41,11 +38,7 @@ public class JobTimeRabbit implements Job {
     @Autowired
     private WeatherService weatherService;
     @Autowired
-    private PixivImjadService pixivImjadService;
-    @Autowired
     private PixivService pixivService;
-    @Autowired
-    private RabbitBotService rabbitBotService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
@@ -169,14 +162,7 @@ public class JobTimeRabbit implements Job {
 
         try {
             //获取日榜
-            List<PixivRankImageInfo> imageList = null;
-            //是否走爬虫
-            String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_USE_API);
-            if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-                imageList = pixivService.getPixivIllustRank(ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
-            } else {
-                imageList = pixivImjadService.getPixivIllustRank(1, ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
-            }
+            List<PixivRankImageInfo> imageList = pixivService.getPixivIllustRank(ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
             for (PixivRankImageInfo imageInfo : imageList) {
                 //上传图片
                 MessageChain resultChain = pixivService.parsePixivImgInfoByApiInfo(imageInfo);

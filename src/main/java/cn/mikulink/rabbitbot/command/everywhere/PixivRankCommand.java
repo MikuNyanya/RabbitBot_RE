@@ -1,12 +1,9 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
-import cn.mikulink.rabbitbot.service.PixivImjadService;
 import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
@@ -36,8 +33,6 @@ public class PixivRankCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(PixivRankCommand.class);
 
     @Autowired
-    private PixivImjadService pixivImjadService;
-    @Autowired
     private PixivService pixivService;
     @Autowired
     private RabbitBotService rabbitBotService;
@@ -57,14 +52,7 @@ public class PixivRankCommand extends BaseEveryWhereCommand {
 
         try {
             //获取日榜
-            List<PixivRankImageInfo> imageList = null;
-            //是否走爬虫
-            String pixiv_config_use_api = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_USE_API);
-            if (ConstantImage.OFF.equalsIgnoreCase(pixiv_config_use_api)) {
-                imageList = pixivService.getPixivIllustRank(ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
-            } else {
-                imageList = pixivImjadService.getPixivIllustRank(1, ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
-            }
+            List<PixivRankImageInfo> imageList = pixivService.getPixivIllustRank(ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
             //拼接一个发送一个，中间间隔几秒
             for (PixivRankImageInfo imageInfo : imageList) {
                 //上传图片
