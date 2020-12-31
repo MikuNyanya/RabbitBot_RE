@@ -101,7 +101,7 @@ public class KeyWordService {
         }
 
         //概率复读
-        if (!RandomUtil.rollBoolean(-60)) {
+        if (!RandomUtil.rollBoolean(20)) {
             return false;
         }
 
