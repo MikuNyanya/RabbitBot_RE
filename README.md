@@ -78,6 +78,9 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 [mirai事件列表一览](https://github.com/mamoe/mirai/blob/dev/mirai-core-api/src/commonMain/kotlin/event/events/README.md)
 
 ### 日志		
+2021年1月1日       
+添加加群退群事件反馈      
+
 2020年12月30日     
 删除掉Imjad相关业务代码，Imjad页面已经把Pixiv接口划掉了     
 尝试修复根据tag搜图，但遇到不少问题     

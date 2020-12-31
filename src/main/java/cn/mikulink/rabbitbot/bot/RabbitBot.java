@@ -2,18 +2,23 @@ package cn.mikulink.rabbitbot.bot;
 
 
 import cn.mikulink.rabbitbot.command.CommandConfig;
+import cn.mikulink.rabbitbot.event.GroupEvents;
 import cn.mikulink.rabbitbot.event.MessageEvents;
 import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.sys.AnnotateScanner;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.event.Events;
+import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.utils.BotConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Description: \兔子万岁/
@@ -34,9 +39,12 @@ public class RabbitBot {
     //指令相关
     @Autowired
     private CommandConfig commandConfig;
-    //监听事件
+    //监听事件 再多一点就要跟指令一样写个自定义注解了
     @Autowired
     private MessageEvents messageEvents;
+    @Autowired
+    private GroupEvents groupEvents;
+
     @Autowired
     private AnnotateScanner annotateScanner;
     //账号
@@ -71,14 +79,13 @@ public class RabbitBot {
         commandConfig.registerCommands(annotateScanner.getCommandList());
 
         //注册事件
-//        List<ListenerHost> events = Arrays.asList(
-//                new MessageEvents()
-//        );
-//        for (ListenerHost event : events) {
-//            Events.registerEvents(bot, event);
-//        }
-
-        Events.registerEvents(bot, messageEvents);
+        List<ListenerHost> events = Arrays.asList(
+                messageEvents,
+                groupEvents
+        );
+        for (ListenerHost event : events) {
+            Events.registerEvents(bot, event);
+        }
 
         //设置https协议，已解决SSL peer shut down incorrectly的异常
         System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2,SSLv3");

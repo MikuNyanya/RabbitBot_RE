@@ -91,7 +91,7 @@ public class WeiboNewsService {
             MessageChain msgChain = parseWeiboBody(info);
             if (null != info.getRetweeted_status()) {
                 //追加被转发的微博消息
-                msgChain.plus(parseWeiboBody(info, true));
+                msgChain = msgChain.plus(parseWeiboBody(info, true));
             }
 
             //给每个群发送报时

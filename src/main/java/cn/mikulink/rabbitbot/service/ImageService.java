@@ -87,7 +87,7 @@ public class ImageService {
      * http://users.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=qq号
      *
      * @param qq q号
-     * @return 生成好的cq码
+     * @return 下载后的本地图片路径
      */
     public String getQLogoCq(Long qq) {
         if (null == qq) {
@@ -98,18 +98,8 @@ public class ImageService {
         String qlogoImgName = String.format("qlogo_%s.jpg", qq);
 
         try {
-            //检查酷Q目录下image是否存在该图片，存在就删掉重新下载，毕竟头像会变的
-            String coolqImgPath = ConstantImage.COOLQ_IMAGE_SAVE_PATH + File.separator + qlogoImgName;
-            boolean imageExists = FileUtil.exists(coolqImgPath);
-            if (imageExists) {
-                FileUtil.delete(coolqImgPath);
-            }
-
             //下载头像
-            String qlogoLocalPath = ImageUtil.downloadImage(url, ConstantImage.DEFAULT_IMAGE_SAVE_PATH + File.separator + "qlogo", qlogoImgName);
-
-            //返回cq
-            return scaleForceByLocalImagePath(qlogoLocalPath);
+            return ImageUtil.downloadImage(url, ConstantImage.DEFAULT_IMAGE_SAVE_PATH + File.separator + "qlogo", qlogoImgName);
         } catch (Exception ex) {
             logger.error("qq[" + qq + "]获取头像异常:" + ex.toString(), ex);
             return null;
