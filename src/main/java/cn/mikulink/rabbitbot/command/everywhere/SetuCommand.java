@@ -1,7 +1,6 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
-import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ReString;
@@ -37,7 +36,7 @@ public class SetuCommand implements EverywhereCommand {
 
     @Override
     public CommandProperties properties() {
-        return new CommandProperties("laidiansetu", "来点色图", "色图", "来份色图");
+        return new CommandProperties("laidiansetu", "色图", "来点色图", "来份色图", "来张色图");
     }
 
     @Override

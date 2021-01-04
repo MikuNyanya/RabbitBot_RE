@@ -79,6 +79,7 @@ public class DanbooruService {
             //目标页面
             DanbooruImageGet request = new DanbooruImageGet();
             request.setDanbooruId(danbooruId);
+            request.doRequest();
             String imageUrl = request.getDanbooruImageUrl();
 
             //如果已经下载过了，直接返回CQ

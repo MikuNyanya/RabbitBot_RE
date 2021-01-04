@@ -3,6 +3,7 @@ package cn.mikulink.rabbitbot.event;
 
 import cn.mikulink.rabbitbot.service.ImageService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.utils.RandomUtil;
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.User;
@@ -21,6 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @Description: 群相关事件
  * @author: MikuLink
@@ -28,6 +32,23 @@ import org.springframework.stereotype.Component;
  **/
 @Component
 public class GroupEvents extends SimpleListenerHost {
+    //新成员入群消息
+    private List<String> memberJoinMsgList = Arrays.asList(
+            "欢迎[%s]入群，请自觉遵守群内相关规定",
+            "[%s]\n兔叽持续增员中。。。",
+            "[%s]\n兔叽+1",
+            "欢迎新成员[%s]入群",
+            "欢迎新兔叽[%s]加入我们"
+    );
+
+    //成员离群消息
+    private List<String> memberLeaveMsgList = Arrays.asList(
+            "[%s]\n兔叽减员中。。。",
+            "[%s]\n兔叽-1",
+            "[%s]有位兔叽永远的离开了我们("
+    );
+
+
     private static final Logger logger = LoggerFactory.getLogger(GroupEvents.class);
 
     @Autowired
@@ -86,7 +107,8 @@ public class GroupEvents extends SimpleListenerHost {
         Message result = MessageUtils.newChain();
         result = result.plus("").plus(miraiImage).plus("\n");
         result = result.plus("[").plus(sender.getNick()).plus("]\n");
-        result = result.plus("兔叽增员中。。。");
+        String msg = RandomUtil.rollStrFromList(memberJoinMsgList);
+        result = result.plus(String.format(msg, sender.getNick()));
         group.sendMessage(result);
     }
 
@@ -134,7 +156,8 @@ public class GroupEvents extends SimpleListenerHost {
         Message result = MessageUtils.newChain();
         result = result.plus("").plus(miraiImage).plus("\n");
         result = result.plus("[").plus(sender.getNick()).plus("]\n");
-        result = result.plus("兔叽-1");
+        String msg = RandomUtil.rollStrFromList(memberLeaveMsgList);
+        result = result.plus(String.format(msg, sender.getNick()));
         group.sendMessage(result);
     }
 }
