@@ -61,7 +61,14 @@ public class HttpsUtil {
      * post请求方法列表
      */
     public static byte[] doPost(String uri, String data) throws IOException {
-        HttpsURLConnection httpsConn = getHttpsURLConnection(uri, "POST");
+        return doPost(uri,data,null);
+    }
+
+    /**
+     * post请求方法列表
+     */
+    public static byte[] doPost(String uri, String data, Proxy proxy) throws IOException {
+        HttpsURLConnection httpsConn = getHttpsURLConnection(uri, "POST", proxy);
         setBytesToStream(httpsConn.getOutputStream(), data.getBytes());
         return getBytesFromStream(httpsConn.getInputStream());
     }
@@ -84,7 +91,7 @@ public class HttpsUtil {
      * @param header 请求头，有时候需要
      * @param proxy  代理
      * @return http链接对象
-     * @throws IOException  链接异常
+     * @throws IOException 链接异常
      */
     public static HttpsURLConnection getHttpsURLConnection(String uri, String method, Map<String, String> header, Proxy proxy) throws IOException {
         URL url = new URL(uri);
@@ -99,7 +106,7 @@ public class HttpsUtil {
         httpsConn.setSSLSocketFactory(ssf);
 
         //加入请求头
-        setHeaderParam(httpsConn,header);
+        setHeaderParam(httpsConn, header);
 
         /*
         在握手期间，如果 URL 的主机名和服务器的标识主机名不匹配，

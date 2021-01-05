@@ -18,6 +18,8 @@ import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +50,14 @@ public class PixivService {
     private String pixivAccount;
     @Value("${pixiv.pwd}")
     private String pixivPwd;
+    //pixiv曲奇 不登录的话，功能有所限制
     @Value("${pixiv.cookie:0}")
     private String pixivCookie;
 
+    //pixiv登录页面，获取post_key用
+    private static final String PIXIV_LOGIN_DATA_URL = "https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index";
+    //pixiv登录post链接
+    private static final String PIXIV_LOGIN_POST_URL = "https://accounts.pixiv.net/api/login?lang=zh";
 
     @Autowired
     private ImageService imageService;
@@ -307,6 +314,34 @@ public class PixivService {
         resultStr.append("\n[创建时间] ").append(imageInfo.getCreatedTime());
         result = result.plus(resultStr.toString());
         return result;
+    }
+
+    /**
+     * pixiv登录
+     * 遇到recaptcha，我放弃了
+     * @throws IOException
+     */
+    public void login() throws IOException {
+         Proxy proxy= HttpUtil.getProxy();
+
+        //1.在页面获取post_key
+        String responseStr = new String(HttpsUtil.doGet(PIXIV_LOGIN_DATA_URL,proxy));
+        //使用jsoup解析html
+        Document document = Jsoup.parse(responseStr);
+
+        String post_key = document.getElementsByAttributeValue("name","post_key").val();
+        //2.post登录获取曲奇(
+        JSONObject param = new JSONObject();
+        param.put("pixiv_id",pixivAccount);                 //账号
+        param.put("password",pixivPwd);                     //密码
+        param.put("post_key",post_key);                     //pixiv特有的post_key
+        param.put("source","pc");                           //请求来源
+        param.put("ref","wwwtop_accounts_index");           //来源
+        param.put("return_to","https://www.pixiv.net/");    //登录完成后返回页面
+
+        String loginResponseStr = new String(HttpsUtil.doPost(PIXIV_LOGIN_POST_URL,param.toJSONString(),proxy));
+
+        System.out.println("");
     }
 
 

@@ -39,4 +39,18 @@ public class PixivServiceTest {
             ex.printStackTrace();
         }
     }
+
+    //pixiv登录测试
+    @Test
+    public void loginTest(){
+        PixivService service = new PixivService();
+        try {
+            service.login();
+
+
+            System.out.println("");
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
 }
