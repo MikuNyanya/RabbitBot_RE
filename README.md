@@ -50,9 +50,9 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 ### 计划
 - [x] 自行解析pixiv，不再依靠第三方api
 - [x] 解析pixiv排行榜
-- [ ] 研究pixiv登录问题
+- [x] ~~研究pixiv登录问题(从开始到放弃)~~
 - [x] pixiv根据tag搜索
-- [ ] pixiv根据user搜索
+- [x] pixiv根据user搜索
 - [ ] 接入tracemoe
 - [x] 每日色图功能
 - [x] 鸽了，咕咕咕
@@ -73,11 +73,25 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.say|.say|随机发言，是些日常语句|
 |.cls|.清屏<br/>.cls|回复一个很高的空白消息，可以帮助所有人快速清理屏幕，比如上班摸鱼时突然有人发涩图的时候|
 |.morse (action) (value)|.摩斯 编码 r<br>.morse encode r<br>.摩斯 解码 .-.<br/>.morse decode .-.|摩斯电码相关，编码，解码|
+|~~这个人~~|~~鸽了(咕)~~|~~不想补全了~~|
 
 ### 其他
 [mirai事件列表一览](https://github.com/mamoe/mirai/blob/dev/mirai-core-api/src/commonMain/kotlin/event/events/README.md)
 
 ### 日志		
+##### 2021年1月6日
+因吃撑了被胃疼折磨睡不着，当真不是享福的命      
+尝试研究pixiv登录...recaptcha...告辞       
+尝试修复搜索pixiv用户功能      
+尝试修复根据用户搜索插图功能    
+针对用户名称搜索插图，添加用户名称提醒功能       
+添加根据pixiv用户id随机展示作品功能         
+至此，p站功能大体都完成了       
+
+##### 2021年1月4日
+修复Danbooru图片获取问题        
+入群离群消息变为随机      
+
 ##### 2021年1月1日       
 添加加群退群事件反馈      
 
@@ -108,7 +122,7 @@ ImageUtil针对http和https做兼容
 
 ##### 2020年12月18日<br/>
 imjad的pixiv接口又炸了...寄人篱下啊...果然还是自己的东西好用<br/>
-全面重写pixiv相关功能，自行逆向Api，准备完全替代掉imjad的接口<br/>
+全面重写pixiv相关功能，自行解析Api，准备完全替代掉imjad的接口<br/>
 pixiv和danbooru业务代码下沉<br/>
 其他api的token和key整合进properties配置文件
 定时任务并入spring配置文件

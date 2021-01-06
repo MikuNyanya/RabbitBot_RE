@@ -37,7 +37,6 @@ import java.util.*;
  * for the Reisen
  * p站相关服务 依赖第三方接口
  */
-@Service
 public class PixivImjadService {
     private static final Logger logger = LoggerFactory.getLogger(PixivImjadService.class);
 
@@ -239,8 +238,6 @@ public class PixivImjadService {
                 break;
             }
         }
-
-        //todo 缓存查不到去页面请求查作者
 
         //都查不到返回结果
         if (null == memberId) {

@@ -2,7 +2,6 @@ package cn.mikulink.rabbitbot.apirequest.pixiv;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivUserInfo;
-import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
@@ -28,12 +27,17 @@ import java.util.List;
 @Getter
 public class PixivUserSearch extends BaseRequest {
     //模拟页面请求，需要解析html
-    private static final String URL = "https://www.pixiv.net/search_user.php?nick=%s&s_mode=s_usr";
+    private static final String URL = "https://www.pixiv.net/search_user.php?nick=%s&s_mode=s_usr&p=%s";
 
     /**
      * p站用户名称
      */
     private String pixivUserNick;
+    /**
+     * 页数
+     * 一般没那么多重名的
+     */
+    private Integer p = 1;
 
     /**
      * pixiv用户列表
@@ -45,14 +49,14 @@ public class PixivUserSearch extends BaseRequest {
      *
      * @throws IOException 所有异常上抛，由业务处理
      */
-    public void doRequest() throws RabbitApiException, IOException {
+    public void doRequest() throws IOException {
         if (StringUtil.isEmpty(pixivUserNick)) return;
 
         //挂上referer
         header.put("referer", String.format("https://www.pixiv.net/tags/%s/artworks?s_mode=s_tag", pixivUserNick));
 
         //返回的是一个html
-        byte[] resultBytes = HttpsUtil.doGet(String.format(URL, pixivUserNick), header, HttpUtil.getProxy());
+        byte[] resultBytes = HttpsUtil.doGet(String.format(URL, pixivUserNick, p), header, HttpUtil.getProxy());
         body = new String(resultBytes);
         //使用jsoup解析html
         Document document = Jsoup.parse(body);

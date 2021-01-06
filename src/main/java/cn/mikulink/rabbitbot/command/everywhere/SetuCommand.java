@@ -50,6 +50,9 @@ public class SetuCommand implements EverywhereCommand {
             return new PlainText(reString.getMessage());
         }
 
+        //刷新操作间隔
+        ConstantPixiv.SETU_PID_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
+
         try {
             //来张色图
             return setuService.getSetu();

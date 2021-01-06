@@ -1,6 +1,5 @@
 package cn.mikulink.rabbitbot.constant;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -54,6 +53,9 @@ public class ConstantPixiv extends ConstantCommon {
     //每次使用作者搜图，展示多少张图片
     public static final Integer PIXIV_MEMBER_ILLUST_SHOW_COUNT = 3;
     public static final String PIXIV_MEMBER_IS_EMPTY = "你得给我一个p站作者名称";
+    public static final String PIXIV_MEMBER_ID_IS_EMPTY = "你得给我一个p站作者id";
+    public static final String PIXIV_MEMBER_ID_IS_NOT_NUMBER_ONLY = "p站作者id必须是纯数字";
+    public static final String PIXIV_MEMBER_ID_JSON_ERROR = "获取p站作品列表失败，请确认puid是否正确";
     public static final String PIXIV_MEMBER_NOT_FOUND = "没有查到这个作者的相关信息";
     public static final String PIXIV_MEMBER_NO_ILLUST = "这个作者没有作品";
     public static final String PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE = "根据P站作者获取信息异常";
@@ -78,7 +80,7 @@ public class ConstantPixiv extends ConstantCommon {
             "[%s]%s秒后再看涩图吧,这是为了你的身体着想"
     );
     //每日色图附加信息
-    public static final List<String> SETU_DAY_EX_MSG_List= Arrays.asList(
+    public static final List<String> SETU_DAY_EX_MSG_List = Arrays.asList(
             "色图来啦",
             "兔叽正在关心群友有没有每天看色图",
             "有谁不喜欢色图呢",

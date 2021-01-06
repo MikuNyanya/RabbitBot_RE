@@ -2,17 +2,19 @@ package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
-import cn.mikulink.rabbitbot.entity.apirequest.imjad.ImjadPixivResponse;
-import cn.mikulink.rabbitbot.exceptions.RabbitException;
-import cn.mikulink.rabbitbot.service.PixivImjadService;
+import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.entity.pixiv.PixivUserInfo;
+import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
 import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
+import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageUtils;
 import net.mamoe.mirai.message.data.PlainText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +35,6 @@ import java.util.Map;
  * 根据pixiv用户随机展示图片
  */
 @Command
-@Deprecated
 public class PUserIllustCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(PUserIllustCommand.class);
     //操作间隔 账号，操作时间戳
@@ -42,8 +43,6 @@ public class PUserIllustCommand extends BaseEveryWhereCommand {
     private static final Long PIXIV_USER_SPLIT_TIME = 1000L * 60;
     private static final String PIXIV_USER_SPLIT_ERROR = "[%s]%s秒后可以使用用户作品搜索";
 
-    @Autowired
-    private PixivImjadService pixivImjadService;
     @Autowired
     private PixivService pixivService;
     @Autowired
@@ -78,18 +77,27 @@ public class PUserIllustCommand extends BaseEveryWhereCommand {
         }
 
         try {
-            List<ImjadPixivResponse> randIllustList = pixivImjadService.getPixivIllustByMember(memberName);
-            if (null == randIllustList) {
-                return new PlainText(ConstantPixiv.PIXIV_MEMBER_NO_ILLUST);
+            //1.定位用户
+            List<PixivUserInfo> pixivUserInfos = pixivService.pixivUserSearch(memberName);
+            //如果没有结果，或者多个结果，均需要返回对应信息
+            if (CollectionUtil.isEmpty(pixivUserInfos)) {
+                return new PlainText(String.format("没有找到叫这个的用户[%s]", memberName));
+            }
+            if (pixivUserInfos.size() > 1) {
+                return parseResultMsg(pixivUserInfos);
             }
 
-            //拼装作品信息
-            for (ImjadPixivResponse imjadPixivResponse : randIllustList) {
-                MessageChain msgChain = pixivImjadService.parsePixivImgInfoByApiInfo(imjadPixivResponse, null);
-                subject.sendMessage(msgChain);
+            List<PixivImageInfo> pixivImageInfoList = pixivService.getPixivIllustByUserId(pixivUserInfos.get(0).getId());
+            if (CollectionUtil.isEmpty(pixivImageInfoList)) {
+                return new PlainText(ConstantPixiv.PIXIV_MEMBER_NO_ILLUST);
+            }
+            //拼装一条发送一条
+            for (PixivImageInfo pixivImageInfo : pixivImageInfoList) {
+                MessageChain tempMsg = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
+                subject.sendMessage(tempMsg);
             }
             return null;
-        } catch (RabbitException rabbitEx) {
+        } catch (RabbitApiException rabbitEx) {
             logger.info("PUserIllustCommand " + ConstantPixiv.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE + rabbitEx.toString());
             return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + ":" + rabbitEx.toString());
         } catch (SocketTimeoutException stockTimeoutEx) {
@@ -103,4 +111,15 @@ public class PUserIllustCommand extends BaseEveryWhereCommand {
         }
     }
 
+    //多个结果提示信息
+    private MessageChain parseResultMsg(List<PixivUserInfo> userInfos) {
+        //展示前10条用户的名称和id
+        MessageChain messages = MessageUtils.newChain();
+        messages = messages.plus("未找到名称完全相同的用户\n建议使用puid指令");
+        messages = messages.plus("\n=========相似用户(前20个)==========");
+        for (PixivUserInfo userInfo : userInfos) {
+            messages = messages.plus("\nid:[").plus(userInfo.getId()).plus("] ").plus("名称:[").plus(userInfo.getNick()).plus("]");
+        }
+        return messages;
+    }
 }

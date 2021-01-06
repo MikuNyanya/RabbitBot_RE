@@ -1,9 +1,6 @@
 package cn.mikulink.rabbitbot.service;
 
-import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustGet;
-import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustPagesGet;
-import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustRankGet;
-import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustTagGet;
+import cn.mikulink.rabbitbot.apirequest.pixiv.*;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
@@ -11,6 +8,7 @@ import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageUrlInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
+import cn.mikulink.rabbitbot.entity.pixiv.PixivUserInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.utils.*;
@@ -104,21 +102,17 @@ public class PixivService {
 
         //2.随机获取结果中的一条
         //先按照指定页数算出有多少页，随机其中一页 (模拟页面，每页默认60条数据)
-//        int totalPage = NumberUtil.toIntUp(total / 60 * 1.0);
-//        //最多只能获取到第1000页
-//        if (totalPage > 1000) {
-//            totalPage = 1000;
-//        }
-//        //随机一个页数
-//        int randomPage = RandomUtil.roll(totalPage);
-//        if (0 >= randomPage) {
-//            randomPage = 1;
-//        }
-        //todo 由于未登录，只允许获取前10页 所以随机10页内的元素
-        int randomPage = RandomUtil.roll(10);
+        int totalPage = NumberUtil.toIntUp(total / 60 * 1.0);
+        //最多只能获取到第1000页
+        if (totalPage > 1000) {
+            totalPage = 1000;
+        }
+        //随机一个页数
+        int randomPage = RandomUtil.roll(totalPage);
         if (0 >= randomPage) {
             randomPage = 1;
         }
+
 
         //获取该页数的数据
         request = new PixivIllustTagGet();
@@ -193,7 +187,7 @@ public class PixivService {
             //根据pid获取图片信息
             PixivImageInfo pixivImageInfo = getPixivImgInfoById(rankImageInfo.getPid());
 
-            //下载图片到本地 todo 改为下载一个pid发送一份结果，不然间隔太长了
+            //下载图片到本地
             try {
                 parseImages(pixivImageInfo);
             } catch (SocketTimeoutException stockTimeoutEx) {
@@ -319,31 +313,116 @@ public class PixivService {
     /**
      * pixiv登录
      * 遇到recaptcha，我放弃了
-     * @throws IOException
      */
     public void login() throws IOException {
-         Proxy proxy= HttpUtil.getProxy();
+        Proxy proxy = HttpUtil.getProxy();
 
         //1.在页面获取post_key
-        String responseStr = new String(HttpsUtil.doGet(PIXIV_LOGIN_DATA_URL,proxy));
+        String responseStr = new String(HttpsUtil.doGet(PIXIV_LOGIN_DATA_URL, proxy));
         //使用jsoup解析html
         Document document = Jsoup.parse(responseStr);
 
-        String post_key = document.getElementsByAttributeValue("name","post_key").val();
+        String post_key = document.getElementsByAttributeValue("name", "post_key").val();
         //2.post登录获取曲奇(
         JSONObject param = new JSONObject();
-        param.put("pixiv_id",pixivAccount);                 //账号
-        param.put("password",pixivPwd);                     //密码
-        param.put("post_key",post_key);                     //pixiv特有的post_key
-        param.put("source","pc");                           //请求来源
-        param.put("ref","wwwtop_accounts_index");           //来源
-        param.put("return_to","https://www.pixiv.net/");    //登录完成后返回页面
+        param.put("pixiv_id", pixivAccount);                 //账号
+        param.put("password", pixivPwd);                     //密码
+        param.put("post_key", post_key);                     //pixiv特有的post_key
+        param.put("source", "pc");                           //请求来源
+        param.put("ref", "wwwtop_accounts_index");           //来源
+        param.put("return_to", "https://www.pixiv.net/");    //登录完成后返回页面
 
-        String loginResponseStr = new String(HttpsUtil.doPost(PIXIV_LOGIN_POST_URL,param.toJSONString(),proxy));
+        String loginResponseStr = new String(HttpsUtil.doPost(PIXIV_LOGIN_POST_URL, param.toJSONString(), proxy));
 
         System.out.println("");
     }
 
+    /**
+     * 搜索p站用户
+     * 可模糊搜索
+     *
+     * @param userNick 用户昵称
+     */
+    public List<PixivUserInfo> pixivUserSearch(String userNick) throws IOException {
+        //查看当前本地作者数据
+        //todo 如果要使用本地数据，需要考虑到重名的改名的新增的用户情况，比较麻烦，一刀切那就是真正当缓存用，定期清空
+//        for (String memberLocalStr : ConstantPixiv.PIXIV_MEMBER_LIST) {
+//            String[] memberLocalInfos = memberLocalStr.split(",");
+//            //忽略异常数据
+//            if (memberLocalInfos.length < 2) {
+//                continue;
+//            }
+//            String memberLocalName = memberLocalInfos[1];
+//            if (userNick.equals(memberLocalName)) {
+//                memberId = NumberUtil.toLong(memberLocalInfos[0]);
+//                break;
+//            }
+//        }
+
+        //请求pixiv用户搜索
+        PixivUserSearch request = new PixivUserSearch();
+        request.getHeader().put("cookie", pixivCookie);
+        request.setPixivUserNick(userNick);
+        request.doRequest();
+        return request.getResponseList();
+    }
+
+    /**
+     * 随机返回用户投稿的插画
+     *
+     * @param pixivUserId pixiv用户id
+     * @return 插画列表
+     */
+    public List<PixivImageInfo> getPixivIllustByUserId(String pixivUserId) throws RabbitApiException, IOException {
+        return getPixivIllustByUserId(pixivUserId, null);
+    }
+
+    /**
+     * 随机返回用户投稿的插画
+     *
+     * @param pixivUserId pixiv用户id
+     * @param count       返回数量，默认为3
+     * @return 插画列表
+     */
+    public List<PixivImageInfo> getPixivIllustByUserId(String pixivUserId, Integer count) throws RabbitApiException, IOException {
+        //默认数量为3
+        if (null == count) count = 3;
+        List<PixivImageInfo> pixivImageInfos = new ArrayList<>();
+
+        //1.获取该用户下所有插画id
+        PixivIllustUserGet request = new PixivIllustUserGet();
+        request.setUserId(pixivUserId);
+        request.getHeader().put("cookie", pixivCookie);
+        request.doRequest();
+        List<String> allPid = request.getResponseList();
+
+        //2.随机不重复的指定数量的插画，根据pid获取图片详情
+        Map<String, String> tempReMap = new HashMap<>();
+        int errCount = 0;
+        for (int i = 1; i <= count; ) {
+            String tempPid = RandomUtil.rollStrFromList(allPid);
+            //判重，用户作品数量过少时，防止陷入死循环
+            if (allPid.size() > count && tempReMap.containsKey(tempPid)) {
+                continue;
+            }
+            //获取图片信息
+            try {
+                pixivImageInfos.add(getPixivImgInfoById(NumberUtil.toLong(tempPid)));
+            } catch (Exception ex) {
+                //异常跳过，进行下一个，异常次数过多跳出方法，防止死循环
+                errCount++;
+                logger.error("PixivService getPixivIllustByUserId getPixivImgInfoById error({})", count, ex);
+                if (errCount < 5) {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+            tempReMap.put(tempPid, tempPid);
+            i++;
+        }
+        return pixivImageInfos;
+    }
 
     //下载图片到本地
     public void parseImages(PixivImageInfo imageInfo) throws IOException {

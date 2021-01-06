@@ -58,7 +58,7 @@ public class PusersCommand extends BaseEveryWhereCommand {
             }
         }
 
-        //传入作者不为空，去模糊搜索用户名 todo 全搜索本地，不存在则请求pixiv搜索用户
+        //传入作者不为空，去模糊搜索用户名
         if (StringUtil.isNotEmpty(memberName)) {
             for (String localMemberStr : ConstantPixiv.PIXIV_MEMBER_LIST) {
                 String[] memberStrs = localMemberStr.split(",");
