@@ -8,7 +8,6 @@ import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.event.EventHandler;
-import net.mamoe.mirai.event.Listener;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
@@ -70,7 +69,7 @@ public class GroupEvents extends SimpleListenerHost {
      * @return 监听状态 详见 ListeningStatus
      */
     @NotNull
-    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    @EventHandler
     public ListeningStatus onMemberJoinGroup(@NotNull MemberJoinEvent.Active event) {
         Group group = event.getGroup();
         User sender = event.getMember();
@@ -86,7 +85,7 @@ public class GroupEvents extends SimpleListenerHost {
      * @return 监听状态 详见 ListeningStatus
      */
     @NotNull
-    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    @EventHandler
     public ListeningStatus onMemberJoinGroup(@NotNull MemberJoinEvent.Invite event) {
         Group group = event.getGroup();
         User sender = event.getMember();
@@ -120,7 +119,7 @@ public class GroupEvents extends SimpleListenerHost {
      * @return 监听状态 详见 ListeningStatus
      */
     @NotNull
-    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    @EventHandler
     public ListeningStatus onMemberLeaveGroup(@NotNull MemberLeaveEvent.Quit event) {
         Group group = event.getGroup();
         User sender = event.getMember();
@@ -136,7 +135,7 @@ public class GroupEvents extends SimpleListenerHost {
      * @return 监听状态 详见 ListeningStatus
      */
     @NotNull
-    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    @EventHandler
     public ListeningStatus onMemberLeaveGroup(@NotNull MemberLeaveEvent.Kick event) {
         Group group = event.getGroup();
         User sender = event.getMember();

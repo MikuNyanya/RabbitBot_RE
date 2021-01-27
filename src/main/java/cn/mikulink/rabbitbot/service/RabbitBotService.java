@@ -8,8 +8,7 @@ import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
-import net.mamoe.mirai.utils.ExternalImage;
-import net.mamoe.mirai.utils.ExternalImageJvmKt;
+import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -121,8 +120,6 @@ public class RabbitBotService {
      * @return mirai图片id
      */
     public Image uploadMiraiImage(String localImagesPath) {
-        //上传
-        ExternalImage externalImage = ExternalImageJvmKt.toExternalImage(new File(localImagesPath));
         if (null == group) {
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group grouptemp : groupList) {
@@ -130,7 +127,9 @@ public class RabbitBotService {
                 break;
             }
         }
-        return group.uploadImage(externalImage);
+        //上传
+        return group.uploadImage(ExternalResource.create(new File(localImagesPath)));
+//        return ExternalResource.uploadAsImage(new File(localImagesPath), group);
     }
 
     /**

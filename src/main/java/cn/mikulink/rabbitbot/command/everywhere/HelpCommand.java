@@ -51,7 +51,7 @@ public class HelpCommand extends BaseEveryWhereCommand {
         msg.append("[.pid] 根据p站图片id获取图片以及信息\n");
         msg.append("[.ptag] 根据p站图片tag随机获取图片\n");
         msg.append("[.puser] 根据p站作者名称随机获取图片\n");
-        msg.append("[.摩尔斯] 摩尔斯电码相关\n");
+        msg.append("[.摩斯电码] 摩尔斯电码相关\n");
         msg.append("=============\n");
         return new PlainText(msg);
     }

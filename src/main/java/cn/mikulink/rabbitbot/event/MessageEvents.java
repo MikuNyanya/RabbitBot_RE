@@ -10,7 +10,6 @@ import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.event.EventHandler;
-import net.mamoe.mirai.event.Listener;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.FriendMessageEvent;
@@ -24,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * @Description: 消息事件处理, 不同于其他事件, 消息事件中进一步封装了指令
@@ -55,7 +54,7 @@ public class MessageEvents extends SimpleListenerHost {
      * @throws Exception 可以抛出任何异常, 将在 handleException 处理
      */
     @NotNull
-    @EventHandler(priority = Listener.EventPriority.LOW)
+    @EventHandler
     public ListeningStatus onMessage(@NotNull MessageEvent event) throws Exception {
         User sender = event.getSender();
         String oriMsg = event.getMessage().contentToString();
@@ -89,7 +88,7 @@ public class MessageEvents extends SimpleListenerHost {
      * @throws Exception 可以抛出任何异常, 将在 handleException 处理
      */
     @NotNull
-    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    @EventHandler
     public ListeningStatus onFriendMessage(@NotNull FriendMessageEvent event) throws Exception {
         Friend sender = event.getSender();
         String oriMsg = event.getMessage().contentToString();
@@ -124,7 +123,7 @@ public class MessageEvents extends SimpleListenerHost {
      * @throws Exception 可以抛出任何异常, 将在 handleException 处理
      */
     @NotNull
-    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    @EventHandler
     public ListeningStatus onGroupMessage(@NotNull GroupMessageEvent event) throws Exception {
         Member sender = event.getSender();
         String oriMsg = event.getMessage().contentToString();
@@ -167,7 +166,7 @@ public class MessageEvents extends SimpleListenerHost {
      * @throws Exception 可以抛出任何异常, 将在 handleException 处理
      */
     @NotNull
-    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    @EventHandler
     public ListeningStatus onTempMessage(@NotNull TempMessageEvent event) throws Exception {
         Member sender = event.getSender();
 
@@ -185,7 +184,7 @@ public class MessageEvents extends SimpleListenerHost {
             return ListeningStatus.LISTENING;
         }
         //执行指令并回复结果
-        Message result = command.execute(sender, getArgs(oriMsg), event.getMessage(), event.getSubject());
+        Message result = command.execute(sender, getArgs(oriMsg), event.getMessage(), sender);
         if (result != null) {
             event.getSubject().sendMessage(result);
         }

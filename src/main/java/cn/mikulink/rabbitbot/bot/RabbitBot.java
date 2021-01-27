@@ -8,7 +8,7 @@ import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.sys.AnnotateScanner;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactory;
-import net.mamoe.mirai.event.Events;
+import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.utils.BotConfiguration;
 import org.slf4j.Logger;
@@ -84,7 +84,7 @@ public class RabbitBot {
                 groupEvents
         );
         for (ListenerHost event : events) {
-            Events.registerEvents(bot, event);
+            GlobalEventChannel.INSTANCE.registerListenerHost(event);
         }
 
         //设置https协议，已解决SSL peer shut down incorrectly的异常
