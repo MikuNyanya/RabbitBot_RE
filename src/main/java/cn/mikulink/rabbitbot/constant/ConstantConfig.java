@@ -8,14 +8,15 @@ package cn.mikulink.rabbitbot.constant;
  */
 public class ConstantConfig extends ConstantCommon {
     public static final String ARGS_ERROR = ".config [action] [configName] [configValue]" +
-            "\nsinceId,amapKey,saucenaoKey,weiboToken,weiboNewStatus,pixivImageIgnore,usePixivApi,r18,imageScaleForce,pixivImagesShowCount";
+            "\nsinceId,amapKey,saucenaoKey,weiboToken,weiboNewStatus,pixivImageIgnore,usePixivApi,r18,imageScaleForce,pixivImagesShowCount,switchForce";
     public static final String CONFIG_NAME_EMPTY = "参数名称不能为空";
     public static final String CONFIG_VALUE_EMPTY = "参数值不能为空";
     public static final String CONFIG_SET_SUCCESS = "参数设置完成";
     public static final String CONFIG_NOT_FOUND = "没有该参数信息";
 
     public static final String CONFIG_R18 = "r18";
+    //最高权限接管开关配置
+    public static final String CONFIG_SWITCH_FORCE = "switchForce";
     //强制压图
     public static final String CONFIG_IMAGE_SCALE_FORCE = "imageScaleForce";
-
 }

@@ -30,7 +30,7 @@ public class FileUtil {
         File parentFile = file.getParentFile();
         if (null != parentFile && !parentFile.exists()) {
             //可创建多级目录，并且只能创建目录，无法用来创建文件
-            fileDirsCheck(parentFile);
+            fileDirsCheck(file);
         }
         file.createNewFile();
 

@@ -17,7 +17,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 * `lombok`  用于简化代码
 * `junit` 用于单元测试
 * `logback` 用于输出日志，以及日志数据持久化
-* `Pixiv` 涩图是人类进步的阶梯(x) 自研解析pixiv页面，不依赖第三方Api，更加稳定可靠
+* `bug` 我们不生产BUG，我们只是。。。算了，我们的工作就是生产BUG
 * `还有兔子` \兔子万岁/
 
 ### 设计理念
@@ -32,6 +32,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 ### 功能列表
 * 指令模式代码构造
 * 远程热更新业务配置参数
+* 功能开关
 * 微博消息推送
 * 根据图片id，tag，作者名称，获取pixiv图片
 * 获取pixiv日榜
@@ -55,7 +56,8 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 - [x] pixiv根据user搜索
 - [ ] 接入tracemoe
 - [x] 每日色图功能
-- [x] 鸽了，咕咕咕
+- [ ] 添加功能开关系统
+- [x] ~~鸽了，咕咕咕~~
 
 ### 指令
     RabbitBot_RE加入了指令模式，可以精准定位指令，并且杜绝日常聊天时频繁触发关键词的风险
@@ -76,9 +78,20 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |~~这个人~~|~~鸽了(咕)~~|~~不想补全了~~|
 
 ### 其他
-[mirai事件列表一览](https://github.com/mamoe/mirai/blob/dev/mirai-core-api/src/commonMain/kotlin/event/events/README.md)
+[mirai文档](https://github.com/mamoe/mirai/blob/dev/docs/README.md)
 
 ### 日志		
+##### 2021年2月3日
+建立开关功能，并且每个群有独立的开关配置        
+所有功能默认为关        
+建立开关最高权限接管功能，该功能开启的时候，所有群开关统一读取默认配置，并且只允许最高权限对开关进行操作        
+
+##### 2021年1月30日
+尝试建立功能开关系统      
+
+##### 2021年1月27日
+升级mirai依赖版本     
+
 ##### 2021年1月6日
 因吃撑了被胃疼折磨睡不着，当真不是享福的命      
 尝试研究pixiv登录...recaptcha...告辞       

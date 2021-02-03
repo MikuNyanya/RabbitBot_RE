@@ -41,19 +41,17 @@ public class HelpCommand extends BaseEveryWhereCommand {
         msg.append("===指令列表===\n");
         msg.append("[.r] 生成一个1-100的随机数\n");
         msg.append("[.rp] 查看今天的人品,每天的人品是固定的\n");
-//        msg.append("[.sj] 查看当前时间\n");
-//        msg.append("[.say] 主动触发一句日常语句\n");
         msg.append("[.cls] 清屏\n");
         msg.append("[.扭蛋] 就是扭蛋\n");
-        msg.append("[.扭蛋 add] 新添加一个扭蛋\n");
         msg.append("[.rpwd] 随机生成一串密码 可指定密码长度\n");
-//        msg.append("[.搜图] 以图搜图，ACG向\n");
+        msg.append("[.搜图] 以图搜图，ACG向\n");
         msg.append("[.pid] 根据p站图片id获取图片以及信息\n");
         msg.append("[.ptag] 根据p站图片tag随机获取图片\n");
         msg.append("[.puser] 根据p站作者名称随机获取图片\n");
         msg.append("[.摩斯电码] 摩尔斯电码相关\n");
-        msg.append("=============\n");
+        msg.append("[.天气] 空格后面填写城市名称，可以查询实时天气状况\n");
+        msg.append("===更多更详细的指令请阅读文档===\n");
+        msg.append("[github.com/MikuNyanya/RabbitBot_RE]");
         return new PlainText(msg);
     }
-
 }

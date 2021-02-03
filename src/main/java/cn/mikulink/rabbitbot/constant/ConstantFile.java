@@ -1,12 +1,5 @@
 package cn.mikulink.rabbitbot.constant;
 
-import org.springframework.beans.factory.annotation.Value;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * create by MikuLink on 2019/12/3 19:51
  * for the Reisen
@@ -16,6 +9,8 @@ import java.util.Map;
 public class ConstantFile extends ConstantCommon {
     //配置 文件相对路径
     public static final String CONFIG_FILE_PATH = "src/main/resources/files/config";
+    //开关 文件相对路径
+    public static final String SWITCH_FILE_PATH = "src/main/resources/files/switch";
     //扭蛋 文件相对路径
     public static final String CAPSULE_TOY_FILE_PATH = "src/main/resources/files/capsule_toy.txt";
     //pixiv图片tag列表 文件相对路径
