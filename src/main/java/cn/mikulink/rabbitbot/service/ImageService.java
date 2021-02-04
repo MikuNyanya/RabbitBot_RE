@@ -40,11 +40,6 @@ public class ImageService {
     @Value("${saucenao.key}")
     private String saucenaoKey;
 
-    @Autowired
-    private PixivService pixivService;
-    @Autowired
-    private DanbooruService danbooruService;
-
     /**
      * 随机获取一张鸽子图
      * 伪随机
@@ -166,12 +161,11 @@ public class ImageService {
      * @param imgUrl 网络图片链接
      * @return 搜索结果
      */
-    public MessageChain searchImgFromSaucenao(String imgUrl) throws RabbitException {
+    public SaucenaoSearchInfoResult searchImgFromSaucenao(String imgUrl) throws RabbitException {
         if (StringUtil.isEmpty(saucenaoKey)) {
             logger.warn(ConstantImage.SAUCENAO_API_KEY_EMPTY);
             throw new RabbitException(ConstantImage.SAUCENAO_API_KEY_EMPTY);
         }
-        SaucenaoSearchInfoResult searchResult = null;
         try {
             //调用API
             SaucenaoImageSearch request = new SaucenaoImageSearch();
@@ -204,8 +198,7 @@ public class ImageService {
                 if (StringUtil.isEmpty(similarity) || 50.0 > NumberUtil.toDouble(similarity)) {
                     continue;
                 }
-                searchResult = infoResult;
-                break;
+                return infoResult;
             }
         } catch (SocketTimeoutException timeoutException) {
             logger.error(ConstantImage.SAUCENAO_API_TIMEOUT_FAIL + timeoutException.toString(), timeoutException);
@@ -214,31 +207,6 @@ public class ImageService {
             logger.error(ConstantImage.SAUCENAO_API_REQUEST_ERROR + ex.toString(), ex);
             throw new RabbitException(ConstantImage.SAUCENAO_API_REQUEST_ERROR);
         }
-
-        if (null == searchResult) {
-            //没有符合条件的图片，识图失败
-            throw new RabbitException(ConstantImage.SAUCENAO_SEARCH_FAIL_PARAM);
-        }
-
-        try {
-            //获取信息，并返回结果
-            if (5 == searchResult.getHeader().getIndex_id()) {
-                //pixiv
-                PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById((long) searchResult.getData().getPixiv_id());
-                return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo, searchResult.getHeader().getSimilarity());
-            } else {
-                //Danbooru
-                return danbooruService.parseDanbooruImgRequest(searchResult);
-            }
-        } catch (FileNotFoundException fileNotFoundEx) {
-            logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
-            throw new RabbitException(ConstantPixiv.PIXIV_IMAGE_DELETE);
-        } catch (SocketTimeoutException timeoutException) {
-            logger.error(ConstantImage.IMAGE_GET_TIMEOUT_ERROR + timeoutException.toString(), timeoutException);
-            throw new RabbitException(ConstantImage.IMAGE_GET_TIMEOUT_ERROR);
-        } catch (Exception ex) {
-            logger.error(ConstantImage.IMAGE_GET_ERROR + ex.toString(), ex);
-            throw new RabbitException(ConstantImage.IMAGE_GET_ERROR);
-        }
+        return null;
     }
 }

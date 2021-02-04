@@ -44,7 +44,11 @@ public class ConstantSwitch extends ConstantCommon {
     );
     public static final String SWITCH_SET_SUCCESS = "开关设置完成";
     public static final String SWITCH_SET_ERROR = "开关设置异常";
+    public static final String SWITCH_GET_ERROR = "获取开关设置异常";
 
     //工作模式，根据不同功能，业务里区别处理
     public static final String SWITCH_WORK = "work";
+
+    public static final String SWITCH_OFF_MSG = "这个功能尚未开启";
+    public static final String SWITCH_WORK_MSG = "这个功能已在工作时间段禁用";
 }

@@ -33,13 +33,12 @@ public class SetuService {
     /**
      * 来张色图
      */
-    public MessageChain getSetu() throws IOException {
+    public PixivImageInfo getSetu() throws IOException {
         //获取一个pid
         Long setu_pid = NumberUtil.toLong(randOneSetuPid());
 
         //走pixiv图片id获取流程
-        PixivImageInfo imageInfo = pixivService.getPixivImgInfoById(setu_pid);
-        return pixivService.parsePixivImgInfoByApiInfo(imageInfo);
+        return pixivService.getPixivImgInfoById(setu_pid);
     }
 
 
@@ -73,7 +72,7 @@ public class SetuService {
         }
         //随机色图
         String setuPid = RandomUtil.rollStrFromList(ConstantPixiv.List_SETU_PID);
-        //删除这个沙壤土，实现伪随机
+        //删除这个色图，实现伪随机
         ConstantPixiv.List_SETU_PID.remove(setuPid);
         //元素少于1/6的时候，重新加载
         if (ConstantPixiv.List_SETU_PID.size() < ConstantPixiv.SETU_PID_LIST_MAX_SIZE / 6) {

@@ -3,9 +3,11 @@ package cn.mikulink.rabbitbot.command.everywhere;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
 import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.service.SwitchService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
@@ -36,6 +38,8 @@ public class PixivRankCommand extends BaseEveryWhereCommand {
     private PixivService pixivService;
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private SwitchService switchService;
 
 
     @Override
@@ -45,6 +49,11 @@ public class PixivRankCommand extends BaseEveryWhereCommand {
 
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
+        //检查功能开关
+        ReString reStringSwitch = switchService.switchCheck(sender, subject, "pixivRank");
+        if (!reStringSwitch.isSuccess()) {
+            return new PlainText(reStringSwitch.getMessage());
+        }
         //限制其他人调用
         if (!rabbitBotService.isRabbitAdmin(sender.getId())) {
             return new PlainText(ConstantWeiboNews.COMMAND_NEED_AUTHORITY);

@@ -2,9 +2,14 @@ package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
+import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
+import cn.mikulink.rabbitbot.service.DanbooruService;
 import cn.mikulink.rabbitbot.service.ImageService;
+import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.Contact;
@@ -13,8 +18,12 @@ import net.mamoe.mirai.internal.message.OnlineImage;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.FileNotFoundException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 /**
@@ -26,8 +35,14 @@ import java.util.ArrayList;
  */
 @Command
 public class ImageSearchCommand implements EverywhereCommand {
+    private static final Logger logger = LoggerFactory.getLogger(ImageSearchCommand.class);
+
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private PixivService pixivService;
+    @Autowired
+    private DanbooruService danbooruService;
 
     @Override
     public CommandProperties properties() {
@@ -59,10 +74,35 @@ public class ImageSearchCommand implements EverywhereCommand {
             return new PlainText(ConstantImage.IMAGE_SEARCH_IMAGE_URL_PARSE_FAIL);
         }
         try {
-            return imageService.searchImgFromSaucenao(imgUrl);
+            SaucenaoSearchInfoResult searchResult = imageService.searchImgFromSaucenao(imgUrl);
+            if (null == searchResult) {
+                //没有符合条件的图片，识图失败
+                return new PlainText(ConstantImage.SAUCENAO_SEARCH_FAIL_PARAM);
+            }
+
+            //获取信息，并返回结果
+            if (5 == searchResult.getHeader().getIndex_id()) {
+                //pixiv
+                PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById((long) searchResult.getData().getPixiv_id());
+                pixivImageInfo.setSender(sender);
+                pixivImageInfo.setSubject(subject);
+                return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo, searchResult.getHeader().getSimilarity());
+            } else {
+                //Danbooru
+                return danbooruService.parseDanbooruImgRequest(searchResult);
+            }
         } catch (RabbitException rabEx) {
             //业务异常，日志吃掉
             return new PlainText(rabEx.getMessage());
+        } catch (FileNotFoundException fileNotFoundEx) {
+            logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_DELETE);
+        } catch (SocketTimeoutException timeoutException) {
+            logger.error(ConstantImage.IMAGE_GET_TIMEOUT_ERROR + timeoutException.toString(), timeoutException);
+            return new PlainText(ConstantImage.IMAGE_GET_TIMEOUT_ERROR);
+        } catch (Exception ex) {
+            logger.error(ConstantImage.IMAGE_GET_ERROR + ex.toString(), ex);
+            return new PlainText(ConstantImage.IMAGE_GET_ERROR);
         }
     }
 }

@@ -64,20 +64,6 @@ public class WeiboNewsCommand implements GroupCommand {
         //二级指令
         String arg = args.get(0);
         switch (arg) {
-            case ConstantWeiboNews.ON:
-                //开启微博消息推送
-                //修改配置
-                ConstantCommon.common_config.put("weiboNewStatus", "1");
-                //更新配置文件
-                FileManagerConfig.doCommand(ConstantFile.FILE_COMMAND_WRITE);
-                return new PlainText(ConstantWeiboNews.OPEN_SUCCESS);
-            case ConstantWeiboNews.OFF:
-                //关闭微博消息推送
-                //修改配置
-                ConstantCommon.common_config.put("weiboNewStatus", "0");
-                //更新配置文件
-                FileManagerConfig.doCommand(ConstantFile.FILE_COMMAND_WRITE);
-                return new PlainText(ConstantWeiboNews.OFF_SUCCESS);
             case ConstantWeiboNews.SINCEID:
                 //从外部接受sinceId
                 if (args.size() < 2 || StringUtil.isEmpty(args.get(1))) {

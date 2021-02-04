@@ -5,6 +5,7 @@ import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
+import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageUrlInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
@@ -16,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
+import net.mamoe.mirai.message.data.PlainText;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -61,7 +63,8 @@ public class PixivService {
     private ImageService imageService;
     @Autowired
     private RabbitBotService rabbitBotService;
-
+    @Autowired
+    private SwitchService switchService;
 
     /**
      * * 查询p站图片id并返回结果
@@ -241,8 +244,8 @@ public class PixivService {
         boolean showImage = true;
         Integer xRestrict = imageInfo.getXRestrict();
         if (null != xRestrict && 1 == xRestrict) {
-            String configR18 = ConstantConfig.common_config.get(ConstantConfig.CONFIG_R18);
-            if (StringUtil.isEmpty(configR18) || ConstantCommon.OFF.equalsIgnoreCase(configR18)) {
+            ReString reStringSwitch = switchService.switchCheck(imageInfo.getSender(), imageInfo.getSubject(), "pixivR18");
+            if (!reStringSwitch.isSuccess()) {
                 result = result.plus(ConstantPixiv.PIXIV_IMAGE_R18);
                 showImage = false;
             }
@@ -277,24 +280,10 @@ public class PixivService {
      * @return 群消息
      */
     public MessageChain parsePixivImgInfoByApiInfo(PixivRankImageInfo imageInfo) {
-        MessageChain result = MessageUtils.newChain();
-
-        //r18过滤
-        boolean showImage = true;
-        Integer xRestrict = imageInfo.getXRestrict();
-        if (null != xRestrict && 1 == xRestrict) {
-            String configR18 = ConstantConfig.common_config.get(ConstantConfig.CONFIG_R18);
-            if (StringUtil.isEmpty(configR18) || ConstantCommon.OFF.equalsIgnoreCase(configR18)) {
-                result = result.plus(ConstantPixiv.PIXIV_IMAGE_R18);
-                showImage = false;
-            }
-        }
-
+        //日榜正常榜，不用r18过滤
         //展示图片
-        if (showImage) {
-            List<Image> miraiImageList = rabbitBotService.uploadMiraiImage(imageInfo.getLocalImagesPath());
-            result = rabbitBotService.parseMsgChainByImgs(miraiImageList);
-        }
+        List<Image> miraiImageList = rabbitBotService.uploadMiraiImage(imageInfo.getLocalImagesPath());
+        MessageChain result = rabbitBotService.parseMsgChainByImgs(miraiImageList);
 
         StringBuilder resultStr = new StringBuilder();
         if (1 < imageInfo.getPageCount()) {

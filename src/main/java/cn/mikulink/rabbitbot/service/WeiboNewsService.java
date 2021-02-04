@@ -6,6 +6,7 @@ import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
+import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoPicUrl;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
@@ -45,6 +46,8 @@ public class WeiboNewsService {
     private String weiboToken;
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private SwitchService switchService;
 
     /**
      * 获取微信的最新消息
@@ -97,6 +100,11 @@ public class WeiboNewsService {
             //给每个群发送报时
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group groupInfo : groupList) {
+                //检查功能开关
+                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "weibo");
+                if (!reStringSwitch.isSuccess()) {
+                    continue;
+                }
                 groupInfo.sendMessage(msgChain);
 
                 //每个群之间间隔半秒意思一下

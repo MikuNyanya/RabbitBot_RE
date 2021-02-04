@@ -4,7 +4,10 @@ import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ReString;
+import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.service.SetuService;
+import cn.mikulink.rabbitbot.service.SwitchService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
@@ -33,14 +36,24 @@ public class SetuCommand implements EverywhereCommand {
 
     @Autowired
     private SetuService setuService;
+    @Autowired
+    private SwitchService switchService;
+    @Autowired
+    private PixivService pixivService;
 
     @Override
     public CommandProperties properties() {
-        return new CommandProperties("laidiansetu", "色图", "来点色图", "来份色图", "来张色图");
+        return new CommandProperties("laidiansetu", "setu", "色图", "来点色图", "来份色图", "来张色图");
     }
 
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
+        //检查功能开关
+        ReString reStringSwitch = switchService.switchCheck(sender, subject, "setu");
+        if (!reStringSwitch.isSuccess()) {
+            return new PlainText(reStringSwitch.getMessage());
+        }
+
         Long userId = sender.getId();
         String userNick = sender.getNick();
 
@@ -55,7 +68,10 @@ public class SetuCommand implements EverywhereCommand {
 
         try {
             //来张色图
-            return setuService.getSetu();
+            PixivImageInfo pixivImageInfo = setuService.getSetu();
+            pixivImageInfo.setSender(sender);
+            pixivImageInfo.setSubject(subject);
+            return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
         } catch (FileNotFoundException fileNotFoundEx) {
             logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
             return new PlainText(ConstantPixiv.PIXIV_IMAGE_DELETE);
@@ -67,5 +83,4 @@ public class SetuCommand implements EverywhereCommand {
             return new PlainText(ConstantPixiv.PIXIV_ID_GET_ERROR_GROUP_MESSAGE);
         }
     }
-
 }

@@ -120,10 +120,6 @@ public class ConfigCommand extends BaseEveryWhereCommand {
      * 以后有页面了做成页面配置
      */
     private ReString accessCheck(Long qq, String configName) {
-        if (rabbitBotService.isRabbitAdmin(qq) && ConstantConfig.CONFIG_R18.equalsIgnoreCase(configName)) {
-            return new ReString(true);
-        }
-
         if (!rabbitBotService.isMaster(qq)) {
             return new ReString(false, RandomUtil.rollStrFromList(ConstantConfig.COMMAND_MASTER_ONLY));
         }

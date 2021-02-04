@@ -4,15 +4,19 @@ import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.command.group.RPCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
+import cn.mikulink.rabbitbot.entity.ReString;
+import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
 import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.service.SetuService;
+import cn.mikulink.rabbitbot.service.SwitchService;
 import cn.mikulink.rabbitbot.service.WeatherService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.PlainText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +48,8 @@ public class JobTimeRabbit {
     private PixivService pixivService;
     @Autowired
     private SetuService setuService;
+    @Autowired
+    private SwitchService switchService;
 
     public void execute() {
         //刷新当前时间
@@ -77,6 +83,11 @@ public class JobTimeRabbit {
             //给每个群发送报时
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group groupInfo : groupList) {
+                //检查功能开关
+                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "sj");
+                if (!reStringSwitch.isSuccess()) {
+                    continue;
+                }
                 groupInfo.sendMessage(msg);
             }
         } catch (Exception ex) {
@@ -150,10 +161,17 @@ public class JobTimeRabbit {
             return;
         }
         try {
-            MessageChain messageChain = setuService.getSetu();
+            //目前默认展示r18
+            PixivImageInfo pixivImageInfo = setuService.getSetu();
+            MessageChain messageChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
             //给每个群发送消息
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group groupInfo : groupList) {
+                //检查功能开关
+                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "setuday");
+                if (!reStringSwitch.isSuccess()) {
+                    continue;
+                }
                 groupInfo.sendMessage(RandomUtil.rollStrFromList(ConstantPixiv.SETU_DAY_EX_MSG_List));
                 groupInfo.sendMessage(messageChain);
             }
@@ -179,6 +197,11 @@ public class JobTimeRabbit {
                 //给每个群发送消息
                 ContactList<Group> groupList = RabbitBot.getBot().getGroups();
                 for (Group groupInfo : groupList) {
+                    //检查功能开关
+                    ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "pixivRank");
+                    if (!reStringSwitch.isSuccess()) {
+                        continue;
+                    }
                     groupInfo.sendMessage(resultChain);
 
                     //每个群之间间隔半秒意思下

@@ -76,6 +76,8 @@ public class PtagCommand extends BaseEveryWhereCommand {
         try {
             //根据tag获取接口返回信息
             PixivImageInfo pixivImageInfo = pixivService.getPixivIllustByTag(tag);
+            pixivImageInfo.setSender(sender);
+            pixivImageInfo.setSubject(subject);
             return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
         } catch (RabbitException rabEx) {
             return new PlainText(rabEx.getMessage());

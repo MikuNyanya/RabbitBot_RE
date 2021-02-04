@@ -86,6 +86,8 @@ public class PUserIdIllustCommand extends BaseEveryWhereCommand {
             }
             //拼装一条发送一条
             for (PixivImageInfo pixivImageInfo : pixivImageInfoList) {
+                pixivImageInfo.setSender(sender);
+                pixivImageInfo.setSubject(subject);
                 MessageChain tempMsg = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
                 subject.sendMessage(tempMsg);
             }

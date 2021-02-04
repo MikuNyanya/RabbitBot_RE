@@ -81,6 +81,11 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 [mirai文档](https://github.com/mamoe/mirai/blob/dev/docs/README.md)
 
 ### 日志		
+##### 2021年2月4日
+完善开关功能      
+给所有自动功能加入开关     
+给色图加入开关，并且独立开一个工作时间段模式      
+
 ##### 2021年2月3日
 建立开关功能，并且每个群有独立的开关配置        
 所有功能默认为关        

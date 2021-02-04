@@ -6,7 +6,9 @@ import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantFreeTime;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
+import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.filemanage.FileManagerFreeTime;
+import cn.mikulink.rabbitbot.service.SwitchService;
 import cn.mikulink.rabbitbot.service.WeiboNewsService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
@@ -24,7 +26,7 @@ import org.springframework.stereotype.Component;
  * 1分钟执行一次的定时器
  */
 @Component
-public class JobMain{
+public class JobMain {
     private static final Logger logger = LoggerFactory.getLogger(JobMain.class);
 
     //正常间隔(毫秒) 目前为2小时
@@ -39,6 +41,8 @@ public class JobMain{
 
     @Autowired
     private WeiboNewsService weiboNewsService;
+    @Autowired
+    private SwitchService switchService;
 
     public void execute() {
         //日常语句
@@ -74,6 +78,11 @@ public class JobMain{
             //给每个群发送报时
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group groupInfo : groupList) {
+                //检查功能开关
+                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "say");
+                if (!reStringSwitch.isSuccess()) {
+                    continue;
+                }
                 groupInfo.sendMessage(msg);
             }
         } catch (Exception ex) {
@@ -88,10 +97,6 @@ public class JobMain{
 
     //微信最新消息
     private void weiboNews() {
-        //功能开关
-        if (!ConstantCommon.common_config.containsKey("weiboNewStatus") || "0".equals(ConstantCommon.common_config.get("weiboNewStatus"))) {
-            return;
-        }
         //检测发送间隔
         if (System.currentTimeMillis() - ConstantWeiboNews.weibo_news_last_send_time < ConstantWeiboNews.weibo_news_sprit_time) {
             return;

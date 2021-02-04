@@ -64,8 +64,8 @@ public class FileManagerSwitch {
      */
     public static String getSwitch(String switchName, Long groupId) throws IOException {
         String filePath = ConstantFile.SWITCH_FILE_PATH;
-        if (null == groupId) {
-            filePath = filePath.replace("switch", groupId + "/switch");
+        if (null != groupId) {
+            filePath = filePath.replace("switch", "groups/" + groupId + "/switch");
         }
         //读取文件
         File switchFile = FileUtil.fileCheck(filePath);

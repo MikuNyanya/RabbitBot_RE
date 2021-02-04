@@ -1,5 +1,7 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.constant.ConstantCommon;
+import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
@@ -56,6 +58,8 @@ public class PidCommand extends BaseEveryWhereCommand {
 
         try {
             PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById(NumberUtil.toLong(pid));
+            pixivImageInfo.setSender(sender);
+            pixivImageInfo.setSubject(subject);
             return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
         } catch (FileNotFoundException fileNotFoundEx) {
             logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());

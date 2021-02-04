@@ -14,7 +14,6 @@ public class ConstantConfig extends ConstantCommon {
     public static final String CONFIG_SET_SUCCESS = "参数设置完成";
     public static final String CONFIG_NOT_FOUND = "没有该参数信息";
 
-    public static final String CONFIG_R18 = "r18";
     //最高权限接管开关配置
     public static final String CONFIG_SWITCH_FORCE = "switchForce";
     //强制压图
