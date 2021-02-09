@@ -32,4 +32,8 @@ public class TarotInfo {
      * 逆位描述
      */
     private String seDlamron;
+    /**
+     * 是否为猫罗牌
+     */
+    private boolean isCat = false;
 }

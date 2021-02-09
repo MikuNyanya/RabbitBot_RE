@@ -46,8 +46,13 @@ public class TarotService {
             return result;
         }
 
+        String imagesPath = ConstantTarot.IMAGE_TAROT_SAVE_PATH;
+        if (tarotInfo.isCat()) {
+            imagesPath = ConstantTarot.IMAGE_CATROT_SAVE_PATH;
+        }
+
         //图片处理
-        Image miraiImage = rabbitBotService.uploadMiraiImage(ConstantTarot.IMAGE_TAROT_SAVE_PATH + File.separator + tarotInfo.getImgName());
+        Image miraiImage = rabbitBotService.uploadMiraiImage(imagesPath + File.separator + tarotInfo.getImgName());
         result = rabbitBotService.parseMsgChainByImg(miraiImage);
 
         StringBuilder resultStr = new StringBuilder();

@@ -47,6 +47,8 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 * 整点报时
 * 摩斯电码转化
 * 生成二维码
+* 每日人品
+* 塔罗牌(伪)
 
 ### 计划
 - [x] 自行解析pixiv，不再依靠第三方api
@@ -56,7 +58,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 - [x] pixiv根据user搜索
 - [ ] 接入tracemoe
 - [x] 每日色图功能
-- [ ] 添加功能开关系统
+- [x] 添加功能开关系统
 - [x] ~~鸽了，咕咕咕~~
 
 ### 指令
@@ -75,12 +77,20 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.say|.say|随机发言，是些日常语句|
 |.cls|.清屏<br/>.cls|回复一个很高的空白消息，可以帮助所有人快速清理屏幕，比如上班摸鱼时突然有人发涩图的时候|
 |.morse (action) (value)|.摩斯 编码 r<br>.morse encode r<br>.摩斯 解码 .-.<br/>.morse decode .-.|摩斯电码相关，编码，解码|
+|.rp|.rp|每日人品，每天的人品固定|
+|.塔罗牌|.塔罗牌|当然你得知道，这只是个随机抽取，并不能算真正的塔罗牌玩法|
+|.猫罗牌|.猫罗牌|跟塔罗牌一样，但是换了图片|
 |~~这个人~~|~~鸽了(咕)~~|~~不想补全了~~|
 
 ### 其他
 [mirai文档](https://github.com/mamoe/mirai/blob/dev/docs/README.md)
 
 ### 日志		
+##### 2021年2月9日
+因为看到一组图片，所以添加猫罗牌        
+具体就是塔罗牌图片全都换成猫      
+真希望我有精力来搞个配套的猫罗牌描述      
+
 ##### 2021年2月4日
 完善开关功能      
 给所有自动功能加入开关     
