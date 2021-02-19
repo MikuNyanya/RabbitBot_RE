@@ -15,6 +15,11 @@
         <property name="targetMethod" value="execute"/>
     </bean>
 
+    <bean id="quartzDayRabbit" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="jobDayRabbit"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+
     <!-- ======================== 调度触发器 ======================== -->
     <bean id="quartzMainCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="quartzMain"/>
@@ -24,6 +29,11 @@
     <bean id="quartzTimeRabbitCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="quartzTimeRabbit"/>
         <property name="cronExpression" value="0 0 0/1 * * ?"/>
+    </bean>
+
+    <bean id="quartzDayRabbitCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="quartzDayRabbit"/>
+        <property name="cronExpression" value="0 0 0 * * ? "/>
     </bean>
 
     <!-- ======================== 调度工厂 ======================== -->

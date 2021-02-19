@@ -9,7 +9,7 @@
     <version>v1.1.0</version>
     <name>RabbitBot_RE</name>
     <description>for the Resien</description>
-
+    <packaging>jar</packaging>
     <properties>
         <spring.version>5.2.8.RELEASE</spring.version>
         <slf4j.version>1.7.21</slf4j.version>
@@ -92,6 +92,11 @@
             <artifactId>mirai-core-api-jvm</artifactId>
             <version>2.1.1</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>net.mamoe</groupId>-->
+<!--            <artifactId>mirai-login-solver-selenium</artifactId>-->
+<!--            <version>1.0-dev-16</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-common</artifactId>

@@ -3,6 +3,7 @@ package cn.mikulink.rabbitbot.filemanage;
 import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.utils.FileUtil;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.util.HashMap;
@@ -73,7 +74,7 @@ public class FileManagerSwitch {
         //只读取第一行
         String switchJson = reader.readLine();
         HashMap<String, String> switchMapTamp = null;
-        if (switchJson.length() <= 0) {
+        if (StringUtils.isEmpty(switchJson)) {
             switchMapTamp = new HashMap<>();
         } else {
             switchMapTamp = JSONObject.parseObject(switchJson, HashMap.class);

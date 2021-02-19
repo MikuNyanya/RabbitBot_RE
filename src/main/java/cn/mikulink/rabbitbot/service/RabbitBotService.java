@@ -64,6 +64,19 @@ public class RabbitBotService {
     }
 
     /**
+     * 检测事件的调用次数
+     * @param splitMsg
+     * @return
+     */
+    public String commandPushIndexCheck(int pushIndex, String splitMsg) {
+        if(pushIndex <= 0){
+            return splitMsg;
+        }
+        //其他情况允许操作
+        return null;
+    }
+
+    /**
      * 是否最高权限
      *
      * @param userId qq号
@@ -73,7 +86,6 @@ public class RabbitBotService {
         if (null == userId || StringUtil.isEmpty(account_master)) {
             return false;
         }
-
         return accountStrCheck(account_master, userId);
     }
 

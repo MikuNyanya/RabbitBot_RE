@@ -1,0 +1,8 @@
+/target/
+/.idea/*
+/logs/
+/data/images/pixiv
+/src/main/resources
+deviceInfo.json
+*.properties
+/.idea/

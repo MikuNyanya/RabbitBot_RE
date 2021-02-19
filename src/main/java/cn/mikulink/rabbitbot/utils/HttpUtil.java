@@ -167,19 +167,18 @@ public class HttpUtil {
         Socket socket = new Socket();
         try {
             socket.connect(new InetSocketAddress(address, prot));
-            socket.close();
             return true;
         } catch (IOException ioEx) {
             //没那么重要，直接打在控制台里
             ioEx.printStackTrace();
+        }finally {
+            try {
+                socket.close();
+            } catch (IOException ioEx) {
+                //没那么重要，直接打在控制台里
+                ioEx.printStackTrace();
+            }
         }
-        try {
-            socket.close();
-        } catch (IOException ioEx) {
-            //没那么重要，直接打在控制台里
-            ioEx.printStackTrace();
-        }
-
         return false;
     }
 

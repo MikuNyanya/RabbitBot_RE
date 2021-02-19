@@ -65,7 +65,7 @@ public class WeiboHomeTimelineGet extends BaseRequest {
     //执行接口请求
     public void doRequest() throws IOException {
         //拼装参数
-        addParam();
+        this.addParam();
         //请求
 
         byte[] responseBytes = HttpsUtil.doGet(URL + HttpUtil.parseUrlEncode(param));

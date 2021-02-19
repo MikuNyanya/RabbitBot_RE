@@ -45,11 +45,6 @@ public class KeyWordService {
             return;
         }
 
-        //图片响应
-//        groupRep = groupKeyWordImage(event);
-//        if (groupRep) {
-//            return;
-//        }
 
         //关键词全匹配
         groupRep = groupKeyWord(event);

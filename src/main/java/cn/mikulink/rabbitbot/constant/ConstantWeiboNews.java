@@ -13,6 +13,7 @@ public class ConstantWeiboNews extends ConstantCommon {
     public static Long weibo_news_sprit_time = 1000L * 60 * 20;
 
     public static final String SINCEID = "lasttag";
+    public static final String SINCEID_NULL = "sinceId为NULL值";
     public static final String SINCEID_REFRESH = "refreshSinceId";
     public static final String SINCEID_OVERRIDE_SUCCESS = "sinceId覆写完毕";
     public static final String SINCEID_OVERRIDE_FAIL = "覆写失败，sinceId不能为空";

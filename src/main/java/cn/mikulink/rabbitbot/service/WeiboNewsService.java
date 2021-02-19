@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -71,7 +72,12 @@ public class WeiboNewsService {
         request.setPage(1);
         //每次获取最近的5条
         request.setCount(pageSize);
-        request.setSince_id(NumberUtil.toLong(ConstantCommon.common_config.get("sinceId")));
+        String sinceId = ConstantCommon.common_config.get("sinceId");
+        if(StringUtils.isEmpty(sinceId)){
+            throw new RabbitException(ConstantWeiboNews.SINCEID_NULL);
+        }
+
+        request.setSince_id(NumberUtil.toLong(sinceId));
 
         //发送请求
         request.doRequest();

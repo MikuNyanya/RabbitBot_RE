@@ -15,6 +15,10 @@ public class ConstantPixiv extends ConstantCommon {
     public static final String IMJAD_PIXIV_ID_API_ERROR = "imjad Pixiv Api请求异常";
     public static final String IMJAD_PIXIV_ID_API_FAIL = "imjad Pixiv Api请求失败";
 
+
+    public static final String LOLICON_PIXIV_ID_API_ERROR = "Lolicon Pixiv Api请求异常";
+    public static final String LOLICON_PIXIV_ID_API_FAIL = "Lolicon Pixiv Api请求失败";
+
     //配置，p站
     public static final int PIXIV_IMAGE_PAGESIZE = 5;
     public static final String PIXIV_CONFIG_IMAGE_IGNORE = "pixivImageIgnore";

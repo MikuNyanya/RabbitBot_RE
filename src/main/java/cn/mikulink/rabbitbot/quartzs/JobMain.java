@@ -48,7 +48,7 @@ public class JobMain {
         //日常语句
         freeTimeRabbit();
         //微博最新消息
-        weiboNews();
+        //weiboNews();
     }
 
     //日常兔子
