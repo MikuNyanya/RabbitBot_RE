@@ -51,7 +51,7 @@ public class ConstantKeyWord extends ConstantCommon {
     //晚上好
     public static final String KEY_WORD_GREETINGS_NIGHT = "晚上好";
     //晚安
-    public static final String KEY_WORD_GREETINGS_GOOD_NIGHT = "晚安|睡觉去了|睡了睡了|哦呀斯密";
+    public static final String KEY_WORD_GREETINGS_GOOD_NIGHT = "晚安|睡觉去了|睡了睡了|哦呀斯密|快睡吧";
     //问候关键词列表
     public static final List<String> LIST_KEY_WORD_GREETINGS = Arrays.asList(
             KEY_WORD_GREETINGS_MORNING,

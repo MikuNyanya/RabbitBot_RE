@@ -6,3 +6,6 @@
 deviceInfo.json
 *.properties
 /.idea/
+/.idea/google-java-format.xml
+/.idea/misc.xml
+/src/main/resources/rabbitbot_re.properties

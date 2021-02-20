@@ -76,6 +76,12 @@ public class JobTimeRabbit {
     private void timeRabbit() {
         //附加短语
         String msgEx = getMsgEx();
+        //大晚上的就不发了
+        int hour = DateUtil.getHour();
+
+        if (hour < 8) {
+            return;
+        }
 
         //群报时，时间间隔交给定时器，这里返回值取当前时间即可
         String msg = String.format("这里是%s报时：%s%s", rabbit_bot_name, DateUtil.toString(new Date()), msgEx);
@@ -105,7 +111,7 @@ public class JobTimeRabbit {
             case 4:
                 return ConstantCommon.NEXT_LINE + "还有人活着嘛~";
             //早上7点
-            case 7:
+            case 8:
                 return ConstantCommon.NEXT_LINE + "早上好,该起床了哦~~";
             //中午11点
             case 11:

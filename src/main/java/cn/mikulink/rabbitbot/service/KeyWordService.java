@@ -100,20 +100,18 @@ public class KeyWordService {
             return false;
         }
 
-        //概率打断复读，100%对复读打断复读的语句做出反应
-        if (ConstantRepeater.REPEATER_KILLER_LIST.contains(groupMsg) || ConstantRepeater.REPEATER_STOP_LIST.contains(groupMsg)) {
-            //打断复读的复读
-            groupMsg = RandomUtil.rollStrFromList(ConstantRepeater.REPEATER_STOP_LIST);
-        } else if (RandomUtil.rollBoolean(-80)) {
+        //让复读来的不那么频繁
+        if (RandomUtil.rollBoolean(-80)) {
+            //正常复读
+            event.getSubject().sendMessage(groupMsg);
+            //复读一次后，重置复读计数
+            LAST_MSG_MAP.put(groupId, new String[2]);
+            return true;
             //打断复读
-            groupMsg = RandomUtil.rollStrFromList(ConstantRepeater.REPEATER_KILLER_LIST);
+           // groupMsg = RandomUtil.rollStrFromList(ConstantRepeater.REPEATER_KILLER_LIST);
         }
+        return false;
 
-        //正常复读
-        event.getSubject().sendMessage(groupMsg);
-        //复读一次后，重置复读计数
-        LAST_MSG_MAP.put(groupId, new String[2]);
-        return true;
     }
 
     /**
