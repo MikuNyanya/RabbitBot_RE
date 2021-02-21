@@ -74,15 +74,29 @@ public class LoliconAppCommand implements EverywhereCommand {
         if (StringUtil.isNotEmpty(pushIndexCheck)) {
             return new PlainText(pushIndexCheck);
         }
+
+        //基本输入校验
+        StringBuilder tags = new StringBuilder();
+        boolean r18 = false;
+        for (String param : args) {
+            if("r18".equals(param.toLowerCase())){
+                r18 = true;
+            }else{
+                tags.append(" ");
+                tags.append(param);
+            }
+
+        }
+        String tag = StringUtil.trim(tags.toString());
         //刷新操作间隔
         LOLICON_SPLIT_MAP.put(1L, System.currentTimeMillis());
         //推送次数 减 1
         PUSH_INDEX--;
         try {
             //根据tag获取接口返回信息
-            LoliconImageInfo pixivImageInfo = this.loliconAppImageService.getPixivIllust();
-            if(pixivImageInfo == null || pixivImageInfo.getCode() != 0 ){
-                return new PlainText(ConstantPixiv.LOLICON_PIXIV_ID_API_FAIL);
+            LoliconImageInfo pixivImageInfo = this.loliconAppImageService.getPixivIllust(tag,r18);
+            if (pixivImageInfo == null || pixivImageInfo.getCode() != 0) {
+                return new PlainText(pixivImageInfo.getMsg());
             }
             pixivImageInfo.setSender(sender);
             pixivImageInfo.setSubject(subject);

@@ -123,6 +123,7 @@ public class ImageUtil {
         fileOutputStream.write(data);
         fileOutputStream.flush();
         fileOutputStream.close();
+        outStream.close();
 
         //返回文件路径
         return fileFullNmae;

@@ -41,6 +41,10 @@ public class LoliconAppImageGet extends BaseRequest {
     @Setter
     private Integer num = 1;
 
+    @Getter
+    @Setter
+    private String keyword ;
+
     /**
      * 请求执行
      *
@@ -49,6 +53,7 @@ public class LoliconAppImageGet extends BaseRequest {
     public void doRequest() throws IOException {
         //拼装参数
         addParam();
+        System.out.println(URL+ HttpUtil.parseUrlEncode(param));
         //调用
         body = new String(HttpsUtil.doGet(URL+ HttpUtil.parseUrlEncode(param)));
 
@@ -66,6 +71,9 @@ public class LoliconAppImageGet extends BaseRequest {
         param.put("apikey", accessToken);
         param.put("r18", r18);
         param.put("num", num);
+        if(StringUtil.isNotEmpty(keyword)){
+            param.put("keyword", keyword);
+        }
 
     }
 

@@ -39,7 +39,7 @@ public class LoliconAppImageService {
     @Autowired
     private RabbitBotService rabbitBotService;
 
-    public LoliconImageInfo getPixivIllust() throws  IOException {
+    public LoliconImageInfo getPixivIllust(String tags, Boolean r18 ) throws  IOException {
         if (StringUtil.isEmpty(loliconKey)) {
             logger.warn("LoliconAappkey为空！");
             return null;
@@ -47,6 +47,11 @@ public class LoliconAppImageService {
         //1.查询这个tag下的总结果
         LoliconAppImageGet request = new LoliconAppImageGet();
         request.setAccessToken(loliconKey);
+        request.setKeyword(tags);
+        if(r18){
+            request.setR18(1);
+        }
+
         //查询
         request.doRequest();
         //todo 如果真要做评分，直接返回之前查询的元素即可，没必要再次请求一次
