@@ -50,6 +50,7 @@ public class LoliconAppImageGet extends BaseRequest {
      *
      * @throws IOException
      */
+
     public void doRequest() throws IOException {
         //拼装参数
         addParam();

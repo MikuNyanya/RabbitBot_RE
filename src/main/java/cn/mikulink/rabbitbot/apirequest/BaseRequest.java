@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class BaseRequest {
+public abstract class BaseRequest {
     //用于存放请求返回原始报文
     protected String body;
     //接口请求授权码
@@ -23,4 +24,5 @@ public class BaseRequest {
     protected Map<String, String> header = new HashMap<>();
     //接口参数
     protected JSONObject param = new JSONObject();
+
 }

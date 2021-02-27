@@ -34,32 +34,32 @@ public class KeyWordService {
     public void keyWordMatchGroup(GroupMessageEvent event) throws IOException {
         //每次只会触发一个回复
         //特殊关键词，优先匹配
-        boolean groupRep = groupKeyWordGreetings(event);
-        if (groupRep) {
-            return;
-        }
+//        boolean groupRep = groupKeyWordGreetings(event);
+//        if (groupRep) {
+//            return;
+//        }
 
         //ABABA 句式检索
-        groupRep = groupABABA(event);
-        if (groupRep) {
-            return;
-        }
+//        groupRep = groupABABA(event);
+//        if (groupRep) {
+//            return;
+//        }
 
 
         //关键词全匹配
-        groupRep = groupKeyWord(event);
-        if (groupRep) {
-            return;
-        }
-
+//        groupRep = groupKeyWord(event);
+//        if (groupRep) {
+//            return;
+//        }
+//
         //关键词匹配(模糊)
-        groupRep = groupKeyWordLike(event);
-        if (groupRep) {
-            return;
-        }
+//        groupRep = groupKeyWordLike(event);
+//        if (groupRep) {
+//            return;
+//        }
 
         //群复读
-        groupRep = groupRepeater(event);
+        boolean groupRep = groupRepeater(event);
         if (groupRep) {
             return;
         }

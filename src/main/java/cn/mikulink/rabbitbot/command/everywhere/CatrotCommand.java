@@ -53,12 +53,12 @@ public class CatrotCommand implements EverywhereCommand {
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
         //操作间隔判断
-        String timeCheck = rabbitBotService.commandTimeSplitCheck(PIXIV_TAG_SPLIT_MAP, 0L, sender.getNick(), PIXIV_TAG_SPLIT_TIME, PIXIV_TAG_SPLIT_ERROR);
+        String timeCheck = rabbitBotService.commandTimeSplitCheck(PIXIV_TAG_SPLIT_MAP, sender.getId(), sender.getNick(), PIXIV_TAG_SPLIT_TIME, PIXIV_TAG_SPLIT_ERROR);
         if (StringUtil.isNotEmpty(timeCheck)) {
             return new PlainText(timeCheck);
         }
         //刷新操作间隔
-        PIXIV_TAG_SPLIT_MAP.put(0L, System.currentTimeMillis());
+        PIXIV_TAG_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
 
         String userNick = sender.getNick();
         MessageChain result = MessageUtils.newChain();

@@ -12,6 +12,8 @@ import java.util.*;
  */
 @Component
 public class ConstantPixiv extends ConstantCommon {
+    public static final String API_TIMEOUT = "接口获取超时，请重试";
+    public static final String API_ERROR  = "接口获取异常";
     public static final String IMJAD_PIXIV_ID_API_ERROR = "imjad Pixiv Api请求异常";
     public static final String IMJAD_PIXIV_ID_API_FAIL = "imjad Pixiv Api请求失败";
 

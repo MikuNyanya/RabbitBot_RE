@@ -138,6 +138,7 @@ public class MessageEvents extends SimpleListenerHost {
 
         //是否指令模式
         if (!commandConfig.isCommand(oriMsg)) {
+
             // 非指令处理其他业务
             //关键词响应
             keyWordService.keyWordMatchGroup(event);
