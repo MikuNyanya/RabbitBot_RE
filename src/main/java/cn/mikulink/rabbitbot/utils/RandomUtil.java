@@ -1,5 +1,6 @@
 package cn.mikulink.rabbitbot.utils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +109,7 @@ public class RandomUtil {
      * @param strList 目标列表
      * @return 列表中的随机一条
      */
-    public static <T>T rollObjFromList(List<T> strList) {
+    public static <T> T rollObjFromList(List<T> strList) {
         if (null == strList || strList.size() <= 0) {
             return null;
         }
@@ -166,4 +167,32 @@ public class RandomUtil {
 
         return objectList.get(rollNum);
     }
+
+    /**
+     * 该方法用于在制定范围即（min~max）内对min到max的所有数字进行重新随机排列，使他们形成一组随机数。
+     * 1、首先先初始化一个长度为(max-min+1)的数组source，数组的元素按照数字从大到小的顺序分别为min~max；
+     * 2、每次取一个随机数index，0<=index<=(数组长度len-1)，同时len自减1，
+     * 取出source数组中对应在index位置上的元素依次放进最终数组result，并且将source[index]替换为source[len]。
+     **/
+
+    public static <T> T[] randomArray(Class<T> componentType, int min, int max, T[] sourceArray) {
+        int len = max - min + 1;//len为该范围内元素的个数
+        if (max < min || sourceArray.length > len) {
+            return null;
+        }
+        T[] result = (T[]) Array.newInstance(componentType, len);
+        Random rd = new Random();
+        int index = 0;
+        for (int i = 0; i < result.length; i++) {
+            //待选数组0到(len-2)随机一个下标
+            index = Math.abs(rd.nextInt() % len--);
+            //将随机到的数放入结果集
+            result[i] = sourceArray[index];
+            //将待选数组中被随机到的数，用待选数组(len-1)下标对应的数替换
+            sourceArray[index] = sourceArray[len];
+        }
+        return result;
+    }
+
+
 }

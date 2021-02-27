@@ -26,6 +26,13 @@ public class TarotService {
      * 只返回原始数据，包括上传图片在内的所有操作由上层执行
      */
     public TarotInfo getTarot() {
+        /**
+         * 模拟抽卡
+         * 1.先洗牌 , 随机赋值正逆
+         * 2.抽取
+         */
+        int index = ConstantTarot.TARTO_LIST.size();
+        
         //随机出一个元素
         int rollNum = RandomUtil.roll(ConstantTarot.TARTO_LIST.size() - 1);
         TarotInfo tarotInfo = ConstantTarot.TARTO_LIST.get(rollNum);
