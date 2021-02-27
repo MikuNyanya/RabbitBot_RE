@@ -190,7 +190,7 @@ public class FileUtil {
      * @return 文件对象列表
      */
     public static File[] getListFiles(String path) {
-        if (exists(path)) {
+        if (!exists(path)) {
             return null;
         }
         return new File(path).listFiles();

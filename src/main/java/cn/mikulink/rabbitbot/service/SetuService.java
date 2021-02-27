@@ -7,12 +7,15 @@ import cn.mikulink.rabbitbot.filemanage.FileManagerSetu;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import net.mamoe.mirai.message.data.MessageChain;
+import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * create by MikuLink on 2020/12/31 15:18
@@ -21,6 +24,8 @@ import java.io.IOException;
  */
 @Service
 public class SetuService {
+    private static final Logger logger = LoggerFactory.getLogger(SetuService.class);
+
     //pixiv色图操作间隔
     @Value("${setu.split.time:60000}")
     public Long SETU_PID_SPLIT_TIME = 1000L * 60;
@@ -79,6 +84,26 @@ public class SetuService {
             FileManagerSetu.loadFile();
         }
         return setuPid;
+    }
+
+    /**
+     * 添加一些色图
+     *
+     * @param pidList 色图pid列表
+     */
+    public void addSetu(List<String> pidList) {
+        //写入文件，顺便判重
+        try {
+            pidList = FileManagerSetu.writeFile(pidList);
+        } catch (Exception ex) {
+            //异常直接舍弃所有，允许这类损失
+            logger.error("SetuService addSetu error,pidList:{}", JSONObject.toJSONString(pidList), ex);
+        }
+
+        //加入当前内存列表里
+        ConstantPixiv.List_SETU_PID.addAll(pidList);
+        //刷新最大元素数目
+        ConstantPixiv.SETU_PID_LIST_MAX_SIZE += pidList.size();
     }
 
 }

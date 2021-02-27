@@ -63,6 +63,7 @@ public class ConstantCommon {
             "这个指令需要更高的权限"
     );
     public static final String PARAM_ERROR = "参数无效";
+    public static final String DONE = "执行完毕";
     public static final String GAME_PARAM_NUMBER_NOT_NULL = "你得选择一个数字";
     public static final String GAME_PARAM_NUMBER_ONLY = "参数必须为纯数字";
     public static final String GAME_PARAM_NUMBER_TO_SMALL = "设置的数字必须大于0";

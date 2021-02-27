@@ -63,7 +63,7 @@ public class ConstantPixiv extends ConstantCommon {
 
 
     //pixiv色图pid
-    public static List<String> List_SETU_PID = Arrays.asList();
+    public static List<String> List_SETU_PID = new ArrayList<>();
     //pixiv色图操作间隔 账号，操作时间戳
     public static Map<Long, Long> SETU_PID_SPLIT_MAP = new HashMap<>();
 

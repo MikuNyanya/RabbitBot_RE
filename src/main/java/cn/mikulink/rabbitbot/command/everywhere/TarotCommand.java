@@ -46,6 +46,8 @@ public class TarotCommand implements EverywhereCommand {
         try {
             //抽牌
             TarotInfo tarotInfo = tarotService.getTarot();
+            //正常塔罗牌
+            tarotInfo.setCat(false);
             //拼装信息
             MessageChain tarotMsg = tarotService.parseTarotMessage(tarotInfo);
             //请求人昵称
