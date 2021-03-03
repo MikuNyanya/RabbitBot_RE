@@ -49,6 +49,7 @@ public class HelpCommand extends BaseEveryWhereCommand {
         msg.append("[.天气] 空格后面填写城市名称，可以查询实时天气状况\n");
         msg.append("[.塔罗牌] 抽取一张塔罗牌\n");
         msg.append("[.猫罗牌] 塔罗牌变异品种(\n");
+        msg.append("[.今日简报] 从微信公众号'易即今日'获取的每日新闻");
         msg.append("===更多更详细的指令请阅读文档===\n");
         msg.append("[github.com/MikuNyanya/RabbitBot_RE]");
         return new PlainText(msg);

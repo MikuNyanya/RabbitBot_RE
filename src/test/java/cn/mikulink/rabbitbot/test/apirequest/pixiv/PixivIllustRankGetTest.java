@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.test.apirequest;
+package cn.mikulink.rabbitbot.test.apirequest.pixiv;
 
 import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustRankGet;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;

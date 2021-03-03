@@ -14,6 +14,8 @@ public class ConstantImage extends ConstantCommon {
     public static final String DEFAULT_IMAGE_SCALE_SAVE_PATH = "data/images/scale";
     //微博图片存放目录
     public static final String IMAGE_WEIBO_SAVE_PATH = "data/images/weibo";
+    //微信图片存放目录
+    public static final String IMAGE_WEIXIN_SAVE_PATH = "data/images/weixin";
 
     //经过处理的图片前缀
     public static String IMAGE_SCALE_PREFIX = "rabbit_scale_";

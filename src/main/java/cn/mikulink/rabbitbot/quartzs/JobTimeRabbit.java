@@ -5,18 +5,15 @@ import cn.mikulink.rabbitbot.command.group.RPCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
+import cn.mikulink.rabbitbot.entity.apirequest.weixin.WeiXinAppMsgInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
-import cn.mikulink.rabbitbot.service.PixivService;
-import cn.mikulink.rabbitbot.service.SetuService;
-import cn.mikulink.rabbitbot.service.SwitchService;
-import cn.mikulink.rabbitbot.service.WeatherService;
+import cn.mikulink.rabbitbot.service.*;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +47,8 @@ public class JobTimeRabbit {
     private SetuService setuService;
     @Autowired
     private SwitchService switchService;
+    @Autowired
+    private WeiXinAppMsgService weiXinAppMsgService;
 
     public void execute() {
         //刷新当前时间
@@ -66,6 +65,9 @@ public class JobTimeRabbit {
 
         //每日色图
         setuOnDay();
+
+        //每日新闻简报
+        newsToday();
 
         //pixiv日榜，最好放在最后执行，要下载图片
         //也可以另起一个线程，但我懒
@@ -177,6 +179,34 @@ public class JobTimeRabbit {
             }
         } catch (Exception ex) {
             logger.error(ConstantPixiv.SETU_DAY_ERROR + ex.toString(), ex);
+        }
+    }
+
+    //每日简报
+    private void newsToday() {
+        //每天早晨9点播报，刚好上班的时间，美好的一天，从摸鱼开始
+        if (hour_now != 9) {
+            return;
+        }
+        try {
+            //请求API获取今日简报
+            WeiXinAppMsgInfo weiXinAppMsgInfo = weiXinAppMsgService.getNewsTodayMsg();
+            //转化为消息链
+            MessageChain messageChain = weiXinAppMsgService.parseNewsToday(weiXinAppMsgInfo);
+
+            //给每个群发送消息
+            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
+            for (Group groupInfo : groupList) {
+                //检查功能开关
+                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "newstoday");
+                if (!reStringSwitch.isSuccess()) {
+                    continue;
+                }
+                groupInfo.sendMessage(messageChain);
+            }
+        } catch (Exception ex) {
+            //挂了就挂了吧
+            logger.error("每日简报 消息发送异常" + ex.toString(), ex);
         }
     }
 

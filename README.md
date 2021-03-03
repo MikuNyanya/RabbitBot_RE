@@ -87,6 +87,13 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 [mirai文档](https://github.com/mamoe/mirai/blob/dev/docs/README.md)
 
 ### 日志		
+##### 2021年3月3日
+建立获取微信公众号文章列表接口     
+新增每日新闻推送，信息源为'易即今日'公众号的每日简报     
+新增每日新闻推送开关      
+新增今日简报指令        
+加入了一个配置文件模板rabbitbot_re_bak.properties
+
 ##### 2021年2月27日
 新增添加色图功能，仅支持添加pid
 

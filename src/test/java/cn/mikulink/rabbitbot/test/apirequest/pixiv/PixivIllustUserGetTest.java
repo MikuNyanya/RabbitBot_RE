@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.test.apirequest;
+package cn.mikulink.rabbitbot.test.apirequest.pixiv;
 
 import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustUserGet;
 import org.junit.Test;
