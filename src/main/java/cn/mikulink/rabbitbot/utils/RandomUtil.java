@@ -175,11 +175,9 @@ public class RandomUtil {
      * 取出source数组中对应在index位置上的元素依次放进最终数组result，并且将source[index]替换为source[len]。
      **/
 
-    public static <T> T[] randomArray(Class<T> componentType, int min, int max, T[] sourceArray) {
-        int len = max - min + 1;//len为该范围内元素的个数
-        if (max < min || sourceArray.length > len) {
-            return null;
-        }
+    public static <T> T[] randomArray(Class<T> componentType,  T[] sourceArray) {
+        int len = sourceArray.length;
+
         T[] result = (T[]) Array.newInstance(componentType, len);
         Random rd = new Random();
         int index = 0;

@@ -1,5 +1,7 @@
 package cn.mikulink.rabbitbot.utils;
 
+import java.math.BigDecimal;
+
 /**
  * create by MikuLink on 2019/12/3 20:07
  * for the Reisen
@@ -129,5 +131,18 @@ public class NumberUtil {
         String resultNumStr = numStr.substring(0, pointIndex + point + 1);
 
         return toDouble(resultNumStr);
+    }
+
+    /**
+     * @param a 单数  32
+     * @param b 总数  145
+     *          a / b    计算百分比32/145
+     * @return 22.07%
+     */
+    public static String calculateUtil(BigDecimal a, BigDecimal b) {
+        return b == null ? "-" :
+                b.compareTo(new BigDecimal(0)) == 0 ? "-" :
+                        a == null ? "0.00%" :
+                                a.multiply(new BigDecimal(100)).divide(b, 2, BigDecimal.ROUND_HALF_UP) + "%";
     }
 }

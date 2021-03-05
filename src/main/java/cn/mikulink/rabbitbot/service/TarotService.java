@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.List;
+import java.util.Random;
 
 /**
  * create by MikuLink on 2020/12/22 15:18
@@ -31,14 +34,39 @@ public class TarotService {
          * 1.先洗牌 , 随机赋值正逆
          * 2.抽取
          */
-        int index = ConstantTarot.TARTO_LIST.size();
-        
+        TarotInfo[] tarotInfos = RandomUtil.randomArray( TarotInfo.class,
+                ConstantTarot.TARTO_LIST.toArray(
+                        new TarotInfo[ConstantTarot.TARTO_LIST.size()]));
+
         //随机出一个元素
         int rollNum = RandomUtil.roll(ConstantTarot.TARTO_LIST.size() - 1);
-        TarotInfo tarotInfo = ConstantTarot.TARTO_LIST.get(rollNum);
-        //随机正位逆位
-        tarotInfo.setStatus(RandomUtil.rollBoolean(0));
+        TarotInfo tarotInfo = tarotInfos[rollNum];
         return tarotInfo;
+    }
+
+    /**
+     * 随机重新组装一个数组
+     * @param sourceArray
+     * @return
+     */
+    private  TarotInfo[] randomArray(  TarotInfo[] sourceArray) {
+        int len = sourceArray.length;
+
+        TarotInfo[] result = (TarotInfo[]) Array.newInstance(TarotInfo.class, len);
+
+        int index = 0;
+        for (int i = 0; i < result.length; i++) {
+            //待选数组0到(len-2)随机一个下标
+            index = Math.abs(new Random().nextInt() % len--);
+            //随机正位逆位
+            sourceArray[index].setStatus(RandomUtil.rollBoolean(0));
+            //将随机到的数放入结果集
+            result[i] = sourceArray[index];
+
+            //将待选数组中被随机到的数，用待选数组(len-1)下标对应的数替换
+            sourceArray[index] = sourceArray[len];
+        }
+        return result;
     }
 
     /**

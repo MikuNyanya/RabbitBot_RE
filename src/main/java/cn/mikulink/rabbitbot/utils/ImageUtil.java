@@ -81,9 +81,6 @@ public class ImageUtil {
         } else {
             conn = HttpUtil.getHttpURLConnection(imageUrl, HttpUtil.REQUEST_METHOD_GET, proxy);
         }
-
-        //设置链接超时时间
-//        conn.setConnectTimeout(5 * 1000);
         //请求header
         if (null != header) {
             for (String key : header.keySet()) {
@@ -102,10 +99,6 @@ public class ImageUtil {
         inStream.close();
         //把图片信息存下来，写入内存
         byte[] data = outStream.toByteArray();
-
-        //使用网络图片的中段目录
-//            String path = imageUrl.substring(imageUrl.indexOf("n/") + 1, imageUrl.lastIndexOf("/"));
-
         //创建本地文件
         File result = new File(localUrl);
         if (!result.exists()) {

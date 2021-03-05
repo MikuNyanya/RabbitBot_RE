@@ -125,4 +125,16 @@ public class DateUtil {
         //时
         return calendar.get(Calendar.HOUR_OF_DAY);
     }
+
+    /**
+     * 获取距离元旦还有多少天
+     * @return
+     */
+    public static int daysToNewYearDay() {
+        Calendar calendar = Calendar.getInstance();
+        int today = calendar.get(Calendar.DAY_OF_YEAR);
+        calendar.set(Calendar.MONTH, Calendar.DECEMBER);
+        calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE));
+        return calendar.get(Calendar.DAY_OF_YEAR) - today;
+    }
 }

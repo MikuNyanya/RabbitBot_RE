@@ -82,13 +82,13 @@ public class LoliconAppImageService {
         resultStr.append("\n[P站id] ").append(pivixData.getUid());
         resultStr.append("\n[标题] ").append(pivixData.getTitle());
         resultStr.append("\n[作者] ").append(pivixData.getAuthor());
-        //resultStr.append("\n[tags] ").append(pivixData.getTags());
+
         result = result.plus(resultStr.toString());
         return result;
     }
 
     //下载图片到本地
-    public String  parseImages(String pixivUrl) throws IOException {
+    private String  parseImages(String pixivUrl) throws IOException {
 
         return ImageUtil.downloadImage( pixivUrl, ConstantImage.IMAGE_Pixiv_SAVE_PATH , null);
     }
