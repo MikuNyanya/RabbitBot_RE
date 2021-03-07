@@ -113,7 +113,7 @@ public class SwitchService {
         //工作模式，规定时间内，禁止执行
         if (ConstantSwitch.SWITCH_WORK.equalsIgnoreCase(switchValue)) {
             int hour = DateUtil.getHour();
-            if (9 < hour && hour < 18) {
+            if (9 <= hour && hour < 18) {
                 return new ReString(false, ConstantSwitch.SWITCH_WORK_MSG);
             }
             return new ReString(true);

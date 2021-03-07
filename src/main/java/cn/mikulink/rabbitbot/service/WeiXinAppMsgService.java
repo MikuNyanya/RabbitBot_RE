@@ -111,4 +111,13 @@ public class WeiXinAppMsgService {
         return result;
     }
 
+
+    public void reTokenCookie(String token, String cookie) {
+        if (StringUtil.isNotEmpty(token)) {
+            this.weiXinAppMsgToken = token;
+        }
+        if (StringUtil.isNotEmpty(cookie)) {
+            this.weiXinAppMsgCookie = cookie;
+        }
+    }
 }
