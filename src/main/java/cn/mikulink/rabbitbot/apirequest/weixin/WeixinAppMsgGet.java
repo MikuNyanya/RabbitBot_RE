@@ -2,7 +2,6 @@ package cn.mikulink.rabbitbot.apirequest.weixin;
 
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
-import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
 import cn.mikulink.rabbitbot.entity.apirequest.weixin.WeiXinAppMsgInfo;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
@@ -104,6 +103,23 @@ public class WeixinAppMsgGet extends BaseRequest {
             return null;
         }
         String appMsgListStr = JSONObject.toJSONString(rootMap.get("app_msg_list"));
-        return JSONObject.parseArray(appMsgListStr,WeiXinAppMsgInfo.class);
+        return JSONObject.parseArray(appMsgListStr, WeiXinAppMsgInfo.class);
+    }
+
+    //是否session无效异常
+    public boolean isInvalidSessionError() {
+        if (StringUtil.isEmpty(body)) {
+            return false;
+        }
+        Map<?, ?> rootMap = JSONObject.parseObject(body, HashMap.class);
+        if (null == rootMap || !rootMap.containsKey("base_resp")) {
+            return false;
+        }
+        String appMsgListStr = JSONObject.toJSONString(rootMap.get("base_resp"));
+        Map<?, ?> baseMap = JSONObject.parseObject(appMsgListStr, HashMap.class);
+        if (null == baseMap || !baseMap.containsKey("ret")) {
+            return false;
+        }
+        return "200003".equalsIgnoreCase(JSONObject.toJSONString(baseMap.get("ret")));
     }
 }

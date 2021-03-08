@@ -18,6 +18,7 @@ public class WeixinAppMsgGetTest {
 //            request.setCookie("曲奇");
 
             request.doRequest();
+            request.isInvalidSessionError();
             List<WeiXinAppMsgInfo> list = request.getMsgList();
 
             System.out.println("");

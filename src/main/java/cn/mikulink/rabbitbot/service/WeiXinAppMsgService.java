@@ -15,6 +15,8 @@ import net.mamoe.mirai.message.data.MessageUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,8 @@ import java.util.List;
  */
 @Service
 public class WeiXinAppMsgService {
+    private static final Logger logger = LoggerFactory.getLogger(WeiXinAppMsgService.class);
+
     @Value("${weixin.appmsg.token}")
     private String weiXinAppMsgToken;
     @Value("${weixin.appmsg.cookie}")
@@ -111,7 +115,31 @@ public class WeiXinAppMsgService {
         return result;
     }
 
+    /**
+     * 刷新cookie有效期
+     * 使用当前授权调用一次接口即可
+     */
+    public void refreshCookie() {
+        try {
+            WeixinAppMsgGet request = new WeixinAppMsgGet();
+            //易即今日的公众号id
+            request.setFakeid("MzI4NzcwNjY4NQ==");
+            request.setAccessToken(weiXinAppMsgToken);
+            request.setCookie(weiXinAppMsgCookie);
+            request.doRequest();
+            logger.info("微信cookie刷新{}", request.isInvalidSessionError() ? "失败" : "成功");
+        } catch (Exception ex) {
+            //异常只记录不处理，这个业务不重要
+            logger.warn("微信cookie刷新失败!", ex);
+        }
+    }
 
+    /**
+     * 覆盖当前授权和cookie
+     *
+     * @param token  微信公众平台token
+     * @param cookie 微信公众平台cookie
+     */
     public void reTokenCookie(String token, String cookie) {
         if (StringUtil.isNotEmpty(token)) {
             this.weiXinAppMsgToken = token;

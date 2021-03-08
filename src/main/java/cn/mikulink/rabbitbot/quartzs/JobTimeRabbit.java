@@ -69,6 +69,9 @@ public class JobTimeRabbit {
         //每日新闻简报
         newsToday();
 
+        //微信公众平台cookie刷新
+        refreshWeixinAppCookie();
+
         //pixiv日榜，最好放在最后执行，要下载图片
         //也可以另起一个线程，但我懒
         pixivRankDay();
@@ -208,6 +211,13 @@ public class JobTimeRabbit {
             //挂了就挂了吧
             logger.error("每日简报 消息发送异常" + ex.toString(), ex);
         }
+    }
+
+    //刷新微信公众平台cookie
+    private void refreshWeixinAppCookie() {
+        //微信公众平台那边，长时间没有操作，cookie就会失效，具体期限比较短，建议12小时内至少进行一次动作，保持cookie有效
+        //每小时刷新一次
+        weiXinAppMsgService.refreshCookie();
     }
 
     //P站日榜兔子
