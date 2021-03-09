@@ -87,6 +87,10 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 [mirai文档](https://github.com/mamoe/mirai/blob/dev/docs/README.md)
 
 ### 日志		
+##### 2020年3月9日
+添加微信公众平台cookie自动延期功能  
+人品指令回复短语根据人品等级进行返回
+
 ##### 2021年3月3日
 建立获取微信公众号文章列表接口     
 新增每日新闻推送，信息源为'易即今日'公众号的每日简报     
