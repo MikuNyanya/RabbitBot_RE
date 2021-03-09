@@ -34,7 +34,7 @@ public class TarotService {
          * 1.先洗牌 , 随机赋值正逆
          * 2.抽取
          */
-        TarotInfo[] tarotInfos = RandomUtil.randomArray( TarotInfo.class,
+        TarotInfo[] tarotInfos = this.randomArray(
                 ConstantTarot.TARTO_LIST.toArray(
                         new TarotInfo[ConstantTarot.TARTO_LIST.size()]));
 
