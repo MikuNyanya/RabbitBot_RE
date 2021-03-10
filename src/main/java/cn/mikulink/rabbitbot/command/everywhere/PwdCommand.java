@@ -28,13 +28,13 @@ import java.util.List;
  */
 @Command
 public class PwdCommand extends BaseEveryWhereCommand {
-    private static final String OVER_SIZE = "密码长度必须在1-20之间";
+    private static final String OVER_SIZE = "密码长度必须在1-50之间";
     //密码字符列表 定死算了
     private static final List<String> PWD_STRS = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
             "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-            "^", "@", ".", "_");
-    private static final String PWD_REGEX = "\\S*[@^._]{1,}\\S*[@^._]{1,}\\S*";
+            "^", "@", ".", "_", "$", "!", "%", "&", "=", "+");
+    private static final String PWD_REGEX = "\\S*[@^._$!%&=+]{1,}\\S*[@^._$!%&=+]{1,}\\S*";
 
     //97-122 小写字母
     //60-90 大写字母
@@ -48,7 +48,7 @@ public class PwdCommand extends BaseEveryWhereCommand {
 
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        //参数可选，获取第一个作为长度，进行校验,最常不超过20位
+        //参数可选，获取第一个作为长度，进行校验,最常不超过50位
         Integer pwdSize = 6;
         if (null != args && args.size() > 0) {
             String arg = args.get(0);
@@ -56,7 +56,7 @@ public class PwdCommand extends BaseEveryWhereCommand {
                 return new PlainText(ConstantCommon.GAME_PARAM_NUMBER_ONLY);
             }
             pwdSize = NumberUtil.toInt(arg);
-            if (pwdSize > 20 || pwdSize <= 0) {
+            if (pwdSize > 50 || pwdSize <= 0) {
                 return new PlainText(OVER_SIZE);
             }
         }
@@ -73,7 +73,7 @@ public class PwdCommand extends BaseEveryWhereCommand {
      * @param pwdSize 密码长度
      * @return 符合条件的密码字符串
      */
-    private String randPwd(Integer pwdSize) {
+    public static String randPwd(Integer pwdSize) {
         StringBuilder pwdSb = new StringBuilder();
         for (int i = 0; i < pwdSize; i++) {
             pwdSb.append(RandomUtil.rollStrFromList(PWD_STRS));
