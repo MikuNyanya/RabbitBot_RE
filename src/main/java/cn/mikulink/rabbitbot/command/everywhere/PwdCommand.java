@@ -34,7 +34,7 @@ public class PwdCommand extends BaseEveryWhereCommand {
             "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
             "^", "@", ".", "_", "$", "!", "%", "&", "=", "+");
-    private static final String PWD_REGEX = "\\S*[@^._$!%&=+]{1,}\\S*[@^._$!%&=+]{1,}\\S*";
+    private static final String PWD_REGEX = "\\S*[@^._$!%&=\\+]{1,}\\S*[@^._$!%&=\\+]{1,}\\S*";
 
     //97-122 小写字母
     //60-90 大写字母

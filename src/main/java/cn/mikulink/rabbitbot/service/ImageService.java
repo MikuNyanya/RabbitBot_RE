@@ -170,7 +170,7 @@ public class ImageService {
             //调用API
             SaucenaoImageSearch request = new SaucenaoImageSearch();
             request.setAccessToken(saucenaoKey);
-            request.setNumres(1);
+            request.setNumres(6);
             request.setUrl(imgUrl);
 
             request.doRequest();
