@@ -4,23 +4,18 @@ import cn.mikulink.rabbitbot.apirequest.saucenao.SaucenaoImageSearch;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
-import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ImageInfo;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchResult;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.utils.*;
 import net.coobird.thumbnailator.Thumbnails;
-import net.mamoe.mirai.message.data.MessageChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -168,7 +163,7 @@ public class ImageService {
             //调用API
             SaucenaoImageSearch request = new SaucenaoImageSearch();
             request.setAccessToken(saucenaoKey);
-            request.setNumres(6);
+            request.setNumres(10);
             request.setUrl(imgUrl);
 
             request.doRequest();
