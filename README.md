@@ -48,6 +48,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 * 摩斯电码转化
 * 生成二维码
 * 每日人品
+* 抽签
 * 塔罗牌(伪)
 
 ### 计划
@@ -60,6 +61,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 - [x] 每日色图功能
 - [x] 添加功能开关系统
 - [ ] 记录每日人品，然后年底可以统计出来给大家乐呵
+- [x] 抽签功能
 - [x] ~~鸽了，咕咕咕~~
 
 ### 指令
@@ -81,12 +83,16 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.rp|.rp|每日人品，每天的人品固定|
 |.塔罗牌|.塔罗牌|当然你得知道，这只是个随机抽取，并不能算真正的塔罗牌玩法|
 |.猫罗牌|.猫罗牌|跟塔罗牌一样，但是换了图片|
+|.抽签|.抽签|就是抽签|
 |~~这个人~~|~~鸽了(咕)~~|~~不想补全了~~|
 
 ### 其他
 [mirai文档](https://github.com/mamoe/mirai/blob/dev/docs/README.md)
 
 ### 日志		
+##### 2020年3月13日
+新增抽签功能
+
 ##### 2020年3月9日
 添加微信公众平台cookie自动延期功能  
 人品指令回复短语根据人品等级进行返回

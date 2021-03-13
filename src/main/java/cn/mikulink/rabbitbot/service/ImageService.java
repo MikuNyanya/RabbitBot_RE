@@ -43,8 +43,6 @@ public class ImageService {
     /**
      * 随机获取一张鸽子图
      * 伪随机
-     *
-     * @return 生成好的CQ码
      */
     public String getGuguguRandom() throws IOException {
         String guguguPath = ConstantImage.DEFAULT_IMAGE_SAVE_PATH + "/gugugu";
@@ -75,7 +73,7 @@ public class ImageService {
     }
 
     /**
-     * 根据q号获取头像CQ码，获取不到会返回空
+     * 根据q号获取头像
      * 大概100x100
      * 使用的是腾讯自家链接
      * http://q1.qlogo.cn/g?b=qq&s=100&nk=qq号
