@@ -128,14 +128,14 @@ public class WeiXinAppMsgService {
             request.setCookie(weiXinAppMsgCookie);
             request.doRequest();
 
-            boolean refreshSuccess = request.isInvalidSessionError();
+            boolean isInvalidSession = request.isInvalidSessionError();
             //刷新失败私聊通知到最高权限账号
-            if (!refreshSuccess) {
+            if (isInvalidSession) {
                 MessageChain messageChain = MessageUtils.newChain();
                 messageChain = messageChain.plus("微信公众平台cookie刷新失败:" + request.getBody());
                 rabbitBotService.sendMasterMessage(messageChain);
             }
-            logger.info("微信cookie刷新{}", refreshSuccess ? "失败" : "成功");
+            logger.info("微信cookie刷新{}", isInvalidSession ? "失败" : "成功");
         } catch (Exception ex) {
             //异常只记录不处理，这个业务不重要
             logger.warn("微信cookie刷新失败!", ex);
