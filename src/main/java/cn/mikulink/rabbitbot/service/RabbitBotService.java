@@ -2,8 +2,10 @@ package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
+import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.ContactList;
+import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -11,6 +13,7 @@ import net.mamoe.mirai.message.data.MessageUtils;
 import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,8 +30,10 @@ import java.util.Map;
 public class RabbitBotService {
     @Value("${bot.master}")
     private String account_master;
+    private List<Long> accountMasterList = new ArrayList<>();
     @Value("${bot.admin}")
     private String account_admin;
+    private List<Long> accountAdminList = new ArrayList<>();
 
     //上传图片用 不清楚这样有什么影响，但每次代码里为了上传图片，必须取消息来源的Contact太说不过去了
     private Group group;
@@ -73,8 +78,10 @@ public class RabbitBotService {
         if (null == userId || StringUtil.isEmpty(account_master)) {
             return false;
         }
-
-        return accountStrCheck(account_master, userId);
+        if (CollectionUtils.isEmpty(accountMasterList)) {
+            accountStrCheck(account_master, accountMasterList);
+        }
+        return accountMasterList.contains(userId);
     }
 
     /**
@@ -90,25 +97,23 @@ public class RabbitBotService {
         if (isMaster((userId))) {
             return true;
         }
-        if (StringUtil.isEmpty(account_admin)) {
-            return false;
+        if (CollectionUtils.isEmpty(accountAdminList)) {
+            accountStrCheck(account_admin, accountAdminList);
         }
-
-        return accountStrCheck(account_admin, userId);
+        return accountAdminList.contains(userId);
     }
 
-    private boolean accountStrCheck(String account_strs, Long userId) {
-        if (StringUtil.isEmpty(account_strs) || null == userId) {
-            return false;
+    private void accountStrCheck(String account_strs, List<Long> accountList) {
+        if (StringUtil.isEmpty(account_strs)) {
+            return;
         }
-
-        String userIdStr = String.valueOf(userId);
         String[] accounts = account_strs.split(",");
         for (String account : accounts) {
-            if (account.equals(userIdStr)) return true;
+            if (StringUtil.isEmpty(account) || !NumberUtil.isNumberOnly(account)) {
+                continue;
+            }
+            accountList.add(NumberUtil.toLong(account));
         }
-
-        return false;
     }
 
 
@@ -202,5 +207,33 @@ public class RabbitBotService {
             messageChain.plus("").plus(image).plus("\n");
         }
         return messageChain;
+    }
+
+    /**
+     * 给最高权限发送消息
+     *
+     * @param messageChain 消息链
+     */
+    public void sendMasterMessage(MessageChain messageChain) {
+        if (CollectionUtils.isEmpty(accountMasterList)) {
+            accountStrCheck(account_master, accountMasterList);
+        }
+        for (Long accountMaster : accountMasterList) {
+            sendFriendMessage(accountMaster, messageChain);
+        }
+    }
+
+    /**
+     * 发送好友私聊消息
+     *
+     * @param qq           目标账号
+     * @param messageChain 消息链
+     */
+    public void sendFriendMessage(Long qq, MessageChain messageChain) {
+        Friend friend = RabbitBot.getBot().getFriend(qq);
+        if (null == friend) {
+            return;
+        }
+        friend.sendMessage(messageChain);
     }
 }
