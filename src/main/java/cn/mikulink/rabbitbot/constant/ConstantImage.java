@@ -1,6 +1,9 @@
 package cn.mikulink.rabbitbot.constant;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * create by MikuLink on 2020/1/10 15:19
@@ -16,6 +19,8 @@ public class ConstantImage extends ConstantCommon {
     public static final String IMAGE_WEIBO_SAVE_PATH = "data/images/weibo";
     //微信图片存放目录
     public static final String IMAGE_WEIXIN_SAVE_PATH = "data/images/weixin";
+    //trace.moe图片存放目录
+    public static final String IMAGE_TRACEMOE_SAVE_PATH = "data/images/tracemoe";
 
     //经过处理的图片前缀
     public static String IMAGE_SCALE_PREFIX = "rabbit_scale_";

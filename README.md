@@ -57,7 +57,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 - [x] ~~研究pixiv登录问题(从开始到放弃)~~
 - [x] pixiv根据tag搜索
 - [x] pixiv根据user搜索
-- [ ] 接入tracemoe
+- [x] 接入tracemoe
 - [x] 每日色图功能
 - [x] 添加功能开关系统
 - [ ] 记录每日人品，然后年底可以统计出来给大家乐呵
@@ -76,6 +76,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.pid (pixivImgId)|.pid 59294081|根据pixiv图片id搜索图片|
 |.ptag (pixivImgTag)|.ptag 初音ミク|根据pixiv图片tag搜索图片，结果是随机的，但分数越高的作品权重越高|
 |.搜图 (图片)|.搜图 `这里是你的图片`|接入Saucenao的搜图功能|
+|.搜番 (图片)|.搜番 `这里是你的图片`|接入trace.moe的搜图功能|
 |.来点色图|.来点色图|随机出现一张涩图，图片都源于pixiv|
 |.say|.say|随机发言，是些日常语句|
 |.cls|.清屏<br/>.cls|回复一个很高的空白消息，可以帮助所有人快速清理屏幕，比如上班摸鱼时突然有人发涩图的时候|
@@ -90,6 +91,10 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 [mirai文档](https://github.com/mamoe/mirai/blob/dev/docs/README.md)
 
 ### 日志		
+##### 2021年3月17日
+重新接入trace.moe  
+修复以图搜番功能
+
 ##### 2020年3月13日
 新增抽签功能
 

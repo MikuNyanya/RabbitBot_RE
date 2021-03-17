@@ -114,12 +114,12 @@ public class HttpsUtil {
         策略可以是基于证书的或依赖于其他验证方案。
         当验证 URL 主机名使用的默认规则失败时使用这些回调。
          */
-        httpsConn.setHostnameVerifier(new HostnameVerifier() {
-            @Override
-            public boolean verify(String arg0, SSLSession arg1) {
-                return true;
-            }
-        });
+//        httpsConn.setHostnameVerifier(new HostnameVerifier() {
+//            @Override
+//            public boolean verify(String arg0, SSLSession arg1) {
+//                return true;
+//            }
+//        });
         httpsConn.setRequestMethod(method);
         httpsConn.setDoInput(true);
         httpsConn.setDoOutput(true);

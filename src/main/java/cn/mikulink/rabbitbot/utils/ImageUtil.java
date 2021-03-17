@@ -118,14 +118,14 @@ public class ImageUtil {
         }
 
         //写入图片数据
-        String fileFullNmae = result + File.separator + fileName;
-        FileOutputStream fileOutputStream = new FileOutputStream(fileFullNmae);
+        String fileFullName = result + File.separator + fileName;
+        FileOutputStream fileOutputStream = new FileOutputStream(fileFullName);
         fileOutputStream.write(data);
         fileOutputStream.flush();
         fileOutputStream.close();
 
         //返回文件路径
-        return fileFullNmae;
+        return fileFullName;
     }
 
     /**

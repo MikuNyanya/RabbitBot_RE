@@ -1,7 +1,7 @@
 package cn.mikulink.rabbitbot.apirequest.tracemoe;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
-import cn.mikulink.rabbitbot.entity.apirequest.tracemoe.WhatAnimeResult;
+import cn.mikulink.rabbitbot.entity.apirequest.tracemoe.TracemoeSearchResult;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
@@ -22,8 +22,8 @@ import java.io.IOException;
  */
 @Getter
 @Setter
-public class WhatAnimeApi extends BaseRequest {
-    private static final Logger logger = LoggerFactory.getLogger(WhatAnimeApi.class);
+public class TracemoeSearch extends BaseRequest {
+    private static final Logger logger = LoggerFactory.getLogger(TracemoeSearch.class);
     private static final String URL = "https://trace.moe/api/search";
 
     /**
@@ -40,7 +40,7 @@ public class WhatAnimeApi extends BaseRequest {
         body = new String(resultBytes);
 
         //记录接口请求与返回日志
-        logger.info(String.format("Api Request WhatAnimeApi,param:%s,resultBody:%s", JSONObject.toJSONString(param), body));
+        logger.info(String.format("Api Request TracemoeSearch,param:%s,resultBody:%s", JSONObject.toJSONString(param), body));
     }
 
     //拼装参数
@@ -49,10 +49,10 @@ public class WhatAnimeApi extends BaseRequest {
     }
 
     //获取解析后的结果对象
-    public WhatAnimeResult getEntity() {
+    public TracemoeSearchResult getEntity() {
         if (StringUtil.isEmpty(body)) {
             return null;
         }
-        return JSONObject.parseObject(body, WhatAnimeResult.class);
+        return JSONObject.parseObject(body, TracemoeSearchResult.class);
     }
 }

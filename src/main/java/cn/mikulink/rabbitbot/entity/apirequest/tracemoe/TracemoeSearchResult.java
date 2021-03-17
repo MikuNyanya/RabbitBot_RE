@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Setter
 @Getter
-public class WhatAnimeResult {
+public class TracemoeSearchResult {
 
     /**
      * RawDocsCount : 15463445
@@ -35,5 +35,5 @@ public class WhatAnimeResult {
     private Long limit_ttl;
     private Long quota;
     private Long quota_ttl;
-    private List<WhatAnimeDoc> docs;
+    private List<TracemoeSearchDoc> docs;
 }

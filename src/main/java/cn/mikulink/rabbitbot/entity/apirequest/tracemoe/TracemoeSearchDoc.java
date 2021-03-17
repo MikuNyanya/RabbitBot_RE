@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Setter
 @Getter
-public class WhatAnimeDoc {
+public class TracemoeSearchDoc {
     /**
      * from : 121.08
      * to : 121.08
