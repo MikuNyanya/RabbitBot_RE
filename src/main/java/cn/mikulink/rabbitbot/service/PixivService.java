@@ -164,7 +164,6 @@ public class PixivService {
 
         //3.获取该图片信息
         Long pixivId = NumberUtil.toLong(pixivImageInfo.getId());
-        //todo 如果真要做评分，直接返回之前查询的元素即可，没必要再次请求一次
         return getPixivImgInfoById(pixivId);
     }
 
@@ -300,54 +299,12 @@ public class PixivService {
     }
 
     /**
-     * pixiv登录
-     * 遇到recaptcha，我放弃了
-     */
-    public void login() throws IOException {
-        Proxy proxy = HttpUtil.getProxy();
-
-        //1.在页面获取post_key
-        String responseStr = new String(HttpsUtil.doGet(PIXIV_LOGIN_DATA_URL, proxy));
-        //使用jsoup解析html
-        Document document = Jsoup.parse(responseStr);
-
-        String post_key = document.getElementsByAttributeValue("name", "post_key").val();
-        //2.post登录获取曲奇(
-        JSONObject param = new JSONObject();
-        param.put("pixiv_id", pixivAccount);                 //账号
-        param.put("password", pixivPwd);                     //密码
-        param.put("post_key", post_key);                     //pixiv特有的post_key
-        param.put("source", "pc");                           //请求来源
-        param.put("ref", "wwwtop_accounts_index");           //来源
-        param.put("return_to", "https://www.pixiv.net/");    //登录完成后返回页面
-
-        String loginResponseStr = new String(HttpsUtil.doPost(PIXIV_LOGIN_POST_URL, param.toJSONString(), proxy));
-
-        System.out.println("");
-    }
-
-    /**
      * 搜索p站用户
      * 可模糊搜索
      *
      * @param userNick 用户昵称
      */
     public List<PixivUserInfo> pixivUserSearch(String userNick) throws IOException {
-        //查看当前本地作者数据
-        //todo 如果要使用本地数据，需要考虑到重名的改名的新增的用户情况，比较麻烦，一刀切那就是真正当缓存用，定期清空
-//        for (String memberLocalStr : ConstantPixiv.PIXIV_MEMBER_LIST) {
-//            String[] memberLocalInfos = memberLocalStr.split(",");
-//            //忽略异常数据
-//            if (memberLocalInfos.length < 2) {
-//                continue;
-//            }
-//            String memberLocalName = memberLocalInfos[1];
-//            if (userNick.equals(memberLocalName)) {
-//                memberId = NumberUtil.toLong(memberLocalInfos[0]);
-//                break;
-//            }
-//        }
-
         //请求pixiv用户搜索
         PixivUserSearch request = new PixivUserSearch();
         request.getHeader().put("cookie", pixivCookie);
