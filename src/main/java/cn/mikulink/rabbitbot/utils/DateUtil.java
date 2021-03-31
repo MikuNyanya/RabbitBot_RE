@@ -125,4 +125,41 @@ public class DateUtil {
         //时
         return calendar.get(Calendar.HOUR_OF_DAY);
     }
+
+    /**
+     * 获取当前是星期几
+     *
+     * @return 数字，1代表星期一，以此类推
+     */
+    public static int getDayOfWeek() {
+        Calendar calendar = Calendar.getInstance();
+        //星期
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        //由于外国的星期是从星期天开始，所以需要处理下
+        dayOfWeek = dayOfWeek - 1;
+        if (0 == dayOfWeek) {
+            dayOfWeek = 7;
+        }
+        return dayOfWeek;
+    }
+
+    /**
+     * 是否为工作时间
+     * 不想乱七八糟的，就按早9点晚6点，周一到周五来算
+     *
+     * @return 是否处于上班时间
+     */
+    public static boolean isTimeOfWork() {
+        Calendar calendar = Calendar.getInstance();
+        //星期
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        //外国的一周是从星期天开始
+        if (0 == dayOfWeek || 7 == dayOfWeek) {
+            return false;
+        }
+        //小时
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        return 9 <= hour && hour < 18;
+    }
 }

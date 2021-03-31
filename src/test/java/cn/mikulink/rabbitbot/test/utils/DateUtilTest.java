@@ -16,6 +16,7 @@ public class DateUtilTest {
     public void test() {
         String pht = "EEE MMM dd HH:mm:ss Z yyyy";
         String dateStr = DateUtil.toString(new Date());
+        int dayOfWeek = DateUtil.getDayOfWeek();
 
         System.out.println("");
     }
