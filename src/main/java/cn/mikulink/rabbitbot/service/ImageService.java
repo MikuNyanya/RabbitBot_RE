@@ -39,12 +39,12 @@ public class ImageService {
      * 随机获取一张鸽子图
      * 伪随机
      */
-    public String getGuguguRandom() throws IOException {
+    public String getGuguguRandom() {
         String guguguPath = ConstantImage.DEFAULT_IMAGE_SAVE_PATH + "/gugugu";
         //如果集合为空，读取文件列表
         //只存放路径，由于使用伪随机，所以list里面的内容会一直减少
         List<String> imageGuguguList = ConstantImage.map_images.get(ConstantImage.IMAGE_MAP_KEY_GUGUGU);
-        if (null == imageGuguguList || imageGuguguList.size() <= 0) {
+        if (CollectionUtil.isEmpty(imageGuguguList)) {
             String[] guguguImages = FileUtil.getList(guguguPath);
             if (null == guguguImages || guguguImages.length <= 0) {
                 return "";
@@ -61,10 +61,13 @@ public class ImageService {
             ConstantImage.map_images.put(ConstantImage.IMAGE_MAP_KEY_GUGUGU, imageGuguguList);
         }
 
+
         //列表中有图片，随机一个，使用伪随机
         String guguguImageFullName = RandomUtil.rollAndDelStrFromList(imageGuguguList);
-        //生成CQ码并返回
-        return scaleForceByLocalImagePath(guguguPath + File.separator + guguguImageFullName);
+        if (StringUtil.isEmpty(guguguImageFullName)) {
+            return null;
+        }
+        return guguguPath + File.separator + guguguImageFullName;
     }
 
     /**

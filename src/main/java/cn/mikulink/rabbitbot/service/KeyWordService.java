@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.constant.ConstantFreeTime;
+import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantKeyWord;
 import cn.mikulink.rabbitbot.constant.ConstantRepeater;
 import cn.mikulink.rabbitbot.filemanage.FileManagerKeyWordNormal;
@@ -9,6 +10,8 @@ import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.RegexUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.message.data.Image;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,6 +28,11 @@ import java.util.Map;
 public class KeyWordService {
     //保存群最后一条消息，用于复读
     private static Map<Long, String[]> LAST_MSG_MAP = new HashMap<>();
+
+    @Autowired
+    private ImageService imageService;
+    @Autowired
+    private RabbitBotService rabbitBotService;
 
     /**
      * 群消息关键词匹配
@@ -46,10 +54,10 @@ public class KeyWordService {
         }
 
         //图片响应
-//        groupRep = groupKeyWordImage(event);
-//        if (groupRep) {
-//            return;
-//        }
+        groupRep = groupKeyWordImage(event);
+        if (groupRep) {
+            return;
+        }
 
         //关键词全匹配
         groupRep = groupKeyWord(event);
@@ -192,30 +200,32 @@ public class KeyWordService {
      * @param event 群消息监控
      * @return bol值 表示有没有进行群消息回复
      */
-//    private boolean groupKeyWordImage(GroupMessageEvent event) throws IOException {
-//        String groupMsg = event.getMessage().contentToString();
-//
-//        //检测模糊关键词
-//        String mapKey = keyWordLikeRegex(ConstantImage.LIST_KEY_IMAGES, groupMsg);
-//        if (StringUtil.isEmpty(mapKey)) {
-//            return false;
-//        }
-//
-//        String cqStr = "";
-//        //根据key选择业务
-//        switch (mapKey) {
-//            case ConstantImage.IMAGE_MAP_KEY_GUGUGU:
-//                cqStr = ImageService.getGuguguRandom();
-//                break;
-//        }
-//        //cq码为空接着往下走业务
-//        if (StringUtil.isEmpty(cqStr)) {
-//            return false;
-//        }
-//        //发送图片
-//        event.getSubject().sendMessage(cqStr);
-//        return true;
-//    }
+    private boolean groupKeyWordImage(GroupMessageEvent event) throws IOException {
+        String groupMsg = event.getMessage().contentToString();
+
+        //检测模糊关键词
+        String mapKey = keyWordLikeRegex(ConstantImage.LIST_KEY_IMAGES, groupMsg);
+        if (StringUtil.isEmpty(mapKey)) {
+            return false;
+        }
+
+        String imgLocalPath = "";
+        //根据key选择业务
+        switch (mapKey) {
+            case ConstantImage.IMAGE_MAP_KEY_GUGUGU:
+                imgLocalPath = imageService.getGuguguRandom();
+                break;
+        }
+        if (StringUtil.isEmpty(imgLocalPath)) {
+            return false;
+        }
+        //上传头像
+        Image miraiImage = rabbitBotService.uploadMiraiImage(imgLocalPath);
+
+        //发送图片
+        event.getSubject().sendMessage(miraiImage);
+        return true;
+    }
 
     /**
      * 时间问候关键词匹配
