@@ -1,11 +1,14 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.apirequest.weixin.WeixinAppMsgGet;
+import cn.mikulink.rabbitbot.constant.ConstantCommon;
+import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantWeiXin;
 import cn.mikulink.rabbitbot.entity.apirequest.weixin.WeiXinAppMsgInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
+import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.ImageUtil;
@@ -18,7 +21,6 @@ import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -33,10 +35,9 @@ import java.util.List;
 public class WeiXinAppMsgService {
     private static final Logger logger = LoggerFactory.getLogger(WeiXinAppMsgService.class);
 
-    @Value("${weixin.appmsg.token}")
-    private String weiXinAppMsgToken;
-    @Value("${weixin.appmsg.cookie}")
-    private String weiXinAppMsgCookie;
+    private String weiXinAppMsgToken = null;
+    private String weiXinAppMsgCookie = null;
+
     @Autowired
     private RabbitBotService rabbitBotService;
 
@@ -49,7 +50,9 @@ public class WeiXinAppMsgService {
      */
     public WeiXinAppMsgInfo getNewsTodayMsg() throws IOException, RabbitException {
         //检查授权码
-        if (StringUtil.isEmpty(weiXinAppMsgToken)) {
+        tokenCheck();
+
+        if (StringUtil.isEmpty(weiXinAppMsgToken) || StringUtil.isEmpty(weiXinAppMsgCookie)) {
             throw new RabbitException(ConstantWeiXin.NO_ACCESSTOKEN);
         }
 
@@ -120,6 +123,7 @@ public class WeiXinAppMsgService {
      * 使用当前授权调用一次接口即可
      */
     public void refreshCookie() {
+        tokenCheck();
         try {
             WeixinAppMsgGet request = new WeixinAppMsgGet();
             //易即今日的公众号id
@@ -154,6 +158,21 @@ public class WeiXinAppMsgService {
         }
         if (StringUtil.isNotEmpty(cookie)) {
             this.weiXinAppMsgCookie = cookie;
+        }
+        //覆写SINCEID配置
+        ConstantCommon.common_config.put("weixinAppmsgToken", token);
+        ConstantCommon.common_config.put("weixinAppmsgCookie", cookie);
+        //更新配置文件
+        FileManagerConfig.doCommand(ConstantFile.FILE_COMMAND_WRITE);
+    }
+
+    private void tokenCheck() {
+        //检查授权码
+        if (StringUtil.isEmpty(weiXinAppMsgToken)) {
+            weiXinAppMsgToken = ConstantCommon.common_config.get("weixinAppmsgToken");
+        }
+        if (StringUtil.isEmpty(weiXinAppMsgCookie)) {
+            weiXinAppMsgCookie = ConstantCommon.common_config.get("weixinAppmsgCookie");
         }
     }
 }

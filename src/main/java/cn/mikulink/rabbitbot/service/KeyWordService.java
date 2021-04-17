@@ -219,7 +219,7 @@ public class KeyWordService {
         if (StringUtil.isEmpty(imgLocalPath)) {
             return false;
         }
-        //上传头像
+        //上传图片
         Image miraiImage = rabbitBotService.uploadMiraiImage(imgLocalPath);
 
         //发送图片
