@@ -17,6 +17,11 @@ public class ConstantWeiboNews extends ConstantCommon {
     public static final String SINCEID_OVERRIDE_SUCCESS = "sinceId覆写完毕";
     public static final String SINCEID_OVERRIDE_FAIL = "覆写失败，sinceId不能为空";
     public static final String SINCEID_OVERRIDE_FAIL_NOW_NUMBER = "覆写失败，sinceId必须为纯数字";
+    public static final String COMMAND_KEY_PULL = "pull";
+    public static final String COMMAND_KEY_UN_PULL = "unpull";
+    public static final String PULL_OR_UNPULL_WEIBO_USERID_EMPTY = "订阅与取消订阅操作需要传入微博账号id";
+    public static final String PULL_SUCCESS = "微博消息订阅完毕";
+    public static final String UNPULL_SUCCESS = "已取消微博消息订阅";
     public static final String ACCESS_TOKEN = "token";
     public static final String ACCESS_TOKEN_OVERRIDE_SUCCESS = "授权覆写完毕";
     public static final String ACCESS_TOKEN_OVERRIDE_FAIL = "覆写失败，授权不能为空";

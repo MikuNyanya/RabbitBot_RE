@@ -96,6 +96,46 @@ public class FileManagerConfig {
     }
 
     /**
+     * 读取群配置
+     */
+    public static String loadConfigGroup(Long groupId) throws IOException {
+        String filePath = ConstantFile.CONFIG_FILE_PATH;
+        if (null != groupId) {
+            filePath = filePath.replace("config", "groups/" + groupId + "/config");
+        }
+        //读取文件
+        File groupConfigFile = FileUtil.fileCheck(filePath);
+        //创建读取器
+        BufferedReader reader = new BufferedReader(new FileReader(groupConfigFile));
+        //读取第一行
+        String configJson = null;
+        while ((configJson = reader.readLine()) != null) {
+            //过滤掉空行
+            if (configJson.length() > 0) break;
+        }
+        //关闭读取器
+        reader.close();
+        return configJson;
+    }
+
+    /**
+     * 覆写群配置
+     */
+    public static void writerConfigGroup(Long groupId, String configJsonStr) throws IOException {
+        String filePath = ConstantFile.CONFIG_FILE_PATH;
+        if (null != groupId) {
+            filePath = filePath.replace("config", "groups/" + groupId + "/config");
+        }
+
+        //创建写入流
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, false)));
+        //覆写原本配置
+        out.write(configJsonStr);
+        //关闭写入流
+        out.close();
+    }
+
+    /**
      * 资源文件初始化
      */
     public static void dataFileInit() {

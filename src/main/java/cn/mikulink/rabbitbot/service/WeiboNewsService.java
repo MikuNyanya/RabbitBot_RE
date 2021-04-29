@@ -48,6 +48,8 @@ public class WeiboNewsService {
     private RabbitBotService rabbitBotService;
     @Autowired
     private SwitchService switchService;
+    @Autowired
+    private ConfigService configService;
 
     /**
      * 获取微信的最新消息
@@ -97,7 +99,7 @@ public class WeiboNewsService {
                 msgChain = msgChain.plus(parseWeiboBody(info.getRetweeted_status(), true));
             }
 
-            //给每个群发送报时
+            //给每个群推送消息
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group groupInfo : groupList) {
                 //检查功能开关
@@ -105,6 +107,11 @@ public class WeiboNewsService {
                 if (!reStringSwitch.isSuccess()) {
                     continue;
                 }
+                //检查该群是否订阅了这个微博账号
+                if(!configService.checkWeiboPushId(groupInfo.getId(),info.getUser().getId())){
+                    continue;
+                }
+
                 try {
                     groupInfo.sendMessage(msgChain);
                 }catch (kotlinx.coroutines.TimeoutCancellationException ex){
@@ -209,6 +216,8 @@ public class WeiboNewsService {
         }
         //推主名
         result = result.plus("[" + info.getUser().getName() + "]\n");
+        //uid
+        result = result.plus("[" + info.getUser().getId() + "]\n");
         //推文时间
         result = result.plus("[" + parseWeiboDate(info.getCreated_at()) + "]\n");
         result = result.plus("========================\n");

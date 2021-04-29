@@ -8,13 +8,13 @@ import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
 import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
+import cn.mikulink.rabbitbot.service.ConfigService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.WeiboNewsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.Message;
@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -44,6 +43,8 @@ public class WeiboNewsCommand implements GroupCommand {
     private RabbitBotService rabbitBotService;
     @Autowired
     private WeiboNewsService weiboNewsService;
+    @Autowired
+    private ConfigService configService;
 
     @Override
     public CommandProperties properties() {
@@ -58,8 +59,10 @@ public class WeiboNewsCommand implements GroupCommand {
         }
 
         if (null == args || args.size() == 0) {
-            return new PlainText("[.wbn (on,off,lasttag,refreshSinceId,token,exec)]");
+            return new PlainText("[.wbn (on,off,lasttag,refreshSinceId,token,exec,pull,unpull)]");
         }
+
+        Long groupId = subject.getId();
 
         //二级指令
         String arg = args.get(0);
@@ -86,6 +89,24 @@ public class WeiboNewsCommand implements GroupCommand {
                 //立刻执行一次推送
                 doWeiboPush(subject);
                 break;
+            case ConstantWeiboNews.COMMAND_KEY_PULL:
+                //以群为单位订阅微博账号
+                if (args.size() < 2 || StringUtil.isEmpty(args.get(1))) {
+                    return new PlainText(ConstantWeiboNews.PULL_OR_UNPULL_WEIBO_USERID_EMPTY);
+                }
+                String weiboUserIds = args.get(1);
+
+                configService.pullWeibo(groupId, weiboUserIds);
+                return new PlainText(ConstantWeiboNews.PULL_SUCCESS);
+            case ConstantWeiboNews.COMMAND_KEY_UN_PULL:
+                //以群为单位取消订阅微博账号
+                if (args.size() < 2 || StringUtil.isEmpty(args.get(1))) {
+                    return new PlainText(ConstantWeiboNews.PULL_OR_UNPULL_WEIBO_USERID_EMPTY);
+                }
+                String unPushWeiboUserIds = args.get(1);
+
+                configService.unpullWeibo(groupId, unPushWeiboUserIds);
+                return new PlainText(ConstantWeiboNews.UNPULL_SUCCESS);
         }
         return null;
     }
