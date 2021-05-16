@@ -150,15 +150,14 @@ public class DateUtil {
      * @return 是否处于上班时间
      */
     public static boolean isTimeOfWork() {
-        Calendar calendar = Calendar.getInstance();
         //星期
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int dayOfWeek = getDayOfWeek();
         //外国的一周是从星期天开始
-        if (0 == dayOfWeek || 7 == dayOfWeek) {
+        if (dayOfWeek >= 6) {
             return false;
         }
         //小时
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int hour = getHour();
 
         return 9 <= hour && hour < 18;
     }
