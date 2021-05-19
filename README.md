@@ -62,6 +62,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 - [x] 添加功能开关系统
 - [ ] 记录每日人品，然后年底可以统计出来给大家乐呵
 - [x] 抽签功能
+- [x] B站视频动态推送
 - [x] ~~鸽了，咕咕咕~~
 
 ### 指令

@@ -19,4 +19,8 @@ public class ConfigGroupInfo {
      * 订阅的微博id列表
      */
     List<Long> weiboPushIds = new ArrayList<>();
+    /**
+     * 订阅的B站视频动态uid列表
+     */
+    List<Long> biliPushIds = new ArrayList<>();
 }

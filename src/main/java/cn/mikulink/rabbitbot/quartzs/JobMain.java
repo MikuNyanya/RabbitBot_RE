@@ -2,12 +2,13 @@ package cn.mikulink.rabbitbot.quartzs;
 
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
-import cn.mikulink.rabbitbot.constant.ConstantCommon;
+import cn.mikulink.rabbitbot.constant.ConstantBilibili;
 import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantFreeTime;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.filemanage.FileManagerFreeTime;
+import cn.mikulink.rabbitbot.service.BilibiliService;
 import cn.mikulink.rabbitbot.service.SwitchService;
 import cn.mikulink.rabbitbot.service.WeiboNewsService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
@@ -43,10 +44,16 @@ public class JobMain {
     private WeiboNewsService weiboNewsService;
     @Autowired
     private SwitchService switchService;
+    @Autowired
+    private BilibiliService bilibiliService;
 
     public void execute() {
         //日常语句
         freeTimeRabbit();
+
+        //B站视频动态
+        biliDynamicSvrPush();
+
         //微博最新消息
         weiboNews();
     }
@@ -93,6 +100,24 @@ public class JobMain {
         free_time_last_send_time = System.currentTimeMillis();
         //刷新下次发送的随机延迟时间
         free_time_random_send_time = 1000L * 60 * RandomUtil.roll(SPLIT_RANDOM_MAX + 1);
+    }
+
+    //B站视频动态
+    private void biliDynamicSvrPush() {
+        //检测发送间隔
+//        if (System.currentTimeMillis() - ConstantBilibili.bili_dynamicdsvr_last_send_time < ConstantBilibili.bili_dynamicdsvr_push_sprit_time) {
+//            return;
+//        }
+
+        try {
+            //执行一次消息推送
+            bilibiliService.doDynamicSvrPush();
+        } catch (Exception ex) {
+            logger.error("B站视频动态推送执行异常:" + ex.toString(), ex);
+        }
+
+        //刷新最后发送时间
+//        ConstantBilibili.bili_dynamicdsvr_last_send_time = System.currentTimeMillis();
     }
 
     //微信最新消息
