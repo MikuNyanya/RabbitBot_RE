@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class BilibiliDynamicSvrCardInfo {
     @JSONField(name = "aid")
-    private Integer aid;
+    private Long aid;
     @JSONField(name = "cid")
-    private Integer cid;
+    private Long cid;
     @JSONField(name = "ctime")
     private Integer ctime;
     @JSONField(name = "desc")
@@ -23,4 +23,18 @@ public class BilibiliDynamicSvrCardInfo {
     private String title;
     @JSONField(name = "videos")
     private Integer videos;
+
+    //追番相关字段
+    @JSONField(name = "apiSeasonInfo")
+    private BilibiliDynamicSvrCardApiSeasonInfo apiSeasonInfo;
+    @JSONField(name = "cover")
+    private String cover;
+    @JSONField(name = "index")
+    private String index;
+    @JSONField(name = "index_title")
+    private String indexTitle;
+    @JSONField(name = "new_desc")
+    private String newDesc;
+    @JSONField(name = "url")
+    private String url;
 }

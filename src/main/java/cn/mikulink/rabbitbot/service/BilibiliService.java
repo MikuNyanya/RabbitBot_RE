@@ -8,7 +8,10 @@ import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.bilibili.*;
 import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
-import cn.mikulink.rabbitbot.utils.*;
+import cn.mikulink.rabbitbot.utils.CollectionUtil;
+import cn.mikulink.rabbitbot.utils.ImageUtil;
+import cn.mikulink.rabbitbot.utils.NumberUtil;
+import cn.mikulink.rabbitbot.utils.StringUtil;
 import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
@@ -128,6 +131,9 @@ public class BilibiliService {
                 if (null == msgChain) {
                     msgChain = parseDynamicSvrBody(dynamicSvrCardsInfo);
                 }
+                if (null == msgChain) {
+                    continue;
+                }
 
                 try {
                     groupInfo.sendMessage(msgChain);
@@ -147,32 +153,69 @@ public class BilibiliService {
     }
 
     public MessageChain parseDynamicSvrBody(BilibiliDynamicSvrCardsInfo dynamicSvrCardsInfo) throws IOException {
-        MessageChain result = MessageUtils.newChain();
+        MessageChain result = null;
 
         BilibiliDynamicSvrCardsDescInfo descInfo = dynamicSvrCardsInfo.getDesc();
-        BilibiliUserProfileInfoInfo userInfo = descInfo.getUserProfile().getInfo();
         BilibiliDynamicSvrCardInfo cardInfo = JSONObject.parseObject(dynamicSvrCardsInfo.getCard(), BilibiliDynamicSvrCardInfo.class);
+        //视频动态类型
+        Integer type = descInfo.getType();
 
-        //头像
-        Image userImgInfo = parseUserPic(userInfo.getFace(), 50, 50);
-        if (null != userImgInfo) {
-            result = result.plus("").plus(userImgInfo);
-        } else {
-            result = result.plus("[头像下载失败]");
+        if (type == 8) {
+            //普通视频动态处理
+
+            //用户信息
+            BilibiliUserProfileInfoInfo userInfo = descInfo.getUserProfile().getInfo();
+            //视频图片
+            Image videoImgInfo = parseUserPic(cardInfo.getPic(), null, null);
+            //头像
+            Image userImgInfo = parseUserPic(userInfo.getFace(), 50, 50);
+
+            //转化为messageChain
+            result = parseDynamicSvrMessageChain(cardInfo.getTitle(),
+                    videoImgInfo,
+                    cardInfo.getDesc(),
+                    userImgInfo,
+                    userInfo.getUname(),
+                    userInfo.getUid(),
+                    new Date(descInfo.getTimestamp() * 1000L),
+                    cardInfo.getShortLink());
+        } else if (type == 512) {
+            //追番视频动态
+            BilibiliDynamicSvrCardApiSeasonInfo apiSeasonInfo = cardInfo.getApiSeasonInfo();
+
+            //视频图片
+            Image videoImgInfo = parseUserPic(cardInfo.getCover(), null, null);
+            //头像
+            Image userImgInfo = parseUserPic(apiSeasonInfo.getCover(), 50, 50);
+
+            //转化为messageChain
+            result = parseDynamicSvrMessageChain(cardInfo.getNewDesc(),
+                    videoImgInfo,
+                    null,
+                    userImgInfo,
+                    apiSeasonInfo.getTitle(),
+                    apiSeasonInfo.getSeasonId(),
+                    new Date(descInfo.getTimestamp() * 1000L),
+                    cardInfo.getUrl());
         }
 
-        //up主名称
-        result = result.plus("[" + userInfo.getUname() + "]\n");
-        //uid
-        result = result.plus("[" + userInfo.getUid() + "]\n");
-        //投稿时间
-        result = result.plus("[" + DateUtil.toString(new Date(cardInfo.getCtime() * 1000)) + "]\n");
-        result = result.plus("=======[BiliBili]=======\n");
+        return result;
+    }
+
+
+    private MessageChain parseDynamicSvrMessageChain(String title,
+                                                     Image videoImgInfo,
+                                                     String desc,
+                                                     Image userImgInfo,
+                                                     String uName,
+                                                     Long uid,
+                                                     Date createTime,
+                                                     String link) {
+        MessageChain result = MessageUtils.newChain();
         //正文
-        result = result.plus(cardInfo.getTitle());
+        result = result.plus(title);
 
         //视频图片
-        Image videoImgInfo = parseUserPic(cardInfo.getPic(), null, null);
         if (null != videoImgInfo) {
             result = result.plus("").plus(videoImgInfo);
         } else {
@@ -180,14 +223,29 @@ public class BilibiliService {
         }
 
         //视频简介 最多展示50个字符
-        String desc = cardInfo.getDesc();
         if (desc.length() > 50) {
             desc = desc.substring(0, 50);
             desc = desc + "......";
         }
         result = result.plus(desc);
+
+        result = result.plus("=======[BiliBili]=======\n");
+
+        //头像
+        if (null != userImgInfo) {
+            result = result.plus("").plus(userImgInfo);
+        } else {
+            result = result.plus("[头像下载失败]");
+        }
+
+        //up主名称
+        result = result.plus("[" + uName + "]\n");
+        //uid
+        result = result.plus("[" + uid + "]\n");
+        //投稿时间
+        result = result.plus("[" + createTime + "]\n");
         //短连接
-        result = result.plus("\n\nB站视频链接：" + cardInfo.getShortLink());
+        result = result.plus("[" + link + "]");
 
         return result;
     }
@@ -208,6 +266,7 @@ public class BilibiliService {
         //然后上传到服务器，获取imageId
         return rabbitBotService.uploadMiraiImage(scaleImgPath);
     }
+
 
     /**
      * 刷新dynamicId

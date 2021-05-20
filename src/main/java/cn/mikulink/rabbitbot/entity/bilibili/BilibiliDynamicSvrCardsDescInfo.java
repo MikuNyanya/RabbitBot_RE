@@ -19,4 +19,6 @@ public class BilibiliDynamicSvrCardsDescInfo {
     private String dynamicIdStr;
     @JSONField(name = "bvid")
     private String bvid;
+    @JSONField(name = "type")
+    private Integer type;
 }

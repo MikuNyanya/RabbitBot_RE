@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class BilibiliUserProfileInfoInfo {
     @JSONField(name = "uid")
-    private Integer uid;
+    private Long uid;
     @JSONField(name = "uname")
     private String uname;
     @JSONField(name = "face")

@@ -34,6 +34,12 @@ public class BilibiliDynamicSvrGet extends BaseRequest {
     @Setter
     private Long offsetDynamicId;
 
+    /**
+     * 视频类型
+     * 目前已推测出：
+     * 8 普通投稿视频
+     * 512 追番视频
+     */
     private static final String typeList = "8,512,4097,4098,4099,4100,4101";
 
     /**
