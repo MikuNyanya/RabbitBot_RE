@@ -10,10 +10,12 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 基于 `java` 语言和 `mirai` 框架的群聊机器人，使用 `maven` 进行项目管理，加入了 `spring` `quartz`等技术  
 
 ### 程序包含:
-* `mirai` 
+* `mirai` 这是核心
 * `maven` 用于管理项目
 * `spring`  用于...其实我是馋spring的自动注入，可太爽了
 * `quartz`  用于定时任务
+* `jsoup` 用于解析HTML文本
+* `Thumbnailator` 用于压缩图片
 * `lombok`  用于简化代码
 * `junit` 用于单元测试
 * `logback` 用于输出日志，以及日志数据持久化
@@ -23,7 +25,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 ### 设计理念
  `清爽`   我不喜欢发出去的消息总是花里胡哨，简约实用才是好的，我也很希望代码上也能做到清爽...     
  `多变`   大部分回复并非一成不变，采用随机回复，让兔叽看起来不那么死板      
- `应景`   不能见到关键词就无脑回复，太low了，尽可能的要回复合适当前场景才行       
+ `应景`   ~~不能见到关键词就无脑回复，尽可能的要回复合适当前场景才行~~ 淦，在技术没有革命性突破的今天，要写多少if-else，我是个社恐兔子，不是语言大师，我设计不出来!      
  `实用`   只会回复垃圾信息不能叫实用，主动推送微博内容，让群友不错过任何一个steam喜加一，这就叫实用      
  `随机`   乐趣源于随机，随机发言，随机涩图，这些就变成了一种值得期待的惊喜...当然这并不适用于所有人，但谁让兔叽是我养的呢     
  `自动`   把群友想看的东西推到他们面前，而不是想起来的时候还要去手动触发     
@@ -34,6 +36,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 * 远程热更新业务配置参数
 * 功能开关
 * 微博消息推送
+* B站视频动态推送
 * 根据图片id，tag，作者名称，获取pixiv图片
 * 获取pixiv日榜
 * 随机涩图
@@ -60,8 +63,10 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 - [x] 接入tracemoe
 - [x] 每日色图功能
 - [x] 添加功能开关系统
+- [x] 开关功能群之间独立配置
 - [ ] 记录每日人品，然后年底可以统计出来给大家乐呵
 - [x] 抽签功能
+- [x] 微博消息可选择性订阅，并且群之间配置独立
 - [x] B站视频动态推送
 - [x] ~~鸽了，咕咕咕~~
 
