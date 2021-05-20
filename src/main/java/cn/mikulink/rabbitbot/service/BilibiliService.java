@@ -8,10 +8,7 @@ import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.bilibili.*;
 import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
-import cn.mikulink.rabbitbot.utils.CollectionUtil;
-import cn.mikulink.rabbitbot.utils.ImageUtil;
-import cn.mikulink.rabbitbot.utils.NumberUtil;
-import cn.mikulink.rabbitbot.utils.StringUtil;
+import cn.mikulink.rabbitbot.utils.*;
 import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
@@ -229,7 +226,7 @@ public class BilibiliService {
         }
         result = result.plus(desc);
 
-        result = result.plus("=======[BiliBili]=======\n");
+        result = result.plus("\n=======[BiliBili]=======\n");
 
         //头像
         if (null != userImgInfo) {
@@ -243,7 +240,7 @@ public class BilibiliService {
         //uid
         result = result.plus("[" + uid + "]\n");
         //投稿时间
-        result = result.plus("[" + createTime + "]\n");
+        result = result.plus("[" + DateUtil.toString(createTime) + "]\n");
         //短连接
         result = result.plus("[" + link + "]");
 

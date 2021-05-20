@@ -38,11 +38,7 @@ public class NumberUtil {
         if (null == obj) {
             return null;
         }
-        Double toDouble = toDouble(obj);
-        if (null == toDouble) {
-            return null;
-        }
-        return toDouble.intValue();
+        return Integer.valueOf(obj.toString());
     }
 
     /**
@@ -52,7 +48,7 @@ public class NumberUtil {
      * @return 输出数字
      */
     public static Double toDouble(Object obj) {
-        if(null == obj){
+        if (null == obj) {
             return null;
         }
         String s = String.valueOf(obj);
@@ -69,11 +65,10 @@ public class NumberUtil {
      * @return 输出数字
      */
     public static Long toLong(Object obj) {
-        Double toDouble = toDouble(obj);
-        if (null == toDouble) {
+        if (null == obj) {
             return null;
         }
-        return toDouble.longValue();
+        return Long.valueOf(obj.toString());
     }
 
     /**
