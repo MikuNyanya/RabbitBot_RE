@@ -166,9 +166,7 @@ public class JobTimeRabbit {
             return;
         }
         try {
-            //目前默认展示r18
             PixivImageInfo pixivImageInfo = setuService.getSetu();
-            MessageChain messageChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
             //给每个群发送消息
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group groupInfo : groupList) {
@@ -177,6 +175,9 @@ public class JobTimeRabbit {
                 if (!reStringSwitch.isSuccess()) {
                     continue;
                 }
+                pixivImageInfo.setSubject(groupInfo);
+                MessageChain messageChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
+
                 groupInfo.sendMessage(RandomUtil.rollStrFromList(ConstantPixiv.SETU_DAY_EX_MSG_List));
                 groupInfo.sendMessage(messageChain);
             }

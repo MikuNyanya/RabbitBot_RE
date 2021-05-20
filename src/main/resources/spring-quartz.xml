@@ -8,6 +8,8 @@
     <bean id="quartzMain" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="jobMain"/>
         <property name="targetMethod" value="execute"/>
+        <!--上一次任务未完成时不会执行下一次任务-->
+        <property name="concurrent" value="false"/>
     </bean>
     <!--次要定时器-->
     <bean id="quartzTimeRabbit" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">

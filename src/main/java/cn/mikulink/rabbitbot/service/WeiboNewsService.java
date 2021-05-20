@@ -93,11 +93,7 @@ public class WeiboNewsService {
         //发送微博
         for (InfoStatuses info : statuses) {
             //解析微博报文
-            MessageChain msgChain = parseWeiboBody(info);
-            if (null != info.getRetweeted_status()) {
-                //追加被转发的微博消息
-                msgChain = msgChain.plus(parseWeiboBody(info.getRetweeted_status(), true));
-            }
+            MessageChain msgChain = null;
 
             //给每个群推送消息
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
@@ -108,13 +104,22 @@ public class WeiboNewsService {
                     continue;
                 }
                 //检查该群是否订阅了这个微博账号
-                if(!configService.checkWeiboPushId(groupInfo.getId(),info.getUser().getId())){
+                if (!configService.checkWeiboPushId(groupInfo.getId(), info.getUser().getId())) {
                     continue;
+                }
+
+                //懒加载
+                if (null == msgChain) {
+                    msgChain = parseWeiboBody(info);
+                    if (null != info.getRetweeted_status()) {
+                        //追加被转发的微博消息
+                        msgChain = msgChain.plus(parseWeiboBody(info.getRetweeted_status(), true));
+                    }
                 }
 
                 try {
                     groupInfo.sendMessage(msgChain);
-                }catch (kotlinx.coroutines.TimeoutCancellationException ex){
+                } catch (kotlinx.coroutines.TimeoutCancellationException ex) {
                     logger.warn("微博消息mirai发送超时，即将重试");
                     //mirai发送超时，重试一次
                     groupInfo.sendMessage(msgChain);

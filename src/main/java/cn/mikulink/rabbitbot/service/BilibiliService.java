@@ -63,7 +63,6 @@ public class BilibiliService {
         BilibiliDynamicSvrGet request = new BilibiliDynamicSvrGet();
         request.getHeader().put("cookie", bilibiliCookie);
         request.doRequest();
-        logger.info("BilibiliService doDynamicSvrPush,body:{}", request.getBody());
         BilibiliDynamicSvrResponseInfo responseInfo = request.parseResponseInfo();
         if (null == responseInfo) {
             return;
