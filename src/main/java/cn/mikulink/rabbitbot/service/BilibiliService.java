@@ -220,11 +220,13 @@ public class BilibiliService {
         }
 
         //视频简介 最多展示50个字符
-        if (desc.length() > 50) {
-            desc = desc.substring(0, 50);
-            desc = desc + "......";
+        if (StringUtil.isNotEmpty(desc)) {
+            if (desc.length() > 50) {
+                desc = desc.substring(0, 50);
+                desc = desc + "......";
+            }
+            result = result.plus(desc);
         }
-        result = result.plus(desc);
 
         result = result.plus("\n=======[BiliBili]=======\n");
 
