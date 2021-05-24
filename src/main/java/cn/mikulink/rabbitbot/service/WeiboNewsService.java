@@ -98,7 +98,6 @@ public class WeiboNewsService {
 
             //给每个群推送消息
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-            logger.info("微博发送群列表：{}", JSONObject.toJSONString(groupList));
             for (Group groupInfo : groupList) {
                 //检查功能开关
                 ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "weibo");
