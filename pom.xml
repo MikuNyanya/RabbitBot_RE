@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.mikulink</groupId>
-    <artifactId>RabbitBot_RE</artifactId>
-    <version>v1.1.0</version>
-    <name>RabbitBot_RE</name>
+    <groupId>cn.mikulinkS</groupId>
+    <artifactId>RabbitBot_RE_S</artifactId>
+    <version>v1.0.0</version>
+    <name>RabbitBot_RE_S</name>
     <description>for the Resien</description>
     <packaging>jar</packaging>
     <properties>

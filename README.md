@@ -49,6 +49,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 * 生成二维码
 * 每日人品
 * 塔罗牌(伪)
+* B站视频动态推送
 
 ### 计划
 - [x] 自行解析pixiv，不再依靠第三方api

@@ -75,6 +75,29 @@ public class ImageService {
     }
 
     /**
+     * 压缩图片至指定尺寸
+     *
+     * @param localImagePath 本地图片路径
+     * @param width          长度
+     * @param height         高度
+     * @return 压缩后的图片路径
+     */
+    public String thumbnailsOfSize(String localImagePath, Integer width, Integer height) throws IOException {
+        //获取图片名称
+        String imageFullName = FileUtil.getFileName(localImagePath);
+        //生成修改后的文件名和路径，后缀为jpg
+        imageFullName = imageFullName.substring(0, imageFullName.lastIndexOf("."));
+        String scaleImgName = ConstantImage.IMAGE_SCALE_PREFIX + imageFullName + ".jpg";
+        String scaleImgPath = ConstantImage.DEFAULT_IMAGE_SCALE_SAVE_PATH + File.separator + scaleImgName;
+        if (!FileUtil.exists(scaleImgPath)) {
+            //压缩图片尺寸，实际上这个方法的作用是向指定尺寸数值靠拢，比例不会变，取长宽中最接近指定数值的一方为准
+            Thumbnails.of(localImagePath).size(width, height).toFile(scaleImgPath);
+        }
+        return scaleImgPath;
+    }
+
+
+    /**
      * 根据q号获取头像CQ码，获取不到会返回空
      * 大概100x100
      * 使用的是腾讯自家链接

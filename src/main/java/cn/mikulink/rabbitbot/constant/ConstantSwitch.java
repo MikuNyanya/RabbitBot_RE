@@ -27,6 +27,7 @@ public class ConstantSwitch extends ConstantCommon {
         put("pixivRank", "p站日榜推送");
         put("pixivR18", "p站r18图片开关");
         put("loliconApp", "p站图片推送");
+        put("biliVideo","B站视频动态推送开关");
     }};
 
     public static final List<String> SWITCH_PARAM_ERR = Arrays.asList(

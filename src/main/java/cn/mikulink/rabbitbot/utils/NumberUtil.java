@@ -54,6 +54,9 @@ public class NumberUtil {
      * @return 输出数字
      */
     public static Double toDouble(Object obj) {
+        if(null == obj){
+            return null;
+        }
         String s = String.valueOf(obj);
         if (StringUtil.isEmpty(s)) {
             return null;

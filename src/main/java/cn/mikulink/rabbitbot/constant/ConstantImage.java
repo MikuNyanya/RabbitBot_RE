@@ -18,6 +18,8 @@ public class ConstantImage extends ConstantCommon {
     public static final String IMAGE_Pixiv_SAVE_PATH = "data/images/pixiv";
     //Stock图片存放目录
     public static final String IMAGE_STOCK_SAVE_PATH = "data/images/stock";
+    //B站图片存放目录
+    public static final String IMAGE_BILIBILI_SAVE_PATH = "data/images/bilibili";
 
     //经过处理的图片前缀
     public static String IMAGE_SCALE_PREFIX = "rabbit_scale_";
