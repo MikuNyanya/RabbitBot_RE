@@ -13,4 +13,10 @@
 
     <!--定时器配置-->
     <import resource="spring-quartz.xml"/>
+
+    <import resource="spring-redis.xml"/>
+
+
+
+
 </beans>

@@ -14,9 +14,36 @@
         <spring.version>5.2.8.RELEASE</spring.version>
         <slf4j.version>1.7.21</slf4j.version>
         <logback.version>1.1.7</logback.version>
+        <!--reids-->
+        <spring.redis.version>1.6.0.RELEASE</spring.redis.version>
+        <jedis.version>2.7.2</jedis.version>
+        <commons.version>2.4.2</commons.version>
     </properties>
 
     <dependencies>
+        <!--redis-->
+        <!-- config redis data and client jar-->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>${spring.redis.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>${commons.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
+        </dependency>
+
+
+
+
         <!-- Quartz是一个开源的作业调度框架-->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -85,12 +112,12 @@
         <dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-core-jvm</artifactId>
-            <version>2.4.0</version>
+            <version>2.6.4</version>
         </dependency>
         <dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-core-api-jvm</artifactId>
-            <version>2.4.0</version>
+            <version>2.6.4</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>net.mamoe</groupId>-->
