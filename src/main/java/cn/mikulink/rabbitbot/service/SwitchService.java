@@ -2,9 +2,12 @@ package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
+import cn.mikulink.rabbitbot.constant.ConstantRedis;
 import cn.mikulink.rabbitbot.constant.ConstantSwitch;
 import cn.mikulink.rabbitbot.entity.ReString;
+import cn.mikulink.rabbitbot.entity.SwitchEntity;
 import cn.mikulink.rabbitbot.filemanage.FileManagerSwitch;
+import cn.mikulink.rabbitbot.redis.RedisBasic;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.Contact;
@@ -32,6 +35,8 @@ public class SwitchService {
 
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private RedisBasic redisBasic;
 
     public ReString setSwitch(String switchName, String switchValue) throws IOException {
         return setSwitch(switchName, switchValue, null);
@@ -45,10 +50,22 @@ public class SwitchService {
      * @param groupId     群id,每个群会有一个单独的开关配置
      * @return 执行结果
      */
-    public ReString setSwitch(String switchName, String switchValue, Long groupId) throws IOException {
+    public ReString setSwitch(String switchName, String switchValue, Long groupId)
+            throws IOException {
+
         FileManagerSwitch.setSwitch(switchName, switchValue, groupId);
+
         return new ReString(true);
     }
+
+    public ReString setSwitch(SwitchEntity switchEntity, Long groupId) {
+        redisBasic.putHash(ConstantRedis.SWITCH+groupId.toString()
+                ,groupId.toString(), switchEntity);
+        return new ReString(true);
+    }
+
+
+
 
     /**
      * 获取开关值

@@ -47,7 +47,8 @@ public class SwitchCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
+    public Message execute(User sender, ArrayList<String> args,
+                           MessageChain messageChain, Contact subject) {
         Long qId = sender.getId();
         //查看配置是否已被最高权限强制统一接管
         if (switchService.switchFarceCheck() && !rabbitBotService.isMaster(qId)) {
@@ -95,6 +96,8 @@ public class SwitchCommand extends BaseEveryWhereCommand {
 
         //执行开关操作
         try {
+
+
             switchService.setSwitch(switchName, switchValue, groupId);
         } catch (Exception ex) {
             logger.error(ConstantSwitch.SWITCH_SET_ERROR + ex.toString(), ex);

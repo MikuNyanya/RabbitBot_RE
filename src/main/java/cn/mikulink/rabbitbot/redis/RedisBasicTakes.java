@@ -2,14 +2,14 @@ package cn.mikulink.rabbitbot.redis;
 
 import java.util.List;
 
-interface RedisBasicTakes<H,K,V> {
+public interface RedisBasicTakes<H,K,V> {
     //增
     public void add(K key,String value);
     public void addObj(H objectKey,K key,V object);
     //删
     public void delete(K key);
     public void delete(List<K> listKeys);
-    public void deleteObj(H objecyKey,K key);
+    public void deletObj(H objecyKey,K key);
     //改
     public void update(K key,String value);
     public void updateObj(H objectKey,K key,V object);

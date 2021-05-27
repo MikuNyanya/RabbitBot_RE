@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * @date 2020/8/31 10:50
  * for the Reisen
  * <p>
- * 微博消息相关
+ * bilibili消息相关
  */
 @Command
 public class BilibiliCommand implements GroupCommand {
