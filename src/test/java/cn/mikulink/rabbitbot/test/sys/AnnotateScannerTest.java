@@ -11,9 +11,6 @@ public class AnnotateScannerTest {
     public void test(){
         try {
             ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
-
-
-
             System.out.println("");
         } catch (Exception ex) {
             ex.printStackTrace();

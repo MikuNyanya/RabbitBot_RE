@@ -30,6 +30,12 @@ public class ConstantSwitch extends ConstantCommon {
         put("biliVideo","B站视频动态推送开关");
     }};
 
+
+
+
+
+
+
     public static final List<String> SWITCH_PARAM_ERR = Arrays.asList(
             "开关参数有误",
             "参数不正确",

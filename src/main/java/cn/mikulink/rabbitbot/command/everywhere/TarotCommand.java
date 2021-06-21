@@ -34,10 +34,14 @@ public class TarotCommand implements EverywhereCommand {
     @Autowired
     private TarotService tarotService;
 
+
     @Override
     public CommandProperties properties() {
         return new CommandProperties("tarot", "塔罗牌");
     }
+
+
+
 
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {

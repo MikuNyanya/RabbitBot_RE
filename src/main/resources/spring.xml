@@ -12,11 +12,10 @@
     <context:property-placeholder location="classpath:rabbitbot_re.properties" file-encoding="UTF-8"/>
 
     <!--定时器配置-->
-    <import resource="spring-quartz.xml"/>
+<!--    <import resource="spring-quartz.xml"/>-->
 
-    <import resource="spring-redis.xml"/>
+<!--    <import resource="spring-redis.xml"/>-->
 
-
-
+<!--    <import resource="spring-rabbit.xml"/>-->
 
 </beans>

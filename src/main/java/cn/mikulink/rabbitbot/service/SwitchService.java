@@ -2,12 +2,9 @@ package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
-import cn.mikulink.rabbitbot.constant.ConstantRedis;
 import cn.mikulink.rabbitbot.constant.ConstantSwitch;
 import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.entity.SwitchEntity;
 import cn.mikulink.rabbitbot.filemanage.FileManagerSwitch;
-import cn.mikulink.rabbitbot.redis.RedisBasic;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.Contact;
@@ -35,8 +32,7 @@ public class SwitchService {
 
     @Autowired
     private RabbitBotService rabbitBotService;
-    @Autowired
-    private RedisBasic redisBasic;
+
 
     public ReString setSwitch(String switchName, String switchValue) throws IOException {
         return setSwitch(switchName, switchValue, null);
@@ -58,11 +54,7 @@ public class SwitchService {
         return new ReString(true);
     }
 
-    public ReString setSwitch(SwitchEntity switchEntity, Long groupId) {
-        redisBasic.putHash(ConstantRedis.SWITCH+groupId.toString()
-                ,groupId.toString(), switchEntity);
-        return new ReString(true);
-    }
+
 
 
 
