@@ -10,7 +10,8 @@ import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.RegexUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.internal.message.OnlineGroupImageImpl;
+import net.mamoe.mirai.message.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -85,11 +86,38 @@ public class KeyWordService {
      * @return bol值 表示有没有进行群复读
      */
     private boolean groupRepeater(GroupMessageEvent event) {
-        //接收到的群消息
-        String groupMsg = event.getMessage().contentToString();
-        if ("[图片]".equalsIgnoreCase(groupMsg)) {
+        //接收并解析到的群消息
+        boolean isFirst = true;
+        StringBuilder sbMsg = new StringBuilder();
+        for (SingleMessage singleMessage : event.getMessage()) {
+            //第一个元素为信息id，忽略
+            if (isFirst) {
+                isFirst = false;
+                continue;
+            }
+
+            //目前已知三种消息类型
+            //net.mamoe.mirai.message.data.Face
+            //net.mamoe.mirai.message.data.PlainText
+            //net.mamoe.mirai.internal.message.OnlineGroupImageImpl
+            if (singleMessage.getClass() == net.mamoe.mirai.message.data.PlainText.class) {
+                //普通文本 直接拼接
+                sbMsg.append(((PlainText) singleMessage).getContent());
+            } else if (singleMessage.getClass() == net.mamoe.mirai.internal.message.OnlineGroupImageImpl.class) {
+                //图片
+                sbMsg.append(((OnlineGroupImageImpl) singleMessage).getImageId());
+            } else if (singleMessage.getClass() == net.mamoe.mirai.message.data.Face.class) {
+                //qq表情
+                sbMsg.append(((Face) singleMessage).getId());
+            }
+        }
+
+        String groupMsg = sbMsg.toString();
+        //如果消息为空 则忽略本次复读
+        if (StringUtil.isEmpty(groupMsg)) {
             return false;
         }
+
         Long groupId = event.getGroup().getId();
 
         //第一次消息初始化
@@ -108,22 +136,25 @@ public class KeyWordService {
             return false;
         }
 
-        //概率复读
+        MessageChain resultMsg = event.getMessage();
+        //概率打断复读，100%对复读打断复读的语句做出反应
+        if (ConstantRepeater.REPEATER_KILLER_LIST.contains(groupMsg) || ConstantRepeater.REPEATER_STOP_LIST.contains(groupMsg)) {
+            resultMsg = MessageUtils.newChain();
+            //打断复读的复读
+            resultMsg = resultMsg.plus(RandomUtil.rollStrFromList(ConstantRepeater.REPEATER_STOP_LIST));
+        } else if (RandomUtil.rollBoolean(-80)) {
+            resultMsg = MessageUtils.newChain();
+            //打断复读
+            resultMsg = resultMsg.plus(RandomUtil.rollStrFromList(ConstantRepeater.REPEATER_KILLER_LIST));
+        }
+
+        //判定复读概率
         if (!RandomUtil.rollBoolean(20)) {
             return false;
         }
 
-        //概率打断复读，100%对复读打断复读的语句做出反应
-        if (ConstantRepeater.REPEATER_KILLER_LIST.contains(groupMsg) || ConstantRepeater.REPEATER_STOP_LIST.contains(groupMsg)) {
-            //打断复读的复读
-            groupMsg = RandomUtil.rollStrFromList(ConstantRepeater.REPEATER_STOP_LIST);
-        } else if (RandomUtil.rollBoolean(-80)) {
-            //打断复读
-            groupMsg = RandomUtil.rollStrFromList(ConstantRepeater.REPEATER_KILLER_LIST);
-        }
-
-        //正常复读
-        event.getSubject().sendMessage(groupMsg);
+        //进行复读
+        event.getSubject().sendMessage(resultMsg);
         //复读一次后，重置复读计数
         LAST_MSG_MAP.put(groupId, new String[2]);
         return true;

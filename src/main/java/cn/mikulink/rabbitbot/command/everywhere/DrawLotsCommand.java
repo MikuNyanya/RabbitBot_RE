@@ -41,6 +41,7 @@ public class DrawLotsCommand implements EverywhereCommand {
 
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
+        
         String userNick = sender.getNick();
         MessageChain result = MessageUtils.newChain();
         try {

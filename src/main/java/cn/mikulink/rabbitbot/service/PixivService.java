@@ -259,7 +259,7 @@ public class PixivService {
 
         StringBuilder resultStr = new StringBuilder();
         if (1 < imageInfo.getPageCount()) {
-            resultStr.append("\n该Pid包含多张图片");
+            resultStr.append("\n该Pid包含").append(imageInfo.getPageCount()).append("张图片");
         }
         if (StringUtil.isNotEmpty(similarity)) {
             resultStr.append("\n[相似度] ").append(similarity).append("%");
@@ -484,7 +484,6 @@ public class PixivService {
      */
     public String downloadPixivImgByPixivImgUrl(String url, Long pixivId) throws IOException {
         logger.info("Pixiv image download:" + url);
-        //加入p站防爬链
         //目前一共遇到的
         //1.似乎是新连接，最近UI改了 https://i.pximg.net/img-original/img/2020/02/17/22/07/00/79561788_p0.jpg
         //Referer: https://www.pixiv.net/artworks/79561788
@@ -493,6 +492,7 @@ public class PixivService {
         if (url.contains("i-cf.pximg.net")) {
             url = url.replace("i-cf.pximg.net", "i.pximg.net");
         }
+        //加入p站防爬链
         header.put("referer", "https://www.pixiv.net/artworks/" + pixivId);
         // 创建代理
         Proxy proxy = HttpUtil.getProxy();

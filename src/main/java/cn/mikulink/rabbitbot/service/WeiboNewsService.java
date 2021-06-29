@@ -30,9 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * create by MikuLink on 2020/1/9 16:42
@@ -96,16 +94,26 @@ public class WeiboNewsService {
             //解析微博报文
             MessageChain msgChain = null;
 
+            Map<Long, Long> groupReMap = new HashMap<>();
+
             //给每个群推送消息
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group groupInfo : groupList) {
+                Long groupId = groupInfo.getId();
+
+                //针对偶尔双发问题处理
+                if (groupReMap.containsKey(groupId)) {
+                    continue;
+                }
+                groupReMap.put(groupId, groupId);
+
                 //检查功能开关
                 ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "weibo");
                 if (!reStringSwitch.isSuccess()) {
                     continue;
                 }
                 //检查该群是否订阅了这个微博账号
-                if (!configService.checkWeiboPushId(groupInfo.getId(), info.getUser().getId())) {
+                if (!configService.checkWeiboPushId(groupId, info.getUser().getId())) {
                     continue;
                 }
 
