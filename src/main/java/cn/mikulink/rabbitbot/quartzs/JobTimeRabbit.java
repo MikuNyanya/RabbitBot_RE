@@ -36,6 +36,8 @@ public class JobTimeRabbit {
     //兔叽
     @Value("${bot.name.cn:兔叽}")
     public String rabbit_bot_name;
+    @Value("${proxy.check:off}")
+    private String proxyCheck;
     //当前时间，方便其他地方使用
     private int hour_now = 0;
 
@@ -49,6 +51,8 @@ public class JobTimeRabbit {
     private SwitchService switchService;
     @Autowired
     private WeiXinAppMsgService weiXinAppMsgService;
+    @Autowired
+    private ProxyService proxyService;
 
     public void execute() {
         //刷新当前时间
@@ -71,6 +75,9 @@ public class JobTimeRabbit {
 
         //微信公众平台cookie刷新
         refreshWeixinAppCookie();
+
+        //代理检测
+        proxyCheck();
 
         //pixiv日榜，最好放在最后执行，要下载图片
         //也可以另起一个线程，但我懒
@@ -219,6 +226,13 @@ public class JobTimeRabbit {
         //微信公众平台那边，长时间没有操作，cookie就会失效，具体期限比较短，建议12小时内至少进行一次动作，保持cookie有效
         //每小时刷新一次
         weiXinAppMsgService.refreshCookie();
+    }
+
+    //代理检测是否可用
+    private void proxyCheck() {
+        if (ConstantCommon.ON.equalsIgnoreCase(proxyCheck)) {
+            proxyService.proxyCheck();
+        }
     }
 
     //P站日榜兔子

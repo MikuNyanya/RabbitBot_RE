@@ -12,6 +12,7 @@ import cn.mikulink.rabbitbot.utils.*;
 import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,9 @@ public class ImageService {
 
     @Value("${saucenao.key}")
     private String saucenaoKey;
+
+    @Autowired
+    private ProxyService proxyService;
 
     /**
      * 随机获取一张鸽子图
@@ -190,6 +194,7 @@ public class ImageService {
             request.setAccessToken(saucenaoKey);
             request.setNumres(10);
             request.setUrl(imgUrl);
+            request.setProxy(proxyService.getProxy());
 
             request.doRequest();
             SaucenaoSearchResult saucenaoSearchResult = request.getEntity();

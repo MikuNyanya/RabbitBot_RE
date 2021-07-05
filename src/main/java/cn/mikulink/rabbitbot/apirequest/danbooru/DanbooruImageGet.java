@@ -40,7 +40,6 @@ public class DanbooruImageGet extends BaseRequest {
      */
     public void doRequest() throws IOException {
         //通过请求获取到返回的页面
-        Proxy proxy = HttpUtil.getProxy();
         String htmlStr = new String(HttpsUtil.doGet(URL + danbooruId, proxy));
         //使用jsoup解析html
         Document document = Jsoup.parse(htmlStr);

@@ -5,7 +5,6 @@ import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.utils.FileUtil;
-import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.ImageUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -30,6 +29,8 @@ public class DanbooruService {
 
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private ProxyService proxyService;
 
     /**
      * 拼装识图结果_Danbooru
@@ -80,10 +81,11 @@ public class DanbooruService {
             DanbooruImageGet request = new DanbooruImageGet();
             request.setDanbooruId(danbooruId);
             request.doRequest();
+            request.setProxy(proxyService.getProxy());
             String imageUrl = request.getDanbooruImageUrl();
 
-            //如果已经下载过了，直接返回CQ
-            //先检测是否已下载，如果已下载直接返回CQ，以p站图片名称为key
+            //如果已经下载过了，直接返回
+            //先检测是否已下载，如果已下载直接返回，以p站图片名称为key
             String imgFileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
             String localDanbooruFilePath = ConstantImage.DEFAULT_IMAGE_SAVE_PATH + File.separator + "danbooru" + File.separator + imgFileName;
             if (FileUtil.exists(localDanbooruFilePath)) {
@@ -91,7 +93,11 @@ public class DanbooruService {
             }
 
             //下载图片
-            String localUrl = ImageUtil.downloadImage(null, imageUrl, ConstantImage.DEFAULT_IMAGE_SAVE_PATH + File.separator + "danbooru", null, HttpUtil.getProxy());
+            String localUrl = ImageUtil.downloadImage(null,
+                    imageUrl,
+                    ConstantImage.DEFAULT_IMAGE_SAVE_PATH + File.separator + "danbooru",
+                    null,
+                    proxyService.getProxy());
             if (StringUtil.isNotEmpty(localUrl)) {
                 return localUrl;
             }

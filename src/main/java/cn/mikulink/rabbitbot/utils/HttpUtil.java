@@ -150,48 +150,4 @@ public class HttpUtil {
         }
         return "?" + urlEncode.substring(1);
     }
-
-    /**
-     * 检查端口是否可用
-     * 经过测试，好像只要端口被占用了就判定链接成功
-     * ssr不开局域网端口，或者开了以后没开代理，端口也是通的
-     *
-     * @param address 地址
-     * @param prot    端口
-     * @return 是否可用
-     */
-    public static boolean checkProt(String address, int prot) {
-        if (StringUtil.isEmpty(address)) {
-            return false;
-        }
-        Socket socket = new Socket();
-        try {
-            socket.connect(new InetSocketAddress(address, prot));
-            socket.close();
-            return true;
-        } catch (IOException ioEx) {
-            //没那么重要，直接打在控制台里
-            ioEx.printStackTrace();
-        }
-        try {
-            socket.close();
-        } catch (IOException ioEx) {
-            //没那么重要，直接打在控制台里
-            ioEx.printStackTrace();
-        }
-
-        return false;
-    }
-
-    /**
-     * 获取代理信息
-     */
-    public static Proxy getProxy() {
-        // 创建代理 todo 地址和端口写为配置
-        Proxy proxy = null;
-        if (HttpUtil.checkProt("127.0.0.1", 31051)) {
-            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 31051));
-        }
-        return proxy;
-    }
 }

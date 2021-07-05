@@ -56,7 +56,7 @@ public class PixivUserSearch extends BaseRequest {
         header.put("referer", String.format("https://www.pixiv.net/tags/%s/artworks?s_mode=s_tag", pixivUserNick));
 
         //返回的是一个html
-        byte[] resultBytes = HttpsUtil.doGet(String.format(URL, pixivUserNick, p), header, HttpUtil.getProxy());
+        byte[] resultBytes = HttpsUtil.doGet(String.format(URL, pixivUserNick, p), header, proxy);
         body = new String(resultBytes);
         //使用jsoup解析html
         Document document = Jsoup.parse(body);

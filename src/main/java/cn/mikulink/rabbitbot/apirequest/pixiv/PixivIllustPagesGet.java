@@ -51,8 +51,6 @@ public class PixivIllustPagesGet extends BaseRequest {
      */
     public void doRequest() throws RabbitApiException, IOException {
         if (null == pixivId) return;
-        //代理
-        Proxy proxy = HttpUtil.getProxy();
 
         //获取pid图片列表 返回的是一个标准的json文本
         byte[] resultBytes = HttpsUtil.doGet(String.format(URL, pixivId), header, proxy);

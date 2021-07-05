@@ -68,8 +68,6 @@ public class PixivIllustRankGet extends BaseRequest {
     public void doRequest() throws IOException {
         //拼装参数
         addParam();
-        //代理
-        Proxy proxy = HttpUtil.getProxy();
         //爬虫获取排行榜信息
         byte[] resultBytes = HttpsUtil.doGet(URL + HttpUtil.parseUrlEncode(param), proxy);
         body = new String(resultBytes);

@@ -2,7 +2,6 @@ package cn.mikulink.rabbitbot.apirequest.pixiv;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
-import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
@@ -45,7 +44,7 @@ public class PixivIllustUserGet extends BaseRequest {
         if (StringUtil.isEmpty(userId) || !NumberUtil.isNumberOnly(userId)) return;
 
         //获取数据
-        byte[] resultBytes = HttpsUtil.doGet(String.format(URL, userId), header, HttpUtil.getProxy());
+        byte[] resultBytes = HttpsUtil.doGet(String.format(URL, userId), header, proxy);
         body = new String(resultBytes);
 
         Map<?, ?> rootMap = JSONObject.parseObject(body, HashMap.class);

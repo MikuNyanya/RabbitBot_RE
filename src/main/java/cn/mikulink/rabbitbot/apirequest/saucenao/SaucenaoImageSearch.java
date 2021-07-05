@@ -52,7 +52,7 @@ public class SaucenaoImageSearch extends BaseRequest {
         //拼装参数
         addParam();
         //请求
-        byte[] resultBytes = HttpsUtil.doGet(URL + HttpUtil.parseUrlEncode(param),HttpUtil.getProxy());
+        byte[] resultBytes = HttpsUtil.doGet(URL + HttpUtil.parseUrlEncode(param),proxy);
         body = new String(resultBytes);
 
         //记录接口请求与返回日志

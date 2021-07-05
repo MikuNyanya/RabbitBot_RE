@@ -2,7 +2,6 @@ package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.apirequest.pixiv.*;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
@@ -17,9 +16,6 @@ import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
-import net.mamoe.mirai.message.data.PlainText;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +51,9 @@ public class PixivService {
     private String pixivCookie;
 
     //pixiv登录页面，获取post_key用
-    private static final String PIXIV_LOGIN_DATA_URL = "https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index";
+//    private static final String PIXIV_LOGIN_DATA_URL = "https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index";
     //pixiv登录post链接
-    private static final String PIXIV_LOGIN_POST_URL = "https://accounts.pixiv.net/api/login?lang=zh";
+//    private static final String PIXIV_LOGIN_POST_URL = "https://accounts.pixiv.net/api/login?lang=zh";
 
     @Autowired
     private ImageService imageService;
@@ -65,6 +61,8 @@ public class PixivService {
     private RabbitBotService rabbitBotService;
     @Autowired
     private SwitchService switchService;
+    @Autowired
+    private ProxyService proxyService;
 
     /**
      * * 查询p站图片id并返回结果
@@ -79,6 +77,7 @@ public class PixivService {
         }
         //根据pid获取图片列表
         PixivIllustGet request = new PixivIllustGet(pid);
+        request.setProxy(proxyService.getProxy());
         request.doRequest();
         return request.getPixivImageInfo();
     }
@@ -96,6 +95,7 @@ public class PixivService {
         PixivIllustTagGet request = new PixivIllustTagGet();
         request.setWord(tag);
         request.setP(1);
+        request.setProxy(proxyService.getProxy());
         request.doRequest();
         //总结果数量
         int total = request.getTotal();
@@ -121,6 +121,7 @@ public class PixivService {
         request = new PixivIllustTagGet();
         request.setWord(tag);
         request.setP(randomPage);
+        request.setProxy(proxyService.getProxy());
         request.doRequest();
         List<PixivImageInfo> responses = request.parseImageList();
 
@@ -179,6 +180,7 @@ public class PixivService {
         request.setMode("daily");
         request.setContent("illust");
         request.setPageSize(pageSize);
+        request.setProxy(proxyService.getProxy());
         request.doRequest();
         List<PixivRankImageInfo> rankImageList = request.getResponseList();
 
@@ -309,6 +311,7 @@ public class PixivService {
         PixivUserSearch request = new PixivUserSearch();
         request.getHeader().put("cookie", pixivCookie);
         request.setPixivUserNick(userNick);
+        request.setProxy(proxyService.getProxy());
         request.doRequest();
         return request.getResponseList();
     }
@@ -339,6 +342,7 @@ public class PixivService {
         PixivIllustUserGet request = new PixivIllustUserGet();
         request.setUserId(pixivUserId);
         request.getHeader().put("cookie", pixivCookie);
+        request.setProxy(proxyService.getProxy());
         request.doRequest();
         List<String> allPid = request.getResponseList();
 
@@ -451,6 +455,7 @@ public class PixivService {
             Map<String, String> header = new HashMap<>();
             header.put("cookie", pixivCookie);
             request.setHeader(header);
+            request.setProxy(proxyService.getProxy());
             request.doRequest();
         } catch (RabbitApiException rabApiEx) {
             logger.warn("Pixiv downloadPixivImgs apierr msg:{}", rabApiEx.getMessage(), rabApiEx);
@@ -495,7 +500,7 @@ public class PixivService {
         //加入p站防爬链
         header.put("referer", "https://www.pixiv.net/artworks/" + pixivId);
         // 创建代理
-        Proxy proxy = HttpUtil.getProxy();
+        Proxy proxy = proxyService.getProxy();
         //下载图片
         return ImageUtil.downloadImage(header, url, ConstantImage.DEFAULT_IMAGE_SAVE_PATH + File.separator + "pixiv", null, proxy);
     }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,4 +24,6 @@ public class BaseRequest {
     protected Map<String, String> header = new HashMap<>();
     //接口参数
     protected JSONObject param = new JSONObject();
+    //代理
+    protected Proxy proxy = null;
 }
