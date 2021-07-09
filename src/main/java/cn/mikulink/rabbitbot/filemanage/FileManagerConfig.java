@@ -160,6 +160,8 @@ public class FileManagerConfig {
             FileManagerPixivMember.loadFile();
             //塔罗牌
             FileManagerTarot.loadFile();
+            //黑名单
+            FileManagerBlackList.loadFile();
 
             //压缩图片文件夹检测
             FileUtil.fileDirsCheck(ConstantImage.DEFAULT_IMAGE_SCALE_SAVE_PATH);
