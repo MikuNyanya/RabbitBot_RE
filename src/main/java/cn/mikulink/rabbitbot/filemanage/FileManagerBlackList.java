@@ -72,7 +72,7 @@ public class FileManagerBlackList {
             tempNewPid.add(pidStr);
         }
         //创建写入流
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ConstantFile.PIXIV_SETU_FILE_PATH, false)));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ConstantFile.BLACK_LIST_FILE_PATH, false)));
         for (Long qid : tempBlackList) {
             out.write("\r\n" + qid);
         }
@@ -102,7 +102,7 @@ public class FileManagerBlackList {
             tempBlackList.remove(qid);
         }
         //创建写入流
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ConstantFile.PIXIV_SETU_FILE_PATH, false)));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ConstantFile.BLACK_LIST_FILE_PATH, false)));
         for (Long qid : tempBlackList) {
             out.write("\r\n" + qid);
         }

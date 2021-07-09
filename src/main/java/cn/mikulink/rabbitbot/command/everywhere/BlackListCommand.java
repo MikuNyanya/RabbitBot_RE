@@ -68,7 +68,7 @@ public class BlackListCommand extends BaseEveryWhereCommand {
             case ConstantCommon.REMOVE:
                 //移除黑名单
                 blackListAdd(userIds, ConstantBlackList.REMOVE);
-                return new PlainText(ConstantBilibili.UNPULL_SUCCESS);
+                return new PlainText(ConstantBlackList.REMOVE_SUCCESS);
         }
         return null;
     }
