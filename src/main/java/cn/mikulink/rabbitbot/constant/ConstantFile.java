@@ -33,6 +33,8 @@ public class ConstantFile extends ConstantCommon {
     public static final String APPEND_MORSECODE_FILE_PATH = "src/main/resources/files/morsecode.txt";
     //塔罗牌 文件相对路径
     public static final String APPEND_TAROT_FILE_PATH = "src/main/resources/files/tarot.txt";
+    //黑名单列表 文件相对路径
+    public static final String BLACK_LIST_FILE_PATH = "src/main/resources/files/black_list.txt";
 
     //加载文件 到系统
     public static final String FILE_COMMAND_LOAD = "load";

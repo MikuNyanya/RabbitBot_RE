@@ -61,6 +61,11 @@ public class MessageEvents extends SimpleListenerHost {
 
         logger.info("{接收到其他消息} userId:{},userNick:{},msg:{}", sender.getId(), sender.getNick(), event.getMessage().toString());
 
+        //黑名单，用来防止和其他机器人死循环响应，或者屏蔽恶意人员
+        if (ConstantBlackList.BLACK_LIST.contains(sender.getId())) {
+            return ListeningStatus.LISTENING;
+        }
+
         //是否指令模式
         if (!commandConfig.isCommand(oriMsg)) {
             return ListeningStatus.LISTENING;
@@ -94,6 +99,11 @@ public class MessageEvents extends SimpleListenerHost {
         String oriMsg = event.getMessage().contentToString();
 
         logger.info("{接收到好友消息} userId:{},userNick:{},msg:{}", sender.getId(), sender.getNick(), event.getMessage().toString());
+
+        //黑名单，用来防止和其他机器人死循环响应，或者屏蔽恶意人员
+        if (ConstantBlackList.BLACK_LIST.contains(sender.getId())) {
+            return ListeningStatus.LISTENING;
+        }
 
         //是否指令模式
         if (!commandConfig.isCommand(oriMsg)) {
@@ -173,6 +183,11 @@ public class MessageEvents extends SimpleListenerHost {
         String oriMsg = event.getMessage().contentToString();
 
         logger.info("{接收到临时消息} userId:{},userNick:{},msg:{}", sender.getId(), sender.getNick(), event.getMessage().toString());
+
+        //黑名单，用来防止和其他机器人死循环响应，或者屏蔽恶意人员
+        if (ConstantBlackList.BLACK_LIST.contains(sender.getId())) {
+            return ListeningStatus.LISTENING;
+        }
 
         //是否指令模式
         if (!commandConfig.isCommand(oriMsg)) {

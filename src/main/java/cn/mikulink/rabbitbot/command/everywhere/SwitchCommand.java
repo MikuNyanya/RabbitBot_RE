@@ -67,6 +67,10 @@ public class SwitchCommand extends BaseEveryWhereCommand {
                 return new PlainText(RandomUtil.rollStrFromList(ConstantSwitch.COMMAND_ADMIN_ONLY));
             }
             groupId = subject.getId();
+        }else{
+            if (!rabbitBotService.isMaster(qId)) {
+                return new PlainText(RandomUtil.rollStrFromList(ConstantSwitch.COMMAND_ADMIN_ONLY));
+            }
         }
 
         //没有带参数，返回开关指令说明信息

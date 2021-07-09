@@ -135,9 +135,7 @@ public class BilibiliService {
                 try {
                     groupInfo.sendMessage(msgChain);
                 } catch (kotlinx.coroutines.TimeoutCancellationException ex) {
-                    logger.warn("B站视频动态消息mirai发送超时，即将重试");
-                    //mirai发送超时，重试一次
-                    groupInfo.sendMessage(msgChain);
+                    logger.warn("B站视频动态消息mirai发送超时");
                 }
 
                 //每个群之间间隔半秒意思一下

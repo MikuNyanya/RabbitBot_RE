@@ -25,6 +25,10 @@ public class ConstantCommon {
     public static final String EXEC = "exec";
     //文本-设置
     public static final String SET = "set";
+    //文本-添加
+    public static final String ADD = "add";
+    //文本-移除
+    public static final String REMOVE = "remove";
     //文本-删除
     public static final String DELETE = "delete";
     //文本-删除(简写)
