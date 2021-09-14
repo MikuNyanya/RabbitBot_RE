@@ -23,4 +23,8 @@ public class ConfigGroupInfo {
      * 订阅的B站视频动态uid列表
      */
     List<Long> biliPushIds = new ArrayList<>();
+    /**
+     * 群公告
+     */
+    private String groupNotice;
 }

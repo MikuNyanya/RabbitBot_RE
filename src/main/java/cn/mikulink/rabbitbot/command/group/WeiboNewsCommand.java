@@ -52,12 +52,16 @@ public class WeiboNewsCommand implements GroupCommand {
     }
 
     @Override
-    public Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
+    public Message permissionCheck(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
         //权限限制
         if (!rabbitBotService.isMaster(sender.getId())) {
             return new PlainText(RandomUtil.rollStrFromList(ConstantCommon.COMMAND_MASTER_ONLY));
         }
+        return null;
+    }
 
+    @Override
+    public Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
         if (null == args || args.size() == 0) {
             return new PlainText("[.wbn (on,off,lasttag,refreshSinceId,token,exec,pull,unpull)]");
         }

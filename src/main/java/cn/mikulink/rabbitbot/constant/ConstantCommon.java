@@ -36,10 +36,13 @@ public class ConstantCommon {
 
     //群主
     public static final String OWNER = "OWNER";
+    public static final Integer OWNER_NUM = 2;
     //管理
     public static final String ADMIN = "ADMINISTRATOR";
+    public static final Integer ADMIN_NUM = 1;
     //群员
     public static final String MEMBER = "MEMBER";
+    public static final Integer MEMBER_NUM = 0;
 
 
     public static final String ERROR_UNKONW = "未知错误";
@@ -66,6 +69,20 @@ public class ConstantCommon {
             "你无权让我执行这条指令ヽ(#`Д´)ノ",
             "这个指令需要更高的权限"
     );
+    public static final List<String> COMMAND_GROUP_OWNER_ONLY = Arrays.asList(
+            "权限不足",
+            "访问拒绝，权限不足",
+            "这个指令需要更高的权限",
+            "只有群主才可以使用这个指令",
+            "让你们群的头头跟我说话ヽ(#`Д´)ノ"
+    );
+    public static final List<String> COMMAND_GROUP_ADMIN_ONLY = Arrays.asList(
+            "权限不足",
+            "访问拒绝，权限不足",
+            "这个指令需要更高的权限",
+            "只有群管理才可以使用这个指令"
+    );
+
     public static final String PARAM_ERROR = "参数无效";
     public static final String DONE = "执行完毕";
     public static final String GAME_PARAM_NUMBER_NOT_NULL = "你得选择一个数字";

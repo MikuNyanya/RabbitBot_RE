@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.event;
 
 
+import cn.mikulink.rabbitbot.service.GroupNoticeService;
 import cn.mikulink.rabbitbot.service.ImageService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
@@ -54,6 +55,8 @@ public class GroupEvents extends SimpleListenerHost {
     private ImageService imageService;
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private GroupNoticeService groupNoticeService;
 
 
     @Override
@@ -97,6 +100,10 @@ public class GroupEvents extends SimpleListenerHost {
 
     //群成员主动加群，被邀请加群事件业务
     private void groupMemberJoinMsg(Group group, User sender) {
+        //有人入群，发送对应群的自定义公告
+        groupNoticeService.
+
+        //如果没有自定义公告，则发送默认消息
         //获取头像
         String qlogoLocalPath = imageService.getQLogoCq(sender.getId());
         //上传头像

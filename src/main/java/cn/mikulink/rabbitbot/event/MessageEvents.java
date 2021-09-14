@@ -157,10 +157,20 @@ public class MessageEvents extends SimpleListenerHost {
         if (command == null) {
             return ListeningStatus.LISTENING;
         }
-        //执行指令并回复结果
-        Message result = command.execute(sender, getArgs(oriMsg), event.getMessage(), event.getSubject());
-        if (result != null) {
+
+        //指令参数
+        ArrayList<String> args = getArgs(oriMsg);
+
+        //判断权限
+        Message result = command.permissionCheck(sender, args, event.getMessage(), event.getSubject());
+        if (null != result) {
             event.getSubject().sendMessage(result);
+        } else {
+            //执行指令并回复结果
+            result = command.execute(sender, args, event.getMessage(), event.getSubject());
+            if (result != null) {
+                event.getSubject().sendMessage(result);
+            }
         }
         //事件拦截 防止公共消息事件再次处理
         event.intercept();

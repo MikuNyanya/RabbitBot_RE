@@ -38,6 +38,11 @@ public class CapsuleToyCommand implements GroupCommand {
     }
 
     @Override
+    public Message permissionCheck(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
+        return null;
+    }
+
+    @Override
     public Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
         Long userId = sender.getId();
         String userNick = sender.getNameCard();

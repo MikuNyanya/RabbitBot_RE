@@ -1,12 +1,12 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
+import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import net.mamoe.mirai.contact.ContactList;
-import net.mamoe.mirai.contact.Friend;
-import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.contact.*;
+import net.mamoe.mirai.internal.contact.NormalMemberImpl;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
@@ -116,6 +116,56 @@ public class RabbitBotService {
         }
     }
 
+    /**
+     * 是否为群主
+     *
+     * @param subject 群上下文
+     * @param sender  消息发送人
+     * @return 是否为群主
+     */
+    public boolean isGroupOwner(Contact subject, User sender) {
+        if (!(subject instanceof Group)) {
+            return false;
+        }
+
+        //((NormalMemberImpl) sender).getPermission()
+        //OWNER 群主 2
+        return ((NormalMemberImpl) sender).getPermission().getLevel() == ConstantCommon.OWNER_NUM;
+    }
+
+    /**
+     * 是否为群管理员
+     *
+     * @param subject 群上下文
+     * @param sender  消息发送人
+     * @return 是否为群管理员
+     */
+    public boolean isGroupAdmin(Contact subject, User sender) {
+        if (!(subject instanceof Group)) {
+            return false;
+        }
+
+        //((NormalMemberImpl) sender).getPermission()
+        //ADMINISTRATOR 管理 1
+        return ((NormalMemberImpl) sender).getPermission().getLevel() == ConstantCommon.ADMIN_NUM;
+    }
+
+    /**
+     * 是否为普通群员
+     *
+     * @param subject 群上下文
+     * @param sender  消息发送人
+     * @return 是否为普通群员
+     */
+    public boolean isGroupMember(Contact subject, User sender) {
+        if (!(subject instanceof Group)) {
+            return false;
+        }
+
+        //((NormalMemberImpl) sender).getPermission()
+        //MEMBER 群员 0
+        return ((NormalMemberImpl) sender).getPermission().getLevel() == ConstantCommon.MEMBER_NUM;
+    }
 
     /**
      * 上传图片，获取图片id

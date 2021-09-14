@@ -13,6 +13,7 @@ public class ConstantRepeater extends ConstantCommon {
     public static final List<String> REPEATER_KILLER_LIST = Arrays.asList(
             "一只兔叽及时出现，砸坏了复读机",
             "一只兔叽及时出现，打断了复读（￣▽￣）／",
+            "一只合格的兔叽应该学会如何破坏复读机",
             "Nope,不许复读",
             "兔叽咬坏了复读机",
             "人类的本质就是复读，但我是兔叽，我可不复读=v="

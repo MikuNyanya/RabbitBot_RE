@@ -3,9 +3,7 @@ package cn.mikulink.rabbitbot.command.group;
 import cn.mikulink.rabbitbot.command.GroupCommand;
 import cn.mikulink.rabbitbot.constant.ConstantBilibili;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
-import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.service.BilibiliService;
 import cn.mikulink.rabbitbot.service.ConfigService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
@@ -45,12 +43,16 @@ public class BilibiliCommand implements GroupCommand {
     }
 
     @Override
-    public Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
+    public Message permissionCheck(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
         //权限限制
         if (!rabbitBotService.isMaster(sender.getId())) {
             return new PlainText(RandomUtil.rollStrFromList(ConstantCommon.COMMAND_MASTER_ONLY));
         }
+        return null;
+    }
 
+    @Override
+    public Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
         if (null == args || args.size() == 0) {
             return new PlainText("[.bili (lastDynamicId,pull,unpull)]");
         }

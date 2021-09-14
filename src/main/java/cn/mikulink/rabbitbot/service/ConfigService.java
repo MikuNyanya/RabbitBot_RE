@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.entity.ConfigGroupInfo;
+import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -145,6 +146,41 @@ public class ConfigService {
         } catch (Exception ex) {
             logger.error("ConfigService unpullBiliUid error,groupId:{},idsStr:{}", groupId, idsStr, ex);
         }
+    }
+
+    /**
+     * 设置群公告
+     *
+     * @param groupId        群id
+     * @param groupNoticeStr 群公告
+     */
+    public ReString setGroupNotice(Long groupId, String groupNoticeStr) {
+        ConfigGroupInfo configGroupInfo = this.getConfigByGroupId(groupId);
+        if (null == configGroupInfo) {
+            configGroupInfo = new ConfigGroupInfo();
+        }
+        configGroupInfo.setGroupNotice(groupNoticeStr);
+        try {
+            FileManagerConfig.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
+        } catch (Exception ex) {
+            logger.error("ConfigService setGroupNotice error,groupId:{},groupNoticeStr:{}", groupId, groupNoticeStr, ex);
+            return new ReString(false, "群公告设置异常");
+        }
+        return new ReString(true);
+    }
+
+    /**
+     * 获取群公告
+     *
+     * @param groupId 群id
+     * @return 群公告
+     */
+    public String getGroupNotice(Long groupId) {
+        ConfigGroupInfo configGroupInfo = this.getConfigByGroupId(groupId);
+        if (null == configGroupInfo) {
+            return null;
+        }
+        return configGroupInfo.getGroupNotice();
     }
 
     private ConfigGroupInfo getConfigByGroupId(Long groupId) {

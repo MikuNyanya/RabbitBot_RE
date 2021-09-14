@@ -34,6 +34,11 @@ public class RPCommand implements GroupCommand {
     }
 
     @Override
+    public Message permissionCheck(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
+        return null;
+    }
+
+    @Override
     public Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
         //获取群员Q号
         Long groupUserId = sender.getId();
