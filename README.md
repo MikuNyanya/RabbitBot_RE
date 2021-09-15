@@ -53,6 +53,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 * 每日人品
 * 抽签
 * 塔罗牌(伪)
+* 设置入群公告
 
 ### 计划
 - [x] 自行解析pixiv，不再依靠第三方api
@@ -68,6 +69,8 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 - [x] 抽签功能
 - [x] 微博消息可选择性订阅，并且群之间配置独立
 - [x] B站视频动态推送
+- [x] 可以设置入群公告
+- [ ] 扩充应答库
 - [x] ~~鸽了，咕咕咕~~
 
 ### 指令
@@ -92,6 +95,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.猫罗牌|.猫罗牌|跟塔罗牌一样，但是换了图片|
 |.抽签|.抽签|就是抽签|
 |.world|.world 这里是兔叽广播|可以给所有群发消息|
+|.群公告|.群公告|设置和查看入群公告|
 |~~这个人~~|~~鸽了(咕)~~|~~不想补全了~~|
 
 ### 其他
