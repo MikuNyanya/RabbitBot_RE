@@ -66,8 +66,14 @@ public class NoticeSetCommand implements GroupCommand {
             return new PlainText(ConstantGroupNotice.MAX_LENGTH_OVERFLOW);
         }
 
+        //如果是清除公告指令，则公告设置为空
+        String inputNotice = stringBuilder.toString().trim();
+        if(inputNotice.equalsIgnoreCase(ConstantGroupNotice.CLEAR)){
+            inputNotice = "";
+        }
+
         //设置群公告
-        ReString reString = groupNoticeService.createGroupNotice(groupId, stringBuilder.toString().trim());
+        ReString reString = groupNoticeService.createGroupNotice(groupId, inputNotice);
         if (!reString.isSuccess()) {
             new PlainText(reString.getMessage());
         }

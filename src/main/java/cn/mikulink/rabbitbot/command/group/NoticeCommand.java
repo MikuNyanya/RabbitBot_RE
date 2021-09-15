@@ -7,6 +7,7 @@ import cn.mikulink.rabbitbot.service.GroupNoticeService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
+import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.Message;
@@ -54,7 +55,7 @@ public class NoticeCommand implements GroupCommand {
         StringBuilder resultStr = new StringBuilder();
         resultStr.append("群主可以设置入群公告");
         resultStr.append("\n具体参照指令(.设置群公告)");
-        if (null != groupNoticeStr) {
+        if (StringUtil.isNotEmpty(groupNoticeStr)) {
             resultStr.append("\n============当前群公告============");
             resultStr.append("\n").append(groupNoticeStr);
         } else {

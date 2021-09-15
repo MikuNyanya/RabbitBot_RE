@@ -5,6 +5,7 @@ import cn.mikulink.rabbitbot.service.GroupNoticeService;
 import cn.mikulink.rabbitbot.service.ImageService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
+import cn.mikulink.rabbitbot.utils.StringUtil;
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.User;
@@ -101,7 +102,12 @@ public class GroupEvents extends SimpleListenerHost {
     //群成员主动加群，被邀请加群事件业务
     private void groupMemberJoinMsg(Group group, User sender) {
         //有人入群，发送对应群的自定义公告
-        groupNoticeService.
+        String groupNotice = groupNoticeService.getGroupNotice(group.getId());
+        if (StringUtil.isNotEmpty(groupNotice)) {
+            Message result = groupNoticeService.parseGroupNotice(groupNotice, sender);
+            group.sendMessage(result);
+            return;
+        }
 
         //如果没有自定义公告，则发送默认消息
         //获取头像
