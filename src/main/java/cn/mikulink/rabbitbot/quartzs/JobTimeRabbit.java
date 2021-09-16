@@ -8,6 +8,7 @@ import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.apirequest.weixin.WeiXinAppMsgInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
+import cn.mikulink.rabbitbot.filemanage.FileManagerPet;
 import cn.mikulink.rabbitbot.service.*;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
@@ -53,6 +54,8 @@ public class JobTimeRabbit {
     private WeiXinAppMsgService weiXinAppMsgService;
     @Autowired
     private ProxyService proxyService;
+    @Autowired
+    private PetService petService;
 
     public void execute() {
         //刷新当前时间
@@ -77,7 +80,10 @@ public class JobTimeRabbit {
         refreshWeixinAppCookie();
 
         //代理检测
-        proxyCheck();
+//        proxyCheck();
+
+        //养成系统数据刷新
+        petRefresh();
 
         //pixiv日榜，最好放在最后执行，要下载图片
         //也可以另起一个线程，但我懒
@@ -270,4 +276,18 @@ public class JobTimeRabbit {
             logger.error(ConstantPixiv.PIXIV_IMAGE_RANK_JOB_ERROR + ex.toString(), ex);
         }
     }
+
+    //养成数据刷新
+    private void petRefresh() {
+        try {
+            //经验+1
+            petService.addExp(1);
+
+            //数据保存到文件
+            FileManagerPet.writeFile();
+        } catch (Exception ex) {
+            logger.error("养成数据刷新执行异常", ex);
+        }
+    }
+
 }
