@@ -29,8 +29,8 @@ public class ConstantPet extends ConstantCommon {
     public static final Integer HEART_MIN = 10;
     //心情最大值
     public static final Integer HEART_MAX = 100;
-    //心情波动百分比 0代表不波动 该数值应当为0-100之间的整数
-    public static final Integer HEART_WAVE_PROP = 7;
+    //心情波动百分比 0代表不波动 该数值应当在0.01-1之间
+    public static final Double HEART_WAVE_PROP = 0.07;
 
     //升级消息
     public static final List<String> LEVEL_UP_MSG = Arrays.asList(

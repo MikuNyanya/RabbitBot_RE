@@ -126,13 +126,14 @@ public class PetService {
         //随机 增加还是减少
         boolean isAdd = RandomUtil.rollBoolean(0);
         //随机 变更数值
-        int waveValue = ConstantPet.HEART_MAX * ConstantPet.HEART_WAVE_PROP;
+        double waveValue = ConstantPet.HEART_MAX * ConstantPet.HEART_WAVE_PROP;
+        int waveInt = (int) waveValue;
 
         //改变心情
         if (isAdd) {
-            ConstantPet.petInfo.setHeart(ConstantPet.petInfo.getHeart() + waveValue);
+            ConstantPet.petInfo.setHeart(ConstantPet.petInfo.getHeart() + waveInt);
         } else {
-            ConstantPet.petInfo.setHeart(ConstantPet.petInfo.getHeart() - waveValue);
+            ConstantPet.petInfo.setHeart(ConstantPet.petInfo.getHeart() - waveInt);
         }
 
         //边界校验
