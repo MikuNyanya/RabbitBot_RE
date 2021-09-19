@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * https://www.23luke.com/daaerkanapai/1059.html
  */
 @Command
-public class TarotCommand implements EverywhereCommand {
+public class TarotCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(TarotCommand.class);
 
     @Autowired

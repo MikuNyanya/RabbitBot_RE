@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * 来点色图
  */
 @Command
-public class SetuCommand implements EverywhereCommand {
+public class SetuCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(SetuCommand.class);
 
     @Autowired

@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * 以图搜番指令
  */
 @Command
-public class AnimeSearchCommand implements EverywhereCommand {
+public class AnimeSearchCommand extends BaseEveryWhereCommand {
 
     @Autowired
     private TracemoeService whatAnimeService;

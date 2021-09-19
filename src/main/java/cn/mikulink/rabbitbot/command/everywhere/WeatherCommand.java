@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * 天气情况
  */
 @Command
-public class WeatherCommand implements EverywhereCommand {
+public class WeatherCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(WeatherCommand.class);
     @Autowired
     private WeatherService weatherService;

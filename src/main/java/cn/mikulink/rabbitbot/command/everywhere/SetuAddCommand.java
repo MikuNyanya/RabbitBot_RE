@@ -30,7 +30,7 @@ import java.util.List;
  * 添加色图
  */
 @Command
-public class SetuAddCommand implements EverywhereCommand {
+public class SetuAddCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(SetuAddCommand.class);
     @Autowired
     private SetuService setuService;

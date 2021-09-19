@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * 摩斯电码
  */
 @Command
-public class MorseCodeCommand implements EverywhereCommand {
+public class MorseCodeCommand extends BaseEveryWhereCommand {
 
     @Autowired
     private MorseCodeService morseCodeService;

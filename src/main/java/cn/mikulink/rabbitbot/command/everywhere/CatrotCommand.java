@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * 塔罗牌的变异品种(并不
  */
 @Command
-public class CatrotCommand implements EverywhereCommand {
+public class CatrotCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(CatrotCommand.class);
 
     @Autowired

@@ -34,7 +34,7 @@ import java.util.ArrayList;
  * 搜图指令
  */
 @Command
-public class ImageSearchCommand implements EverywhereCommand {
+public class ImageSearchCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(ImageSearchCommand.class);
 
     @Autowired

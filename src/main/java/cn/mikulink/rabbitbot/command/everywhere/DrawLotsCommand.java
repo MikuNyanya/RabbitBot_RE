@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * 抽签，自己做的图片
  */
 @Command
-public class DrawLotsCommand implements EverywhereCommand {
+public class DrawLotsCommand extends BaseEveryWhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(DrawLotsCommand.class);
     //签的图片存放路径
     public static final String IMAGE_DRAWLOTS_SAVE_PATH = "data/images/drawlots";
