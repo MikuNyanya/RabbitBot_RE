@@ -283,6 +283,9 @@ public class JobTimeRabbit {
             //经验+1
             petService.addExp(1);
 
+            //心情波动
+            petService.heartWave();
+
             //数据保存到文件
             FileManagerPet.writeFile();
         } catch (Exception ex) {

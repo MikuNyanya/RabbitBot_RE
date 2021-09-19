@@ -13,6 +13,7 @@ import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 
 
@@ -38,7 +39,7 @@ public class PetCommand extends BaseEveryWhereCommand {
 
     @Override
     public CommandProperties properties() {
-        return new CommandProperties("Pet", "兔叽");
+        return new CommandProperties("Pet", "兔叽", "养成", "养成系统");
     }
 
     @Override

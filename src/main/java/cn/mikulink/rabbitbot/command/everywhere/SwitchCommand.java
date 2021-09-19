@@ -64,7 +64,7 @@ public class SwitchCommand extends BaseEveryWhereCommand {
             //MEMBER 群员 0
             //常规权限检查，只允许群主和最高权限设置
             if (!rabbitBotService.isRabbitAdmin(qId) && ((NormalMemberImpl) sender).getPermission().getLevel() != 2) {
-                return new PlainText(RandomUtil.rollStrFromList(ConstantSwitch.COMMAND_ADMIN_ONLY));
+                return new PlainText(RandomUtil.rollStrFromList(ConstantSwitch.COMMAND_GROUP_OWNER_ONLY));
             }
             groupId = subject.getId();
         }else{

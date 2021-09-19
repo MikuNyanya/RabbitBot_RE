@@ -1,7 +1,17 @@
 package cn.mikulink.rabbitbot.service;
 
+import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.constant.ConstantPet;
+import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
+import cn.mikulink.rabbitbot.utils.RandomUtil;
+import net.mamoe.mirai.contact.ContactList;
+import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,7 +20,13 @@ import org.springframework.stereotype.Service;
  * 养成相关服务
  */
 @Service
+
 public class PetService {
+    private static final Logger logger = LoggerFactory.getLogger(PixivService.class);
+
+    @Autowired
+    private SwitchService switchService;
+
     /**
      * 增加经验
      */
@@ -44,6 +60,9 @@ public class PetService {
 
         //升1级
         ConstantPet.petInfo.setLevel(ConstantPet.petInfo.getLevel() + 1);
+
+        //全群通知
+        this.sendMessageGroupAll(MessageUtils.newChain().plus(RandomUtil.rollStrFromList(ConstantPet.LEVEL_UP_MSG)));
 
         //递归升级，直到经验不足
         levelUp();
@@ -97,5 +116,52 @@ public class PetService {
             result.append(ConstantPet.STATUS_EMPTY);
         }
         return result.toString();
+    }
+
+    /**
+     * 心情波动
+     * 当前心情 (+or-) (最大心情 * 波动百分比) 向下取整 不超过最大最小值
+     */
+    public void heartWave() {
+        //随机 增加还是减少
+        boolean isAdd = RandomUtil.rollBoolean(0);
+        //随机 变更数值
+        int waveValue = ConstantPet.HEART_MAX * ConstantPet.HEART_WAVE_PROP;
+
+        //改变心情
+        if (isAdd) {
+            ConstantPet.petInfo.setHeart(ConstantPet.petInfo.getHeart() + waveValue);
+        } else {
+            ConstantPet.petInfo.setHeart(ConstantPet.petInfo.getHeart() - waveValue);
+        }
+
+        //边界校验
+        if (ConstantPet.petInfo.getHeart() < ConstantPet.HEART_MIN) {
+            ConstantPet.petInfo.setHeart(ConstantPet.HEART_MIN);
+        } else if (ConstantPet.petInfo.getHeart() > ConstantPet.HEART_MAX) {
+            ConstantPet.petInfo.setHeart(ConstantPet.HEART_MAX);
+        }
+    }
+
+    /**
+     * 给开启了养成系统的所有群发送消息
+     *
+     * @param message 需要发送的消息链
+     */
+    private void sendMessageGroupAll(MessageChain message) {
+        //给每个群发送消息
+        ContactList<Group> groupList = RabbitBot.getBot().getGroups();
+        for (Group groupInfo : groupList) {
+            //检查功能开关
+            ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "pet");
+            if (!reStringSwitch.isSuccess()) {
+                continue;
+            }
+            try {
+                groupInfo.sendMessage(message);
+            } catch (Exception ex) {
+                logger.error("养成系统群通知异常", ex);
+            }
+        }
     }
 }

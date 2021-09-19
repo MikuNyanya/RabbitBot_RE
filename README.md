@@ -97,6 +97,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.抽签|.抽签|就是抽签|
 |.world|.world 这里是兔叽广播|可以给所有群发消息|
 |.群公告|.群公告|设置和查看入群公告|
+|.pet|.pet .养成|打开养成系统界面|
 |~~这个人~~|~~鸽了(咕)~~|~~不想补全了~~|
 
 ### 其他

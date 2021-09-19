@@ -20,6 +20,7 @@ public class ConstantSwitch extends ConstantCommon {
 
     public static HashMap<String, String> SWITCH_NAME_DESCRIPTION_MAP = new HashMap<String, String>() {{
         put("sj", "整点报时");
+        put("pet", "养成系统");
         put("say", "不定期的日常语句以及相关指令");
         put("setu", "色图指令,传入[work]代表只在9am-18pm禁用色图指令");
         put("setuday", "每日色图");
