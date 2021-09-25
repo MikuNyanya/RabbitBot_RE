@@ -2,6 +2,7 @@ package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.constant.ConstantGroupNotice;
 import cn.mikulink.rabbitbot.entity.ReString;
+import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -43,8 +44,10 @@ public class GroupNoticeService {
      */
     public String getGroupNotice(Long groupId) {
         String groupNotic = configService.getGroupNotice(groupId);
-        //处理换行符问题
-        groupNotic = groupNotic.replaceAll("\\\\n", "\n");
+        if (StringUtil.isNotEmpty(groupNotic)) {
+            //处理换行符问题
+            groupNotic = groupNotic.replaceAll("\\\\n", "\n");
+        }
         return groupNotic;
     }
 
