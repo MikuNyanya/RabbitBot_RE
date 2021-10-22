@@ -65,6 +65,9 @@ public class RabbitBot {
             logger.warn("*****未配置兔叽的账号或密码*****");
         }
 
+        //加载资源文件
+        FileManagerConfig.dataFileInit();
+
         bot = BotFactory.INSTANCE.newBot(botAccount, botPwd, new BotConfiguration() {
             {
                 //保存设备信息到文件deviceInfo.json文件里相当于是个设备认证信息
@@ -89,9 +92,6 @@ public class RabbitBot {
 
         //设置https协议，已解决SSL peer shut down incorrectly的异常
         System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2,SSLv3");
-
-        //加载资源文件
-        FileManagerConfig.dataFileInit();
 
         // 这个和picbotx 还是不太一样 那个不会占用主线程
         // 这里必须要启新线程去跑bot 不然会占用主线程

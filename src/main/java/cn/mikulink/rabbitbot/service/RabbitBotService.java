@@ -251,12 +251,8 @@ public class RabbitBotService {
      * @return 消息链
      */
     public MessageChain parseMsgChainByLocalImgs(List<String> localImgsPath) {
-        MessageChain messageChain = MessageUtils.newChain();
-        List<Image> imageList = uploadMiraiImage(localImgsPath);
-        for (Image image : imageList) {
-            messageChain.plus("").plus(image).plus("\n");
-        }
-        return messageChain;
+        List<Image> imageList = this.uploadMiraiImage(localImgsPath);
+        return this.parseMsgChainByImgs(imageList);
     }
 
     /**
@@ -285,5 +281,19 @@ public class RabbitBotService {
             return;
         }
         friend.sendMessage(messageChain);
+    }
+
+    /**
+     * 发送群消息
+     *
+     * @param qq           群号
+     * @param messageChain 消息链
+     */
+    public void sendGroupMessage(Long qq, MessageChain messageChain) {
+        Group group = RabbitBot.getBot().getGroup(qq);
+        if (null == group) {
+            return;
+        }
+        group.sendMessage(messageChain);
     }
 }
