@@ -5,7 +5,6 @@ import cn.mikulink.rabbitbot.command.group.RPCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.entity.apirequest.weixin.WeiXinAppMsgInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
 import cn.mikulink.rabbitbot.filemanage.FileManagerPet;
@@ -77,7 +76,7 @@ public class JobTimeRabbit {
         newsToday();
 
         //微信公众平台cookie刷新
-        refreshWeixinAppCookie();
+//        refreshWeixinAppCookie();
 
         //代理检测
 //        proxyCheck();
@@ -206,10 +205,12 @@ public class JobTimeRabbit {
             return;
         }
         try {
-            //请求API获取今日简报
-            WeiXinAppMsgInfo weiXinAppMsgInfo = weiXinAppMsgService.getNewsTodayMsg();
-            //转化为消息链
-            MessageChain messageChain = weiXinAppMsgService.parseNewsToday(weiXinAppMsgInfo);
+//            //请求API获取今日简报
+//            WeiXinAppMsgInfo weiXinAppMsgInfo = weiXinAppMsgService.getNewsTodayMsg();
+//            //转化为消息链
+//            MessageChain messageChain = weiXinAppMsgService.parseNewsToday(weiXinAppMsgInfo);
+
+            MessageChain messageChain = weiXinAppMsgService.getSoyijiNews();
 
             //给每个群发送消息
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
