@@ -1,6 +1,7 @@
-package cn.mikulink.rabbitbot.service;
+package cn.mikulink.rabbitbot.service.sys;
 
 import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustRankGet;
+import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.utils.ProxyUtil;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;

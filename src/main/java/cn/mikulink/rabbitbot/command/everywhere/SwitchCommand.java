@@ -4,7 +4,7 @@ import cn.mikulink.rabbitbot.constant.ConstantSwitch;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
-import cn.mikulink.rabbitbot.service.SwitchService;
+import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;

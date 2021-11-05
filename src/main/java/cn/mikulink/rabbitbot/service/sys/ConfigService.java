@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.service;
+package cn.mikulink.rabbitbot.service.sys;
 
 import cn.mikulink.rabbitbot.entity.ConfigGroupInfo;
 import cn.mikulink.rabbitbot.entity.ReString;

@@ -8,6 +8,7 @@ import cn.mikulink.rabbitbot.entity.ImageInfo;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchResult;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
+import cn.mikulink.rabbitbot.service.sys.ProxyService;
 import cn.mikulink.rabbitbot.utils.*;
 import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;

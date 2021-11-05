@@ -8,6 +8,8 @@ import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.bilibili.*;
 import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
+import cn.mikulink.rabbitbot.service.sys.ConfigService;
+import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.*;
 import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.contact.ContactList;

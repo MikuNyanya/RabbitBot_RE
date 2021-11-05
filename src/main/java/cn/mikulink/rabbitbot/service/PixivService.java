@@ -11,6 +11,8 @@ import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivUserInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
+import cn.mikulink.rabbitbot.service.sys.ProxyService;
+import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.*;
 import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.message.data.Image;

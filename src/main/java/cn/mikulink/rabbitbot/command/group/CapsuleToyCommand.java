@@ -46,6 +46,9 @@ public class CapsuleToyCommand implements GroupCommand {
     public Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
         Long userId = sender.getId();
         String userNick = sender.getNameCard();
+        if(StringUtil.isEmpty(userNick)){
+            userNick = sender.getNick();
+        }
 
         if (null == args || args.size() <= 0) {
             //操作间隔判断

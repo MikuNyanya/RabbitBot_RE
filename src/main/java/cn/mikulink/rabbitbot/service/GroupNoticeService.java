@@ -2,6 +2,7 @@ package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.constant.ConstantGroupNotice;
 import cn.mikulink.rabbitbot.entity.ReString;
+import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Image;

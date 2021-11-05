@@ -1,10 +1,11 @@
-package cn.mikulink.rabbitbot.service;
+package cn.mikulink.rabbitbot.service.sys;
 
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantSwitch;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.filemanage.FileManagerSwitch;
+import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.Contact;

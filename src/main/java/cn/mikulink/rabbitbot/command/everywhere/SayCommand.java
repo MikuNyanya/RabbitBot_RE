@@ -1,14 +1,12 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 
-import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantFreeTime;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.filemanage.FileManagerFreeTime;
-import cn.mikulink.rabbitbot.service.SwitchService;
+import cn.mikulink.rabbitbot.service.FreeTimeService;
+import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import cn.mikulink.rabbitbot.utils.RandomUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
@@ -31,6 +29,8 @@ public class SayCommand extends BaseEveryWhereCommand {
 
     @Autowired
     private SwitchService switchService;
+    @Autowired
+    private FreeTimeService freeTimeService;
 
     @Override
     public CommandProperties properties() {
@@ -48,13 +48,9 @@ public class SayCommand extends BaseEveryWhereCommand {
         if (ConstantFreeTime.MSG_TYPE_FREE_TIME.size() <= 0) {
             return new PlainText(ConstantFreeTime.MSG_TYPE_FREE_TIME_EMPTY);
         }
-        //从列表中删除获取的消息，实现伪随机，不然重复率太高了，体验比较差
-        String msg = RandomUtil.rollAndDelStrFromList(ConstantFreeTime.MSG_TYPE_FREE_TIME);
-        //删到五分之一时重新加载集合
-        if (ConstantFreeTime.MSG_TYPE_FREE_TIME.size() < ConstantFreeTime.MSG_TYPE_FREE_TIME_MAX_SIZE / 5) {
-            FileManagerFreeTime.doCommand(ConstantFile.FILE_COMMAND_LOAD);
-        }
 
+        //随机一条日常语句
+        String msg = freeTimeService.randomMsg();
         return new PlainText(msg);
     }
 

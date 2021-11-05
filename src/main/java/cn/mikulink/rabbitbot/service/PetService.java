@@ -3,6 +3,7 @@ package cn.mikulink.rabbitbot.service;
 import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.constant.ConstantPet;
 import cn.mikulink.rabbitbot.entity.ReString;
+import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import net.mamoe.mirai.contact.ContactList;

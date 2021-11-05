@@ -6,6 +6,7 @@ import cn.mikulink.rabbitbot.constant.ConstantRP;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
+import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.Message;
@@ -43,6 +44,9 @@ public class RPCommand implements GroupCommand {
         //获取群员Q号
         Long groupUserId = sender.getId();
         String groupUserName = sender.getNameCard();
+        if(StringUtil.isEmpty(groupUserName)){
+            groupUserName = sender.getNick();
+        }
 
         //rp
         int rollNum = 0;

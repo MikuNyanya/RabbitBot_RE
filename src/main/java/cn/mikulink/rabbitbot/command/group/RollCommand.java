@@ -4,6 +4,7 @@ import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.command.GroupCommand;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
+import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.Message;
@@ -43,6 +44,9 @@ public class RollCommand implements GroupCommand {
 
         //群员名称
         String groupUserName = sender.getNameCard();
+        if(StringUtil.isEmpty(groupUserName)){
+            groupUserName = sender.getNick();
+        }
         //附加指令
         String commandParam = "";
         if (null != args && args.size() > 0) {

@@ -4,6 +4,7 @@ package cn.mikulink.rabbitbot.bot;
 import cn.mikulink.rabbitbot.command.CommandConfig;
 import cn.mikulink.rabbitbot.event.GroupEvents;
 import cn.mikulink.rabbitbot.event.MessageEvents;
+import cn.mikulink.rabbitbot.event.NudgeEvents;
 import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.sys.AnnotateScanner;
 import net.mamoe.mirai.Bot;
@@ -44,6 +45,8 @@ public class RabbitBot {
     private MessageEvents messageEvents;
     @Autowired
     private GroupEvents groupEvents;
+    @Autowired
+    private NudgeEvents nudgeEvents;
 
     @Autowired
     private AnnotateScanner annotateScanner;
@@ -84,7 +87,8 @@ public class RabbitBot {
         //注册事件
         List<ListenerHost> events = Arrays.asList(
                 messageEvents,
-                groupEvents
+                groupEvents,
+                nudgeEvents
         );
         for (ListenerHost event : events) {
             GlobalEventChannel.INSTANCE.registerListenerHost(event);

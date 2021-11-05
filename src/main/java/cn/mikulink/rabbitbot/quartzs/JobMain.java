@@ -2,15 +2,12 @@ package cn.mikulink.rabbitbot.quartzs;
 
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
-import cn.mikulink.rabbitbot.constant.ConstantBilibili;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
-import cn.mikulink.rabbitbot.constant.ConstantFreeTime;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.filemanage.FileManagerFreeTime;
 import cn.mikulink.rabbitbot.service.BilibiliService;
-import cn.mikulink.rabbitbot.service.SwitchService;
+import cn.mikulink.rabbitbot.service.FreeTimeService;
 import cn.mikulink.rabbitbot.service.WeiboNewsService;
+import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import net.mamoe.mirai.contact.ContactList;
@@ -46,6 +43,8 @@ public class JobMain {
     private SwitchService switchService;
     @Autowired
     private BilibiliService bilibiliService;
+    @Autowired
+    private FreeTimeService freeTimeService;
 
     public void execute() {
         //日常语句
@@ -71,14 +70,7 @@ public class JobMain {
             return;
         }
 
-        //选出一条信息
-        //从列表中删除获取的消息，实现伪随机，不然重复率太高了，体验比较差
-        String msg = RandomUtil.rollAndDelStrFromList(ConstantFreeTime.MSG_TYPE_FREE_TIME);
-
-        //删到六分之一时重新加载集合
-        if (ConstantFreeTime.MSG_TYPE_FREE_TIME.size() < ConstantFreeTime.MSG_TYPE_FREE_TIME_MAX_SIZE / 6) {
-            FileManagerFreeTime.doCommand(ConstantFile.FILE_COMMAND_LOAD);
-        }
+        String msg = freeTimeService.randomMsg();
 
         //给每个群发送消息
         try {
