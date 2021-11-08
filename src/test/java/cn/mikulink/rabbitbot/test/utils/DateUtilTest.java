@@ -4,7 +4,6 @@ import cn.mikulink.rabbitbot.utils.DateUtil;
 import org.junit.Test;
 
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * @author MikuLink
@@ -19,5 +18,30 @@ public class DateUtilTest {
         int dayOfWeek = DateUtil.getDayOfWeek();
 
         System.out.println("");
+    }
+
+
+    @Test
+    public void dateToDay() {
+
+        Date start = DateUtil.dateToDayStart();
+        Date end = DateUtil.dateToDayEnd();
+
+        System.out.println("");
+    }
+
+    @Test
+    public void dateToMonth() {
+        try {
+            Date test = DateUtil.toDate("2000-2-28 1:1:11");
+
+            Date start = DateUtil.dateToMonthStart(test);
+            Date end = DateUtil.dateToMonthEnd(test);
+
+
+            System.out.println("");
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 }

@@ -77,23 +77,26 @@ public class DateUtil {
      *
      * @return
      */
-    public static Date dateToDayStart() throws ParseException {
-        Calendar calendar = Calendar.getInstance();
-        //年
-        int year = calendar.get(Calendar.YEAR);
-        //月 从0开始，需要+1
-        int month = calendar.get(Calendar.MONTH) + 1;
-        //日
-        int day = calendar.get(Calendar.DATE);
-//        //时
-//        int hour=calendar.get(Calendar.HOUR_OF_DAY);
-//        //分
-//        int minute=calendar.get(Calendar.MINUTE);
-//        //秒
-//        int second=calendar.get(Calendar.SECOND);
+    public static Date dateToDayStart() {
+        return dateToDayStart(null);
+    }
 
-        String dateStr = String.format("%s-%s-%s 0:00:00", year, month, day);
-        return toDate(dateStr);
+    /**
+     * 获取当前天数的开始时间
+     *
+     * @return
+     */
+    public static Date dateToDayStart(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        if (null != date) {
+            calendar.setTime(date);
+        }
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
     }
 
     /**
@@ -101,17 +104,74 @@ public class DateUtil {
      *
      * @return
      */
-    public static Date dateToDayEnd() throws ParseException {
-        Calendar calendar = Calendar.getInstance();
-        //年
-        int year = calendar.get(Calendar.YEAR);
-        //月 从0开始，需要+1
-        int month = calendar.get(Calendar.MONTH) + 1;
-        //日
-        int day = calendar.get(Calendar.DATE);
+    public static Date dateToDayEnd() {
+        return dateToDayEnd(null);
+    }
 
-        String dateStr = String.format("%s-%s-%s 23:59:59", year, month, day);
-        return toDate(dateStr);
+    /**
+     * 获取当前天数的结束时间
+     *
+     * @return
+     */
+    public static Date dateToDayEnd(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        if (null != date) {
+            calendar.setTime(date);
+        }
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+
+        return calendar.getTime();
+    }
+
+    /**
+     * 获取当前月数的开始时间
+     */
+    public static Date dateToMonthStart() {
+        return dateToMonthStart(null);
+    }
+
+    /**
+     * 获取当前月数的开始时间
+     */
+    public static Date dateToMonthStart(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        if (null != date) {
+            calendar.setTime(date);
+        }
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMinimum(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, calendar.getActualMinimum(Calendar.MINUTE));
+        calendar.set(Calendar.SECOND, calendar.getActualMinimum(Calendar.SECOND));
+        calendar.set(Calendar.MILLISECOND, calendar.getActualMinimum(Calendar.MILLISECOND));
+
+        return calendar.getTime();
+    }
+
+    /**
+     * 获取当前月数的结束时间
+     */
+    public static Date dateToMonthEnd() {
+        return dateToMonthEnd(null);
+    }
+
+    /**
+     * 获取当月数的结束时间
+     */
+    public static Date dateToMonthEnd(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        if (null != date) {
+            calendar.setTime(date);
+        }
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
+        calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
+        calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
+
+        return calendar.getTime();
     }
 
     /**
