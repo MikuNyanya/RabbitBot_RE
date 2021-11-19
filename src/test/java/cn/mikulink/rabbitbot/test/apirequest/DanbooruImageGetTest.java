@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.test.apirequest;
 
 import cn.mikulink.rabbitbot.apirequest.danbooru.DanbooruImageGet;
+import cn.mikulink.rabbitbot.utils.ProxyUtil;
 import org.junit.Test;
 
 /**
@@ -14,7 +15,8 @@ public class DanbooruImageGetTest {
         try {
             //目标页面
             DanbooruImageGet request = new DanbooruImageGet();
-            request.setDanbooruId("4272761");
+            request.setDanbooruId("4603398");
+            request.setProxy(ProxyUtil.getProxy("127.0.0.1", 31051));
             request.doRequest();
             String imageUrl = request.getDanbooruImageUrl();
 

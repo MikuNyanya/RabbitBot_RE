@@ -3,17 +3,19 @@
 RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很可惜，它没有挺过来(        
 但有幸遇到 [mirai](https://github.com/mamoe/mirai) ，兔叽还有复活的机会(°∀°)ﾉ
 
-    请注意，该项目不是群聊机器人框架，是建立在mirai框架上的一个完整的群聊机器人
+    请注意，该项目不是群聊机器人框架，也不是插件平台，是建立在mirai上的一个完整的群聊机器人
     很多功能都是为自家群量身定制的，项目中部分功能需要去申请自己的token，比如 Saucenao搜图 微博消息获取等等
     但非常欢迎学习功能实现代码，也非常欢迎提出更优的实现方法
 
-基于 `java` 语言和 `mirai` 框架的群聊机器人，使用 `maven` 进行项目管理，加入了 `spring` `quartz`等技术  
+以 `java` 语言为基础，以 `mirai` 为中间通讯组件的群聊机器人，使用 `maven` 进行项目管理，加入了 `springboot` `jsoup`等技术  
 
 ### 程序包含:
 * `mirai` 这是核心
-* `maven` 用于管理项目
-* `spring`  用于...其实我是馋spring的自动注入，可太爽了
-* `quartz`  用于定时任务
+* `maven` 用于管理项目  
+~~*`spring` 用于...其实我是馋spring的自动注入，可太爽了~~
+* `springboot`  2021-11-19后已经从spring更换为springboot，功能不变，代码结构微调
+~~*`quartz` 用于定时任务~~
+* `EnableScheduling`  使用springboot的 @EnableScheduling 用于定时任务
 * `jsoup` 用于解析HTML文本
 * `Thumbnailator` 用于压缩图片
 * `lombok`  用于简化代码

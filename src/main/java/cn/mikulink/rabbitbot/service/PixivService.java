@@ -44,18 +44,9 @@ import java.util.Map;
 public class PixivService {
     private static final Logger logger = LoggerFactory.getLogger(PixivService.class);
 
-    @Value("${pixiv.account}")
-    private String pixivAccount;
-    @Value("${pixiv.pwd}")
-    private String pixivPwd;
     //pixiv曲奇 不登录的话，功能有所限制
     @Value("${pixiv.cookie:0}")
     private String pixivCookie;
-
-    //pixiv登录页面，获取post_key用
-//    private static final String PIXIV_LOGIN_DATA_URL = "https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index";
-    //pixiv登录post链接
-//    private static final String PIXIV_LOGIN_POST_URL = "https://accounts.pixiv.net/api/login?lang=zh";
 
     @Autowired
     private ImageService imageService;

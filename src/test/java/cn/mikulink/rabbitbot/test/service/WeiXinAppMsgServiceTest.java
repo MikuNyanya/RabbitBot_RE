@@ -1,6 +1,5 @@
 package cn.mikulink.rabbitbot.test.service;
 
-import cn.mikulink.rabbitbot.entity.apirequest.weixin.WeiXinAppMsgInfo;
 import cn.mikulink.rabbitbot.service.WeiXinAppMsgService;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.junit.Test;

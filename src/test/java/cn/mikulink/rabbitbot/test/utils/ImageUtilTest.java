@@ -1,6 +1,5 @@
 package cn.mikulink.rabbitbot.test.utils;
 
-import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.ImageUtil;
 import cn.mikulink.rabbitbot.utils.ProxyUtil;
 import org.junit.Test;

@@ -3,9 +3,6 @@ package cn.mikulink.rabbitbot.test.apirequest.pixiv;
 import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustTagGet;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class PixivIllustTagGetTest {
 
     @Test

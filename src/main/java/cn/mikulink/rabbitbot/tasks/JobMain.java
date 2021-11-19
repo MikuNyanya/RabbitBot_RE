@@ -1,22 +1,22 @@
-package cn.mikulink.rabbitbot.quartzs.bak.jobs;
+package cn.mikulink.rabbitbot.tasks;
 
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
-import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
-import cn.mikulink.rabbitbot.constant.ConstantFreeTime;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
-import cn.mikulink.rabbitbot.filemanage.FileManagerFreeTime;
+import cn.mikulink.rabbitbot.entity.ReString;
+import cn.mikulink.rabbitbot.service.BilibiliService;
+import cn.mikulink.rabbitbot.service.FreeTimeService;
 import cn.mikulink.rabbitbot.service.WeiboNewsService;
+import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,8 +25,9 @@ import org.springframework.stereotype.Component;
  * <p>
  * 1分钟执行一次的定时器
  */
-@Component("bak_jobMain")
-public class JobMain implements Job {
+@Component
+@EnableScheduling
+public class JobMain {
     private static final Logger logger = LoggerFactory.getLogger(JobMain.class);
 
     //正常间隔(毫秒) 目前为2小时
@@ -41,11 +42,21 @@ public class JobMain implements Job {
 
     @Autowired
     private WeiboNewsService weiboNewsService;
+    @Autowired
+    private SwitchService switchService;
+    @Autowired
+    private BilibiliService bilibiliService;
+    @Autowired
+    private FreeTimeService freeTimeService;
 
-    @Override
-    public void execute(JobExecutionContext jobExecutionContext) {
+    @Scheduled(cron = "0 * * * * ?")
+    public void execute() {
         //日常语句
         freeTimeRabbit();
+
+        //B站视频动态
+        biliDynamicSvrPush();
+
         //微博最新消息
         weiboNews();
     }
@@ -63,20 +74,18 @@ public class JobMain implements Job {
             return;
         }
 
-        //选出一条信息
-        //从列表中删除获取的消息，实现伪随机，不然重复率太高了，体验比较差
-        String msg = RandomUtil.rollAndDelStrFromList(ConstantFreeTime.MSG_TYPE_FREE_TIME);
-
-        //删到六分之一时重新加载集合
-        if (ConstantFreeTime.MSG_TYPE_FREE_TIME.size() < ConstantFreeTime.MSG_TYPE_FREE_TIME_MAX_SIZE / 6) {
-            FileManagerFreeTime.doCommand(ConstantFile.FILE_COMMAND_LOAD);
-        }
+        String msg = freeTimeService.randomMsg();
 
         //给每个群发送消息
         try {
             //给每个群发送报时
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group groupInfo : groupList) {
+                //检查功能开关
+                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "say");
+                if (!reStringSwitch.isSuccess()) {
+                    continue;
+                }
                 groupInfo.sendMessage(msg);
             }
         } catch (Exception ex) {
@@ -89,12 +98,26 @@ public class JobMain implements Job {
         free_time_random_send_time = 1000L * 60 * RandomUtil.roll(SPLIT_RANDOM_MAX + 1);
     }
 
+    //B站视频动态
+    private void biliDynamicSvrPush() {
+        //检测发送间隔
+//        if (System.currentTimeMillis() - ConstantBilibili.bili_dynamicdsvr_last_send_time < ConstantBilibili.bili_dynamicdsvr_push_sprit_time) {
+//            return;
+//        }
+
+        try {
+            //执行一次消息推送
+            bilibiliService.doDynamicSvrPush();
+        } catch (Exception ex) {
+            logger.error("B站视频动态推送执行异常:" + ex.toString(), ex);
+        }
+
+        //刷新最后发送时间
+//        ConstantBilibili.bili_dynamicdsvr_last_send_time = System.currentTimeMillis();
+    }
+
     //微信最新消息
     private void weiboNews() {
-        //功能开关
-        if (!ConstantCommon.common_config.containsKey("weiboNewStatus") || "0".equals(ConstantCommon.common_config.get("weiboNewStatus"))) {
-            return;
-        }
         //检测发送间隔
         if (System.currentTimeMillis() - ConstantWeiboNews.weibo_news_last_send_time < ConstantWeiboNews.weibo_news_sprit_time) {
             return;

@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.quartzs;
+package cn.mikulink.rabbitbot.tasks;
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.command.group.RPCommand;
@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -32,6 +34,7 @@ import java.util.List;
  * 1小时执行一次的定时器
  */
 @Component
+@EnableScheduling
 public class JobTimeRabbit {
     private static final Logger logger = LoggerFactory.getLogger(JobTimeRabbit.class);
 
@@ -58,6 +61,7 @@ public class JobTimeRabbit {
     @Autowired
     private PetService petService;
 
+    @Scheduled(cron = "0 0 * * * ?")
     public void execute() {
         //刷新当前时间
         hour_now = DateUtil.getHour();

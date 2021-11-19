@@ -175,15 +175,40 @@ public class DateUtil {
     }
 
     /**
+     * 获取当前年份
+     *
+     * @return 年份
+     */
+    public static int getYear() {
+        return Calendar.getInstance().get(Calendar.YEAR);
+    }
+
+    /**
+     * 获取当前月份
+     *
+     * @return 年份
+     */
+    public static int getMonth() {
+        return Calendar.getInstance().get(Calendar.MONTH);
+    }
+
+    /**
+     * 获取当前几号
+     *
+     * @return 本月中几号
+     */
+    public static int getDayOfMonth() {
+        return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
      * 获取当前小时
      * 24小时制
      *
      * @return 小时
      */
     public static int getHour() {
-        Calendar calendar = Calendar.getInstance();
-        //时
-        return calendar.get(Calendar.HOUR_OF_DAY);
+        return Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
     }
 
     /**

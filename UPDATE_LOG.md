@@ -1,4 +1,8 @@
 ### 日志      
+#### 2021年11月19日
+框架从spring更换为springboot      
+quartz定时任务改为springboot的@EnableScheduling
+
 #### 2021年11月5日     
 戳一戳回复日常语句       
 

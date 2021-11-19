@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -27,7 +29,7 @@ import java.util.List;
  * @date: 2020/12/14 13:46
  **/
 @Component
-public class RabbitBot {
+public class RabbitBot implements ApplicationRunner {
     private static final Logger logger = LoggerFactory.getLogger(RabbitBot.class);
 
     //一个实例只给一个bot，暂时不考虑一个实例允许部署多个bot
@@ -59,10 +61,15 @@ public class RabbitBot {
     //设备认证信息文件
     private static final String deviceInfo = "deviceInfo.json";
 
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        this.startBot();
+    }
+
     /**
      * 启动BOT
      */
-    public void startBot() {
+    private void startBot() {
         if (null == botAccount || null == botPwd) {
             System.err.println("*****未配置兔叽的账号或密码*****");
             logger.warn("*****未配置兔叽的账号或密码*****");
@@ -103,5 +110,4 @@ public class RabbitBot {
             bot.join();
         }).start();
     }
-
 }
