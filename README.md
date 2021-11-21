@@ -13,7 +13,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 * `mirai` 这是核心
 * `maven` 用于管理项目  
 ~~*`spring` 用于...其实我是馋spring的自动注入，可太爽了~~
-* `springboot`  2021-11-19后已经从spring更换为springboot，功能不变，代码结构微调
+* `springboot`  2021-11-19后已经从spring更换为springboot，功能不变，代码结构微调  
 ~~*`quartz` 用于定时任务~~
 * `EnableScheduling`  使用springboot的 @EnableScheduling 用于定时任务
 * `jsoup` 用于解析HTML文本
