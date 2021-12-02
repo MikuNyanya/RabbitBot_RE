@@ -1,7 +1,7 @@
 # 兔叽的发布与使用说明
 -----
 ## 下载:
-[RabbitBot_RE_v1.3.1](https://github.com/MikuNyanya/live2dPet_windows/releases/tag/v0.0.1)
+[RabbitBot_RE_v1.3.1](https://github.com/MikuNyanya/RabbitBot_RE/releases/tag/v1.3.1)
 <br/>
 
 ### 使用说明:
