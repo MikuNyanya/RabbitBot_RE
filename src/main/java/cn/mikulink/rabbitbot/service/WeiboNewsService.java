@@ -11,7 +11,6 @@ import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoPicUrl;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
-import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
@@ -153,7 +152,7 @@ public class WeiboNewsService {
             //刷新sinceId配置
             ConstantCommon.common_config.put("sinceId", String.valueOf(sinceId));
             //更新配置文件
-            FileManagerConfig.doCommand(ConstantFile.FILE_COMMAND_WRITE);
+            configService.refreshConfigFile();
         }
         sendWeiboNewsToEveryGroup(weiboNews.getStatuses());
     }
@@ -182,7 +181,7 @@ public class WeiboNewsService {
                 //刷新sinceId配置
                 ConstantCommon.common_config.put("sinceId", String.valueOf(sinceId));
                 //更新配置文件
-                FileManagerConfig.doCommand(ConstantFile.FILE_COMMAND_WRITE);
+                configService.refreshConfigFile();
             }
         } catch (Exception ex) {
             logger.error("WeiboNewsService refreshSinceId error", ex);

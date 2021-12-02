@@ -4,8 +4,8 @@ import cn.mikulink.rabbitbot.constant.ConstantBilibili;
 import cn.mikulink.rabbitbot.constant.ConstantBlackList;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
-import cn.mikulink.rabbitbot.filemanage.FileManagerBlackList;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.service.sys.BlackListService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
@@ -36,6 +36,8 @@ public class BlackListCommand extends BaseEveryWhereCommand {
 
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private BlackListService blackListService;
 
     @Override
     public CommandProperties properties() {
@@ -90,13 +92,13 @@ public class BlackListCommand extends BaseEveryWhereCommand {
             switch (action) {
                 case ConstantCommon.ADD:
                     //添加黑名单
-                    idList = FileManagerBlackList.writeFile(idList);
+                    idList = blackListService.writeFile(idList);
                     //新的黑名单添加到当前列表里
                     ConstantBlackList.BLACK_LIST.addAll(idList);
                     break;
                 case ConstantCommon.REMOVE:
                     //移除黑名单
-                    idList = FileManagerBlackList.removeBlack(idList);
+                    idList = blackListService.removeBlack(idList);
                     //覆盖当前黑名单列表
                     ConstantBlackList.BLACK_LIST = idList;
                     break;

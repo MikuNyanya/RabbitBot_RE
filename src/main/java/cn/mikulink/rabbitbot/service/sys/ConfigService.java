@@ -1,14 +1,22 @@
 package cn.mikulink.rabbitbot.service.sys;
 
+import cn.mikulink.rabbitbot.constant.ConstantCommon;
+import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.entity.ConfigGroupInfo;
 import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
+import cn.mikulink.rabbitbot.service.MorseCodeService;
+import cn.mikulink.rabbitbot.service.PetService;
+import cn.mikulink.rabbitbot.service.TarotService;
+import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +30,133 @@ public class ConfigService {
 
     //群配置 缓存
     Map<Long, ConfigGroupInfo> configGroupsMap = new HashMap<>();
+    @Value("${file.path.config:}")
+    private String configPath;
+    @Autowired
+    private TarotService tarotService;
+    @Autowired
+    private MorseCodeService morseCodeService;
+    @Autowired
+    private PetService petService;
+    @Autowired
+    private BlackListService blackListService;
 
+    /**
+     * 获取配置文件路径
+     */
+    public String getFilePath() {
+        return configPath + File.separator + "config";
+    }
+
+    /**
+     * 获取群配置文件路径
+     * config/group/1111111/config
+     */
+    public String getGroupFilePath(Long groupId) {
+        return configPath + File.separator + "groups" + File.separator + groupId + File.separator + "config";
+    }
+
+    /**
+     * 资源文件初始化
+     */
+    public void dataFileInit() {
+        try {
+            //配置
+            this.loadFile();
+            //摩尔斯电码
+            morseCodeService.loadFile();
+            //塔罗牌
+            tarotService.loadFile();
+            //黑名单
+            blackListService.loadFile();
+            //养成系统信息
+            petService.loadPetInfo();
+
+            //压缩图片文件夹检测
+            FileUtil.fileDirsCheck(ConstantImage.DEFAULT_IMAGE_SCALE_SAVE_PATH);
+        } catch (Exception ex) {
+            logger.error("资源文件读取异常:{}", ex.getMessage(), ex);
+        }
+    }
+
+    /**
+     * 加载文件内容
+     *
+     * @throws IOException 读写异常
+     */
+    public void loadFile() throws IOException {
+        FileUtil.fileCheck(this.getFilePath());
+        //创建读取器
+        BufferedReader reader = new BufferedReader(new FileReader(this.getFilePath()));
+        //读取第一行
+        String configJson = null;
+        while ((configJson = reader.readLine()) != null) {
+            //过滤掉空行
+            if (configJson.length() <= 0) continue;
+            ConstantCommon.common_config = JSONObject.parseObject(configJson, HashMap.class);
+            return;
+        }
+        //关闭读取器
+        reader.close();
+    }
+
+    /**
+     * 刷新配置文件
+     */
+    public void refreshConfigFile() {
+        try {
+            this.writeFile();
+        } catch (Exception ex) {
+            logger.error("刷新配置文件失败");
+        }
+    }
+
+    /**
+     * 对文件写入内容
+     *
+     * @throws IOException 读写异常
+     */
+    public void writeFile() throws IOException {
+        //创建写入流
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(this.getFilePath(), false)));
+        //覆写原本配置
+        out.write(JSONObject.toJSONString(ConstantCommon.common_config));
+        //关闭写入流
+        out.close();
+    }
+
+    /**
+     * 读取群配置
+     */
+    public String loadConfigGroup(Long groupId) throws IOException {
+        String filePath = this.getGroupFilePath(groupId);
+        //读取文件
+        File groupConfigFile = FileUtil.fileCheck(filePath);
+        //创建读取器
+        BufferedReader reader = new BufferedReader(new FileReader(groupConfigFile));
+        //读取第一行
+        String configJson = null;
+        while ((configJson = reader.readLine()) != null) {
+            //过滤掉空行
+            if (configJson.length() > 0) break;
+        }
+        //关闭读取器
+        reader.close();
+        return configJson;
+    }
+
+    /**
+     * 覆写群配置
+     */
+    public void writerConfigGroup(Long groupId, String configJsonStr) throws IOException {
+        String filePath = this.getGroupFilePath(groupId);
+        //创建写入流
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, false)));
+        //覆写原本配置
+        out.write(configJsonStr);
+        //关闭写入流
+        out.close();
+    }
 
     /**
      * 检查群是否订阅了指定微博账号的推送
@@ -57,7 +191,7 @@ public class ConfigService {
             configGroupInfo.getWeiboPushIds().add(userId);
         }
         try {
-            FileManagerConfig.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
+            this.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
         } catch (Exception ex) {
             logger.error("ConfigService pullWeibo error,groupId:{},idsStr:{}", groupId, idsStr, ex);
         }
@@ -80,7 +214,7 @@ public class ConfigService {
             configGroupInfo.getWeiboPushIds().remove(userId);
         }
         try {
-            FileManagerConfig.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
+            this.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
         } catch (Exception ex) {
             logger.error("ConfigService unpullWeibo error,groupId:{},idsStr:{}", groupId, idsStr, ex);
         }
@@ -119,7 +253,7 @@ public class ConfigService {
             configGroupInfo.getBiliPushIds().add(userId);
         }
         try {
-            FileManagerConfig.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
+            this.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
         } catch (Exception ex) {
             logger.error("ConfigService pullBiliUid error,groupId:{},idsStr:{}", groupId, idsStr, ex);
         }
@@ -142,7 +276,7 @@ public class ConfigService {
             configGroupInfo.getBiliPushIds().remove(userId);
         }
         try {
-            FileManagerConfig.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
+            this.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
         } catch (Exception ex) {
             logger.error("ConfigService unpullBiliUid error,groupId:{},idsStr:{}", groupId, idsStr, ex);
         }
@@ -161,7 +295,7 @@ public class ConfigService {
         }
         configGroupInfo.setGroupNotice(groupNoticeStr);
         try {
-            FileManagerConfig.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
+            this.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
         } catch (Exception ex) {
             logger.error("ConfigService setGroupNotice error,groupId:{},groupNoticeStr:{}", groupId, groupNoticeStr, ex);
             return new ReString(false, "群公告设置异常");
@@ -187,7 +321,7 @@ public class ConfigService {
         ConfigGroupInfo configGroupInfo = configGroupsMap.get(groupId);
         try {
             if (null == configGroupInfo) {
-                String configJsonStr = FileManagerConfig.loadConfigGroup(groupId);
+                String configJsonStr = this.loadConfigGroup(groupId);
                 configGroupInfo = JSONObject.parseObject(configJsonStr, ConfigGroupInfo.class);
             }
         } catch (Exception ex) {

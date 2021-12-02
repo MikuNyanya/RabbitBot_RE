@@ -7,7 +7,6 @@ import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.bilibili.*;
-import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.*;
@@ -276,7 +275,7 @@ public class BilibiliService {
         //覆写lastDynamicId配置
         ConstantCommon.common_config.put("lastDynamicId", dynamicId);
         //更新配置文件
-        FileManagerConfig.doCommand(ConstantFile.FILE_COMMAND_WRITE);
+        configService.refreshConfigFile();
     }
 
 }

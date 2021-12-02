@@ -2,21 +2,25 @@ package cn.mikulink.rabbitbot.service.sys;
 
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
+import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantSwitch;
 import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.filemanage.FileManagerSwitch;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
+import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
+import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.HashMap;
 
 /**
  * create by MikuLink on 2021/2/3 16:37
@@ -31,8 +35,61 @@ import java.io.IOException;
 public class SwitchService {
     private Logger logger = LoggerFactory.getLogger(SwitchService.class);
 
+    @Value("${file.path.config:}")
+    private String configPath;
+
     @Autowired
     private RabbitBotService rabbitBotService;
+
+
+    /**
+     * 获取开关文件路径
+     */
+    public String getFilePath() {
+        return configPath + File.separator + "switch";
+    }
+
+    /**
+     * 获取群开关文件路径
+     * config/group/1111111/switch
+     */
+    public String getGroupFilePath(Long groupId) {
+        if (null == groupId) {
+            return this.getFilePath();
+        }
+        return configPath + File.separator + "groups" + File.separator + groupId + File.separator + "switch";
+    }
+
+    public String getSwitch(String switchName) throws IOException {
+        return getSwitch(switchName, null);
+    }
+
+    /**
+     * 读取开关配置
+     *
+     * @param switchName 开关名称
+     * @param groupId    群id,如果没有群id，读取默认配置
+     * @throws IOException 文件操作异常
+     */
+    public String getSwitch(String switchName, Long groupId) throws IOException {
+        String filePath = this.getGroupFilePath(groupId);
+        //读取文件
+        File switchFile = FileUtil.fileCheck(filePath);
+        BufferedReader reader = new BufferedReader(new FileReader(switchFile));
+        //只读取第一行
+        String switchJson = reader.readLine();
+        HashMap<String, String> switchMapTamp = null;
+        if (StringUtil.isEmpty(switchJson)) {
+            switchMapTamp = new HashMap<>();
+        } else {
+            switchMapTamp = JSONObject.parseObject(switchJson, HashMap.class);
+        }
+
+        //关闭读取器
+        reader.close();
+
+        return switchMapTamp.get(switchName);
+    }
 
     public ReString setSwitch(String switchName, String switchValue) throws IOException {
         return setSwitch(switchName, switchValue, null);
@@ -47,7 +104,28 @@ public class SwitchService {
      * @return 执行结果
      */
     public ReString setSwitch(String switchName, String switchValue, Long groupId) throws IOException {
-        FileManagerSwitch.setSwitch(switchName, switchValue, groupId);
+        String filePath = this.getGroupFilePath(groupId);
+        //读取文件
+        File switchFile = FileUtil.fileCheck(filePath);
+        BufferedReader reader = new BufferedReader(new FileReader(switchFile));
+        //只读取第一行
+        String switchJson = reader.readLine();
+        HashMap<String, String> switchMapTamp = null;
+        if (null == switchJson || switchJson.length() <= 0) {
+            switchMapTamp = new HashMap<>();
+        } else {
+            switchMapTamp = JSONObject.parseObject(switchJson, HashMap.class);
+        }
+
+        //添加或覆盖开关配置
+        switchMapTamp.put(switchName, switchValue);
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, false)));
+        out.write(JSONObject.toJSONString(switchMapTamp));
+
+        //关闭写入流
+        out.close();
+        //关闭读取器
+        reader.close();
         return new ReString(true);
     }
 
@@ -63,7 +141,7 @@ public class SwitchService {
         if (switchFarceCheck()) {
             groupId = null;
         }
-        return FileManagerSwitch.getSwitch(switchName, groupId);
+        return this.getSwitch(switchName, groupId);
     }
 
     /**
@@ -103,6 +181,7 @@ public class SwitchService {
             groupId = subject.getId();
         }
         try {
+            //todo 开关丢缓存里，不用每次读取文件
             switchValue = getSwitchValue(switchName, groupId);
         } catch (IOException ioEx) {
             //异常视为关闭

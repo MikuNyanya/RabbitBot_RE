@@ -1,4 +1,9 @@
 ### 日志      
+#### 2021年12月1日        
+尝试改变资源文件路径，我也不知道改动是好是坏，但至少文件夹看起来像样了点        
+清理记录p站tag和user信息的文件，毕竟没啥用        
+初次提供Releases        
+
 #### 2021年11月19日
 框架从spring更换为springboot      
 quartz定时任务改为springboot的@EnableScheduling

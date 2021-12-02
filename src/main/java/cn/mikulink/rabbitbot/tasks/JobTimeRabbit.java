@@ -7,7 +7,6 @@ import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
-import cn.mikulink.rabbitbot.filemanage.FileManagerPet;
 import cn.mikulink.rabbitbot.service.*;
 import cn.mikulink.rabbitbot.service.sys.ProxyService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
@@ -294,7 +293,7 @@ public class JobTimeRabbit {
             petService.heartWave();
 
             //数据保存到文件
-            FileManagerPet.writeFile();
+            petService.writeFile();
         } catch (Exception ex) {
             logger.error("养成数据刷新执行异常", ex);
         }

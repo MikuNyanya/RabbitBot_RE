@@ -7,7 +7,6 @@ import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
-import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.WeiboNewsService;
@@ -83,7 +82,7 @@ public class WeiboNewsCommand implements GroupCommand {
                 //覆写SINCEID配置
                 ConstantCommon.common_config.put("sinceId", sinceIdStr);
                 //更新配置文件
-                FileManagerConfig.doCommand(ConstantFile.FILE_COMMAND_WRITE);
+                configService.refreshConfigFile();
                 return new PlainText(ConstantWeiboNews.SINCEID_OVERRIDE_SUCCESS);
             case ConstantWeiboNews.SINCEID_REFRESH:
                 //刷新sinceId
@@ -127,7 +126,7 @@ public class WeiboNewsCommand implements GroupCommand {
                 //刷新sinceId配置
                 ConstantCommon.common_config.put("sinceId", String.valueOf(sinceId));
                 //更新配置文件
-                FileManagerConfig.doCommand(ConstantFile.FILE_COMMAND_WRITE);
+                configService.refreshConfigFile();
             }
             List<InfoStatuses> statusesList = weiboNews.getStatuses();
             if (null == statusesList || statusesList.size() <= 0) {

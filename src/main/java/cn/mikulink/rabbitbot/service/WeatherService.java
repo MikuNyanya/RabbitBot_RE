@@ -2,13 +2,18 @@ package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.apirequest.amap.WeatherRequest;
 import cn.mikulink.rabbitbot.constant.ConstantAmap;
+import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.entity.apirequest.amap.InfoWeather;
+import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +29,15 @@ public class WeatherService {
 
     @Value("${amap.key}")
     private String amapKey;
+    @Value("${file.path.data:}")
+    private String dataPath;
+
+    /**
+     * 获取资源文件路径
+     */
+    public String getFilePath() {
+        return dataPath + File.separator + "files" + File.separator + "AMap_adcode_citycode.txt";
+    }
 
     /**
      * 根据传入的字符串，匹配城市名称
@@ -119,5 +133,38 @@ public class WeatherService {
             logger.warn("获取高德天气失败，body:" + request.getBody());
         }
         return weather;
+    }
+
+
+
+    /**
+     * 加载文件内容
+     *
+     * @throws IOException 读写异常
+     */
+    public void loadFile() throws IOException {
+        File amapAdcodeFile = FileUtil.fileCheck(this.getFilePath());
+
+        //创建读取器
+        BufferedReader reader = new BufferedReader(new FileReader(amapAdcodeFile));
+
+        //逐行读取文件
+        String adcodeStr = null;
+        while ((adcodeStr = reader.readLine()) != null) {
+            //过滤掉空行
+            if (adcodeStr.length() <= 0) continue;
+
+            //数据有三列，城市名称.adcode,citycode 三列中间以英文逗号隔开
+            String[] adcodes = adcodeStr.split(",");
+            //至少要有城市名称和adcode
+            if (adcodes.length < 2) {
+                continue;
+            }
+
+            //内容同步到系统
+            ConstantAmap.map_adcode.put(adcodes[0], adcodes[1]);
+        }
+        //关闭读取器
+        reader.close();
     }
 }

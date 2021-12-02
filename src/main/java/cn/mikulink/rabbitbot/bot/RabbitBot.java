@@ -5,7 +5,7 @@ import cn.mikulink.rabbitbot.command.CommandConfig;
 import cn.mikulink.rabbitbot.event.GroupEvents;
 import cn.mikulink.rabbitbot.event.MessageEvents;
 import cn.mikulink.rabbitbot.event.NudgeEvents;
-import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
+import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.sys.AnnotateScanner;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactory;
@@ -49,14 +49,16 @@ public class RabbitBot implements ApplicationRunner {
     private GroupEvents groupEvents;
     @Autowired
     private NudgeEvents nudgeEvents;
+    @Autowired
+    private ConfigService configService;
 
     @Autowired
     private AnnotateScanner annotateScanner;
     //账号
-    @Value("${bot.account}")
+    @Value("${bot.account:}")
     private Long botAccount;
     //密码
-    @Value("${bot.pwd}")
+    @Value("${bot.pwd:}")
     private String botPwd;
     //设备认证信息文件
     private static final String deviceInfo = "deviceInfo.json";
@@ -76,7 +78,7 @@ public class RabbitBot implements ApplicationRunner {
         }
 
         //加载资源文件
-        FileManagerConfig.dataFileInit();
+        configService.dataFileInit();
 
         bot = BotFactory.INSTANCE.newBot(botAccount, botPwd, new BotConfiguration() {
             {

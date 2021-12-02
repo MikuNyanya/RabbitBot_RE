@@ -1,35 +1,45 @@
-package cn.mikulink.rabbitbot.filemanage;
-
+package cn.mikulink.rabbitbot.service.sys;
 
 import cn.mikulink.rabbitbot.constant.ConstantBlackList;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * create by MikuLink on 2021/07/09 15:44
+ * create by MikuLink on 2021/12/02 11:30
  * for the Reisen
- * <p>
- * 黑名单列表
  */
-public class FileManagerBlackList {
+@Service
+public class BlackListService {
+    private Logger logger = LoggerFactory.getLogger(BlackListService.class);
+
+    @Value("${file.path.config:}")
+    private String configPath;
 
     /**
-     * 加载文件内容
-     *
-     * @throws IOException 读写异常
+     * 获取配置文件路径
      */
-    public static void loadFile() throws IOException {
-        //初始化集合
-        ConstantBlackList.BLACK_LIST = loadList();
+    public String getFilePath() {
+        return configPath + File.separator + "black_list";
     }
 
-    private static List<Long> loadList() throws IOException {
-        File blackListFile = FileUtil.fileCheck(ConstantFile.BLACK_LIST_FILE_PATH);
+    public void loadFile() {
+        try {
+            ConstantBlackList.BLACK_LIST = this.loadList();
+        } catch (Exception ex) {
+            logger.error("黑名单信息读取失败", ex);
+        }
+    }
+
+    private List<Long> loadList() throws IOException {
+        File blackListFile = FileUtil.fileCheck(this.getFilePath());
 
         //初始化集合
         List<Long> tempList = new ArrayList<>();
@@ -56,7 +66,7 @@ public class FileManagerBlackList {
      *
      * @throws IOException 读写异常
      */
-    public static List<Long> writeFile(List<Long> pids) throws IOException {
+    public List<Long> writeFile(List<Long> pids) throws IOException {
 
         //覆写原本配置
         //先读取出所有id，判重后直接覆写文件
@@ -72,7 +82,7 @@ public class FileManagerBlackList {
             tempNewPid.add(pidStr);
         }
         //创建写入流
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ConstantFile.BLACK_LIST_FILE_PATH, false)));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(this.getFilePath(), false)));
         for (Long qid : tempBlackList) {
             out.write("\r\n" + qid);
         }
@@ -88,7 +98,7 @@ public class FileManagerBlackList {
      *
      * @throws IOException 读写异常
      */
-    public static List<Long> removeBlack(List<Long> pids) throws IOException {
+    public List<Long> removeBlack(List<Long> pids) throws IOException {
 
         //覆写原本配置
         //先读取出所有id，判重后直接覆写文件
@@ -102,7 +112,7 @@ public class FileManagerBlackList {
             tempBlackList.remove(qid);
         }
         //创建写入流
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ConstantFile.BLACK_LIST_FILE_PATH, false)));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(this.getFilePath(), false)));
         for (Long qid : tempBlackList) {
             out.write("\r\n" + qid);
         }

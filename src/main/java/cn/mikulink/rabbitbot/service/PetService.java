@@ -2,10 +2,13 @@ package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.constant.ConstantPet;
+import cn.mikulink.rabbitbot.entity.PetInfo;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
+import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
+import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -13,7 +16,10 @@ import net.mamoe.mirai.message.data.MessageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.*;
 
 /**
  * created by MikuNyanya on 2021/9/15 18:04
@@ -25,8 +31,19 @@ import org.springframework.stereotype.Service;
 public class PetService {
     private static final Logger logger = LoggerFactory.getLogger(PixivService.class);
 
+    @Value("${file.path.data:}")
+    private String dataPath;
+
     @Autowired
     private SwitchService switchService;
+
+
+    /**
+     * 获取资源文件路径
+     */
+    public String getFilePath() {
+        return dataPath + File.separator + "files" + File.separator + "pet";
+    }
 
     /**
      * 增加经验
@@ -165,5 +182,46 @@ public class PetService {
                 logger.error("养成系统群通知异常", ex);
             }
         }
+    }
+
+
+    /**
+     * 加载文件内容
+     *
+     * @throws IOException 读写异常
+     */
+    public void loadPetInfo() throws IOException {
+        FileUtil.fileCheck(this.getFilePath());
+
+        //创建读取器
+        BufferedReader reader = new BufferedReader(new FileReader(this.getFilePath()));
+        //读取第一行
+        String configJson = null;
+        while ((configJson = reader.readLine()) != null) {
+            //过滤掉空行
+            if (configJson.length() <= 0) continue;
+            ConstantPet.petInfo = JSONObject.parseObject(configJson, PetInfo.class);
+        }
+        //关闭读取器
+        reader.close();
+
+        //初始化
+        if (null == ConstantPet.petInfo) {
+            ConstantPet.petInfo = new PetInfo();
+        }
+    }
+
+    /**
+     * 对文件写入内容
+     *
+     * @throws IOException 读写异常
+     */
+    public void writeFile() throws IOException {
+        //创建写入流
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(this.getFilePath(), false)));
+        //覆写原本配置
+        out.write(JSONObject.toJSONString(ConstantPet.petInfo));
+        //关闭写入流
+        out.close();
     }
 }

@@ -2,13 +2,12 @@ package cn.mikulink.rabbitbot.command.group;
 
 import cn.mikulink.rabbitbot.command.GroupCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCapsuleToy;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.service.CapsuleToyService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import cn.mikulink.rabbitbot.filemanage.FileManagerCapsuleToy;
-import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.message.data.Message;
@@ -27,10 +26,13 @@ import java.util.ArrayList;
  * 扭蛋
  */
 @Command
+@Slf4j
 public class CapsuleToyCommand implements GroupCommand {
 
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private CapsuleToyService capsuleToyService;
 
     @Override
     public CommandProperties properties() {
@@ -46,7 +48,7 @@ public class CapsuleToyCommand implements GroupCommand {
     public Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
         Long userId = sender.getId();
         String userNick = sender.getNameCard();
-        if(StringUtil.isEmpty(userNick)){
+        if (StringUtil.isEmpty(userNick)) {
             userNick = sender.getNick();
         }
 
@@ -58,7 +60,7 @@ public class CapsuleToyCommand implements GroupCommand {
                 return new PlainText(timeCheck);
             }
             //进行扭蛋
-            String capsuleToy = capsuleToySelect();
+            String capsuleToy = capsuleToyService.capsuleToySelect();
             if (StringUtil.isEmpty(capsuleToy)) {
                 return new PlainText(ConstantCapsuleToy.CAPSULE_TOY_HAS_NOTHING);
             }
@@ -97,26 +99,6 @@ public class CapsuleToyCommand implements GroupCommand {
         return new PlainText(capsuleToyAdd(StringUtil.trim(sb.toString())));
     }
 
-    /**
-     * 选择一个扭蛋
-     *
-     * @return 随机扭蛋
-     */
-    private String capsuleToySelect() {
-        //集合为空时，重新加载一次扭蛋文件
-        if (ConstantCapsuleToy.MSG_CAPSULE_TOY.size() == 0) {
-            FileManagerCapsuleToy.doCommand(ConstantFile.FILE_COMMAND_LOAD, null);
-        }
-        //扭个蛋
-        String capsuleToy = RandomUtil.rollStrFromList(ConstantCapsuleToy.MSG_CAPSULE_TOY);
-        //删除这个扭蛋，实现伪随机
-        ConstantCapsuleToy.MSG_CAPSULE_TOY.remove(capsuleToy);
-        //元素少于1/6的时候，重新加载
-        if (ConstantCapsuleToy.MSG_CAPSULE_TOY.size() < ConstantCapsuleToy.CAPSULE_TOY_SPLIT_MAX_SIZE / 6) {
-            FileManagerCapsuleToy.doCommand(ConstantFile.FILE_COMMAND_LOAD, null);
-        }
-        return capsuleToy;
-    }
 
     /**
      * 添加一个扭蛋
@@ -131,15 +113,20 @@ public class CapsuleToyCommand implements GroupCommand {
         }
 
         //判重
-        if (ConstantCapsuleToy.MSG_CAPSULE_TOY.size() == 0) {
-            FileManagerCapsuleToy.doCommand(ConstantFile.FILE_COMMAND_LOAD, null);
-        }
-        if (ConstantCapsuleToy.MSG_CAPSULE_TOY.contains(capsuleToy)) {
-            return String.format(ConstantCapsuleToy.CAPSULE_TOY_ADD_RE, capsuleToy);
-        }
+//        if (ConstantCapsuleToy.MSG_CAPSULE_TOY.size() == 0) {
+//            FileManagerCapsuleToy.doCommand(ConstantFile.FILE_COMMAND_LOAD, null);
+//        }
+//        if (ConstantCapsuleToy.MSG_CAPSULE_TOY.contains(capsuleToy)) {
+//            return String.format(ConstantCapsuleToy.CAPSULE_TOY_ADD_RE, capsuleToy);
+//        }
 
         //添加扭蛋
-        FileManagerCapsuleToy.doCommand(ConstantFile.FILE_COMMAND_WRITE, capsuleToy);
+        try {
+            capsuleToyService.addCapsuleToy(capsuleToy);
+        } catch (Exception ex) {
+            log.error("添加扭蛋异常", ex);
+            return String.format(ConstantCapsuleToy.MSG_CAPSULE_TOY_ADD_ERROR, capsuleToy);
+        }
         return String.format(ConstantCapsuleToy.MSG_CAPSULE_TOY_ADD_SUCCESS, capsuleToy);
     }
 }

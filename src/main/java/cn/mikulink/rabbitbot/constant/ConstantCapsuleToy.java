@@ -1,9 +1,6 @@
 package cn.mikulink.rabbitbot.constant;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * create by MikuLink on 2019/12/30 14:26
@@ -12,7 +9,7 @@ import java.util.Map;
  */
 public class ConstantCapsuleToy {
     //扭蛋列表
-    public static List<String> MSG_CAPSULE_TOY = Arrays.asList();
+    public static List<String> MSG_CAPSULE_TOY = new ArrayList<>();
     //操作间隔 账号，操作时间戳
     public static Map<Long, Long> CAPSULE_TOY_SPLIT_MAP = new HashMap<>();
     //操作间隔
@@ -29,6 +26,7 @@ public class ConstantCapsuleToy {
 
     public static final String MSG_CAPSULE_TOY_RESULT = "[%s]扭到了:%s";
     public static final String MSG_CAPSULE_TOY_ADD_SUCCESS = "扭蛋[%s]添加完成";
+    public static final String MSG_CAPSULE_TOY_ADD_ERROR = "扭蛋[%s]添加异常";
 
     //错误提示
     public static final String CAPSULE_TOY_SPLIT_ERROR = "[%s]%s秒后可以扭蛋";

@@ -3,13 +3,12 @@ package cn.mikulink.rabbitbot.service;
 import cn.mikulink.rabbitbot.apirequest.soyiji.SoyijiGet;
 import cn.mikulink.rabbitbot.apirequest.weixin.WeixinAppMsgGet;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantWeiXin;
 import cn.mikulink.rabbitbot.entity.apirequest.weixin.WeiXinAppMsgInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
-import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
+import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.ImageUtil;
@@ -24,9 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.Proxy;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,6 +41,8 @@ public class WeiXinAppMsgService {
 
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private ConfigService configService;
 
     /**
      * 获取今日简报
@@ -167,7 +166,7 @@ public class WeiXinAppMsgService {
         ConstantCommon.common_config.put("weixinAppmsgToken", token);
         ConstantCommon.common_config.put("weixinAppmsgCookie", cookie);
         //更新配置文件
-        FileManagerConfig.doCommand(ConstantFile.FILE_COMMAND_WRITE);
+        configService.refreshConfigFile();
     }
 
     private void tokenCheck() {

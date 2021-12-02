@@ -1,8 +1,15 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.constant.ConstantMorseCode;
+import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * create by MikuLink on 2020/2/26 17:38
@@ -11,6 +18,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MorseCodeService {
+
+    @Value("${file.path.data:}")
+    private String dataPath;
+
+    /**
+     * 获取资源文件路径
+     */
+    public String getFilePath() {
+        return dataPath + File.separator + "files" + File.separator + "morsecode.txt";
+    }
 
     /**
      * 编码
@@ -88,4 +105,27 @@ public class MorseCodeService {
         return null;
     }
 
+    /**
+     * 加载文件内容
+     */
+    public void loadFile() throws IOException {
+        File morsecodeFile = FileUtil.fileCheck(this.getFilePath());
+
+        //创建读取器
+        BufferedReader reader = new BufferedReader(new FileReader(morsecodeFile));
+
+        //逐行读取文件
+        String textStr = null;
+        while ((textStr = reader.readLine()) != null) {
+            //过滤掉空行
+            if (textStr.length() <= 0) continue;
+            //第一行是明文，再往下读一行，是摩尔斯电码
+            String tempValue = reader.readLine();
+
+            //内容同步到系统
+            ConstantMorseCode.morse_code_map.put(textStr, tempValue);
+        }
+        //关闭读取器
+        reader.close();
+    }
 }

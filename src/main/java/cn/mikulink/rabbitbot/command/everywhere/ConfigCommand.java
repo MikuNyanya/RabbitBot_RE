@@ -1,11 +1,10 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.filemanage.FileManagerConfig;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
@@ -32,6 +31,8 @@ public class ConfigCommand extends BaseEveryWhereCommand {
 
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private ConfigService configService;
 
     @Override
     public CommandProperties properties() {
@@ -91,7 +92,7 @@ public class ConfigCommand extends BaseEveryWhereCommand {
         //设置配置文件
         ConstantConfig.common_config.put(configName, configValue);
         //更新配置文件
-        FileManagerConfig.doCommand(ConstantFile.FILE_COMMAND_WRITE);
+        configService.refreshConfigFile();
         return ConstantConfig.CONFIG_SET_SUCCESS;
     }
 
@@ -111,7 +112,7 @@ public class ConfigCommand extends BaseEveryWhereCommand {
         //删除配置文件
         ConstantConfig.common_config.remove(configName);
         //更新配置文件
-        FileManagerConfig.doCommand(ConstantFile.FILE_COMMAND_WRITE);
+        configService.refreshConfigFile();
         return ConstantConfig.CONFIG_SET_SUCCESS;
     }
 

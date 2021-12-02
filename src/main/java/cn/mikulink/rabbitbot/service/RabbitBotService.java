@@ -28,10 +28,10 @@ import java.util.Map;
  */
 @Service
 public class RabbitBotService {
-    @Value("${bot.master}")
+    @Value("${bot.master:}")
     private String account_master;
     private List<Long> accountMasterList = new ArrayList<>();
-    @Value("${bot.admin}")
+    @Value("${bot.admin:}")
     private String account_admin;
     private List<Long> accountAdminList = new ArrayList<>();
 

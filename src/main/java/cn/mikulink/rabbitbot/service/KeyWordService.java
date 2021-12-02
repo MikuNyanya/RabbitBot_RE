@@ -4,31 +4,35 @@ import cn.mikulink.rabbitbot.constant.ConstantFreeTime;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantKeyWord;
 import cn.mikulink.rabbitbot.constant.ConstantRepeater;
-import cn.mikulink.rabbitbot.filemanage.FileManagerKeyWordNormal;
 import cn.mikulink.rabbitbot.service.greetings.*;
+import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.RegexUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.internal.message.OnlineGroupImageImpl;
 import net.mamoe.mirai.message.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 /**
  * create by MikuLink on 2020/8/31 15:40
  * for the Reisen
  * 专门处理关键词触发的相关业务
  */
+@Slf4j
 @Service
 public class KeyWordService {
     //保存群最后一条消息，用于复读
     private static Map<Long, String[]> LAST_MSG_MAP = new HashMap<>();
+
+    @Value("${file.path.data:}")
+    private String dataPath;
 
     @Autowired
     private ImageService imageService;
@@ -189,8 +193,29 @@ public class KeyWordService {
     private boolean groupKeyWord(GroupMessageEvent event) {
         String groupMsg = event.getMessage().contentToString();
 
+        if (ConstantKeyWord.key_wrod_normal.size() <= 0) {
+            try {
+                this.loadFileKeyWordNormal();
+            } catch (Exception ex) {
+                log.error("关键词回复文件读取异常", ex);
+            }
+        }
+
         //全匹配关键词
-        String mapKey = FileManagerKeyWordNormal.keyWordNormalRegex(groupMsg);
+        String mapKey = null;
+        //循环mapkey，找到包含关键词的key，然后拆分key确认是否全匹配，如果不是继续循环到下一个key
+        lab_mapKey:
+        for (String keyRegex : ConstantKeyWord.key_wrod_normal.keySet()) {
+            //正则匹配
+            for (String oneKey : keyRegex.split("\\|")) {
+                //找到关键词，返回map的key
+                if (RegexUtil.regex(groupMsg, "^" + oneKey + "$")) {
+                    mapKey = keyRegex;
+                    break lab_mapKey;
+                }
+            }
+        }
+
         if (StringUtil.isEmpty(mapKey)) {
             return false;
         }
@@ -211,6 +236,14 @@ public class KeyWordService {
      */
     private boolean groupKeyWordLike(GroupMessageEvent event) {
         String groupMsg = event.getMessage().contentToString();
+
+        if (ConstantKeyWord.key_wrod_like_list.size() <= 0) {
+            try {
+                this.loadFileKeyWordLike();
+            } catch (Exception ex) {
+                log.error("关键词(模糊)回复文件读取异常", ex);
+            }
+        }
 
         //检测模糊关键词
         String mapKey = keyWordLikeRegex(ConstantKeyWord.key_wrod_like_list, groupMsg);
@@ -357,5 +390,192 @@ public class KeyWordService {
             regex.append(key);
         }
         return regex.toString();
+    }
+
+    /**
+     * 获取资源文件路径
+     */
+    public String getFilePathKeyWordNormal() {
+        return dataPath + File.separator + "files" + File.separator + "key_word_normal.txt";
+    }
+
+    /**
+     * 加载常规关键词回复文件内容
+     *
+     * @throws IOException 读写异常
+     */
+    public void loadFileKeyWordNormal() throws IOException {
+        String path = this.getFilePathKeyWordNormal();
+        FileUtil.fileCheck(path);
+        //创建读取器
+        BufferedReader reader = new BufferedReader(new FileReader(path));
+
+        String tempKey = null;
+        List<String> tempList = null;
+
+        //逐行读取文件
+        String freeTimeStr = null;
+        while ((freeTimeStr = reader.readLine()) != null) {
+            //过滤掉空行
+            if (freeTimeStr.length() <= 0) continue;
+            //第一行是关键词
+            tempKey = freeTimeStr;
+            //再往下读一行，是回复
+            freeTimeStr = reader.readLine();
+            tempList = Arrays.asList(freeTimeStr.split("\\|"));
+
+            //内容同步到系统
+            ConstantKeyWord.key_wrod_normal.put(tempKey, tempList);
+        }
+        //关闭读取器
+        reader.close();
+    }
+
+    /**
+     * 对文件写入内容
+     *
+     * @param text 第一段为关键词，多个关键词用 \ 隔开，后面为回复列表
+     * @throws IOException 读写异常
+     */
+    public void writeFileKeyWordNormal(String... text) throws IOException {
+        //入参检验
+        if (null == text || text.length <= 0) {
+            return;
+        }
+        String path = this.getFilePathKeyWordNormal();
+
+        //创建写入流
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path, true)));
+        //index
+        int i = 0;
+        //热更新
+        String keyWord = "";
+        List<String> repList = new ArrayList<>();
+
+        StringBuilder fileSb = new StringBuilder();
+        for (String s : text) {
+            //过滤空行
+            if (StringUtil.isEmpty(s)) continue;
+            //index+1
+            i++;
+
+            //第一个属于关键词，直接丢进去
+            if (i == 1) {
+                fileSb.append(s);
+                keyWord = s;
+                continue;
+            }
+            //第二属于第一个回复，需要换行，其他的开头加分隔符
+            if (i == 2) {
+                fileSb.append("\r\n");
+            } else {
+                fileSb.append("|");
+            }
+            //追加回复
+            fileSb.append(s);
+            repList.add(s);
+        }
+        //写入内容
+        out.write("\r\n" + fileSb.toString());
+
+        //把新加的内容同步到系统
+        ConstantKeyWord.key_wrod_normal.put(keyWord, repList);
+
+        //关闭写入流
+        out.close();
+    }
+
+
+    public String getFilePathKeyWordLike() {
+        return dataPath + File.separator + "files" + File.separator + "key_word_like.txt";
+    }
+
+    /**
+     * 加载文件内容
+     *
+     * @throws IOException 读写异常
+     */
+    public void loadFileKeyWordLike() throws IOException {
+        String path = this.getFilePathKeyWordLike();
+        FileUtil.fileCheck(path);
+        //创建读取器
+        BufferedReader reader = new BufferedReader(new FileReader(path));
+
+        String tempKey = null;
+        List<String> tempList = null;
+
+        //逐行读取文件
+        String freeTimeStr = null;
+        while ((freeTimeStr = reader.readLine()) != null) {
+            //过滤掉空行
+            if (freeTimeStr.length() <= 0) continue;
+            //第一行是关键词
+            tempKey = freeTimeStr;
+            //再往下读一行，是回复
+            freeTimeStr = reader.readLine();
+            tempList = Arrays.asList(freeTimeStr.split("\\|"));
+
+            //内容同步到系统
+            ConstantKeyWord.key_wrod_like_list.add(tempKey);
+            ConstantKeyWord.key_wrod_like.put(tempKey, tempList);
+        }
+        //关闭读取器
+        reader.close();
+    }
+
+
+    /**
+     * 对文件写入内容
+     *
+     * @param text 第一段为关键词，多个关键词用 \ 隔开，后面为回复列表
+     * @throws IOException 读写异常
+     */
+    public void writeFileKeyWordLike(String... text) throws IOException {
+        //入参检验
+        if (null == text || text.length <= 0) {
+            return;
+        }
+
+        String path = this.getFilePathKeyWordLike();
+        //创建写入流
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path, true)));
+        //index
+        int i = 0;
+        //热更新
+        String keyWord = "";
+        List<String> repList = new ArrayList<>();
+
+        StringBuilder fileSb = new StringBuilder();
+        for (String s : text) {
+            //过滤空行
+            if (StringUtil.isEmpty(s)) continue;
+            //index+1
+            i++;
+
+            //第一个属于关键词，直接丢进去
+            if (i == 1) {
+                fileSb.append(s);
+                keyWord = s;
+                continue;
+            }
+            //第二属于第一个回复，需要换行，其他的开头加分隔符
+            if (i == 2) {
+                fileSb.append("\r\n");
+            } else {
+                fileSb.append("|");
+            }
+            //追加回复
+            fileSb.append(s);
+            repList.add(s);
+        }
+        //写入内容
+        out.write("\r\n" + fileSb.toString());
+
+        //把新加的内容同步到系统
+        ConstantKeyWord.key_wrod_like_list.add(keyWord);
+        ConstantKeyWord.key_wrod_like.put(keyWord, repList);
+
+        //关闭写入流
+        out.close();
     }
 }
