@@ -103,7 +103,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |~~这个人~~|~~鸽了(咕)~~|~~不想补全了~~|
 
 ### 其他
-[兔叽的下载与配置说明](https://github.com/MikuNyanya/RabbitBot_RE/blob/master/Releases.md)
+[兔叽的下载与配置说明](https://github.com/MikuNyanya/RabbitBot_RE/blob/master/Releases.md)  
 [兔叽的更新日志](https://github.com/MikuNyanya/RabbitBot_RE/blob/master/UPDATE_LOG.md)  
 [mirai文档](https://github.com/mamoe/mirai/blob/dev/docs/README.md)
 
