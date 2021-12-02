@@ -1,12 +1,13 @@
 # 兔叽的发布与使用说明
 -----
 ## 下载:
-[V1.3.1](https://github.com/MikuNyanya/live2dPet_windows/releases/tag/v0.0.1)，直接解压可用
+[RabbitBot_RE_v1.3.1](https://github.com/MikuNyanya/live2dPet_windows/releases/tag/v0.0.1)
 <br/>
 
 ### 使用说明:
-1.配置参数(application.properties)      
-2.启动RabbitBotRE.bat        
+1.该项目依赖java，所以请确保运行设备上已安装了1.8版本java
+2.配置参数(application.properties)      
+3.启动RabbitBotRE.bat        
 
 
 ### 配置文件说明(请善用Ctrl+F搜索):
@@ -81,9 +82,9 @@ cookie的获取：
     saucenao.key
 saucenao搜图网站的key，可不填        
 如不填写则只会影响 `搜图` 功能       
-saucenao官方提供了搜图接口，所以这里的key是官方下发的，需要去注册个账号开通
+saucenao官方提供了搜图接口，所以这里的key是官方下发的，需要去注册个账号开通     
 [saucenao网站传送门](https://saucenao.com/)，从网站下面的 `Account` 选项开始        
-登录进去以后，在个人信息界面左边菜单，有个`api`，点进去可以获取`api key`
+登录进去以后，在个人信息界面左边菜单，有个`api`，点进去可以获取`api key`     
 这个界面也是官方提供的api文档，有兴趣可以看看    
 如图：
 ![ ](https://github.com/MikuNyanya/RabbitBot_RE/blob/master/data/images/help/saucenao_key.png)
