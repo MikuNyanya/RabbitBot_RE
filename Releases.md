@@ -1,16 +1,18 @@
 # 兔叽的发布与使用说明
 -----
 ## 下载:
-[RabbitBot_RE_v1.3.1](https://github.com/MikuNyanya/RabbitBot_RE/releases/tag/v1.3.1)
-<br/>
+[RabbitBot_RE_v1.3.1](https://github.com/MikuNyanya/RabbitBot_RE/releases/tag/v1.3.1)       
+解压完毕的文件列表简要说明：      
+![ ](https://github.com/MikuNyanya/RabbitBot_RE/blob/master/data/images/help/rabbitbotre7zhelp.png)
+
 
 ### 使用说明:
-1.该项目依赖java，所以请确保运行设备上已安装了1.8版本java
+1.该项目依赖java，所以请确保设备上已安装了1.8版本java运行环境     
 2.配置参数(application.properties)      
-3.启动RabbitBotRE.bat        
+3.windows可启动RabbitBotRE.bat直接运行，linux通过指令启动jar包        
 
 
-### 配置文件说明(请善用Ctrl+F搜索):
+### application.properties配置文件说明(请善用Ctrl+F搜索):
     bot.name.cn
 群机器人中文名称，不过不是只能起中文，名字随便起        
 如果遇到发出消息是乱码问题，可以把名字转为Unicode        
