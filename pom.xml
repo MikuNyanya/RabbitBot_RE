@@ -11,7 +11,7 @@
 
     <groupId>cn.mikulink</groupId>
     <artifactId>rabbitbot</artifactId>
-    <version>v1.3.1</version>
+    <version>v1.3.2</version>
     <name>RabbitBot_RE</name>
     <description>for the Resien</description>
 
@@ -74,6 +74,18 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.8</version>
+        </dependency>
+
+        <!-- google的二维码编码解码工具 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.4.1</version>
         </dependency>
 
         <!--mirai组件-->

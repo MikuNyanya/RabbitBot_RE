@@ -57,7 +57,7 @@ public class QRCodeService {
         if (null == imjadQRCode || imjadQRCode.getCode() == null || imjadQRCode.getCode() != 0) {
             //记录api失败日志
             logger.info("二维码请求失败，body:" + request.getBody());
-            return ConstantQRCode.QRCODE_API_FAIL;
+            return ConstantQRCode.QRCODE_FAIL;
         }
         String localUrl = ImageUtil.downloadImage(imjadQRCode.getUrl(), ConstantImage.DEFAULT_IMAGE_SAVE_PATH + File.separator + "qrcode", null);
         return imageService.scaleForceByLocalImagePath(localUrl);

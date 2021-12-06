@@ -51,7 +51,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 * 当前天气状况
 * 整点报时
 * 摩斯电码转化
-* 生成二维码
+* 生成二维码(可简单变更颜色)
 * 每日人品
 * 抽签
 * 塔罗牌(伪)
@@ -99,7 +99,8 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.抽签|.抽签|就是抽签|
 |.world|.world 这里是兔叽广播|可以给所有群发消息|
 |.群公告|.群公告|设置和查看入群公告|
-|.pet|.pet .养成|打开养成系统界面|
+|.pet|.pet<br/>.养成|打开养成系统界面|
+|.二维码 [前景颜色] [背景颜色] (内容)|.二维码 #66CCFF #FFFFFF ello World|可生成带颜色的二维码，默认为常规黑白|
 |~~这个人~~|~~鸽了(咕)~~|~~不想补全了~~|
 
 ### 其他

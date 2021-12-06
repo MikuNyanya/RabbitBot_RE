@@ -184,7 +184,6 @@ public class RabbitBotService {
         }
         //上传
         return group.uploadImage(ExternalResource.create(new File(localImagesPath)));
-//        return ExternalResource.uploadAsImage(new File(localImagesPath), group);
     }
 
     /**
