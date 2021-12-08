@@ -7,6 +7,7 @@ import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.service.MorseCodeService;
 import cn.mikulink.rabbitbot.service.PetService;
 import cn.mikulink.rabbitbot.service.TarotService;
+import cn.mikulink.rabbitbot.service.WeatherService;
 import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -40,6 +41,8 @@ public class ConfigService {
     private PetService petService;
     @Autowired
     private BlackListService blackListService;
+    @Autowired
+    private WeatherService weatherService;
 
     /**
      * 获取配置文件路径
@@ -71,6 +74,8 @@ public class ConfigService {
             blackListService.loadFile();
             //养成系统信息
             petService.loadPetInfo();
+            //加载高的城市信息文件
+            weatherService.loadFile();
 
             //压缩图片文件夹检测
             FileUtil.fileDirsCheck(ConstantImage.DEFAULT_IMAGE_SCALE_SAVE_PATH);

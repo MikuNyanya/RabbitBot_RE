@@ -7,6 +7,7 @@ import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.QRCodeUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
+import net.mamoe.mirai.internal.message.OnlineImage;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
@@ -46,9 +47,11 @@ public class QRCodeCommand extends BaseEveryWhereCommand {
             //如果前两个不是颜色参数，则所有参数拼接起来作为二维码内容
             Color onColor = null;
             Color offColor = null;
+            String logoUrl = null;
             StringBuilder qrContext = new StringBuilder();
-            //标识指令类型 1.常规二维码 2.带颜色的二维码
+            //标识指令类型 1.常规二维码 2.带颜色的二维码 3.带logo的二维码 4.带颜色和logo的二维码
             int type = 1;
+            //判断是否带有颜色
             if (args.size() >= 3) {
                 //前两个参数是否为颜色
                 if (args.get(0).startsWith("#") && args.get(1).startsWith("#")) {
@@ -63,11 +66,32 @@ public class QRCodeCommand extends BaseEveryWhereCommand {
                 }
             }
 
+            //判断是否带有logo
+            if (args.get(0).equals("[图片]") || args.get(0).equals("\n[图片]\n")) {
+                //第一个参数是logo
+                logoUrl = ((OnlineImage) messageChain.get(2)).getOriginUrl();
+                type = 3;
+            }
+            if (args.size() >= 4 && (args.get(2).equals("[图片]") || args.get(2).equals("\n[图片]\n"))) {
+                //第三个参数是logo
+                logoUrl = ((OnlineImage) messageChain.get(2)).getOriginUrl();
+                type = 4;
+            }
+
             for (int i = 0; i < args.size(); i++) {
-                //如果前两个参数为颜色，则忽略掉
+                //仅带有logo的请求，忽略第一个参数
+                if (type == 3 && i == 0) {
+                    continue;
+                }
+                //仅带有颜色的请求，忽略前两个参数
                 if (type == 2 && i <= 1) {
                     continue;
                 }
+                //带有logo和图片的请求，忽略前三个参数
+                if (type == 4 && i <= 2) {
+                    continue;
+                }
+
                 qrContext.append(args.get(i));
                 qrContext.append(" ");
             }
@@ -76,7 +100,7 @@ public class QRCodeCommand extends BaseEveryWhereCommand {
                 return new PlainText(ConstantQRCode.QRCODE_FAIL_OVER_LEN);
             }
 
-            byte[] qrBytes = QRCodeUtil.createQRCodeByte(qrContext.toString(), onColor, offColor);
+            byte[] qrBytes = QRCodeUtil.createQRCodeByte(qrContext.toString(), onColor, offColor, logoUrl);
             return subject.uploadImage(ExternalResource.create(qrBytes));
         } catch (Exception ex) {
             logger.error("二维码转化失败", ex);

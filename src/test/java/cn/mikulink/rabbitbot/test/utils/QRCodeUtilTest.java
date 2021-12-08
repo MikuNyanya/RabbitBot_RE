@@ -22,9 +22,10 @@ public class QRCodeUtilTest {
 //            os.write(b);
 //            os.close();
 
-            BufferedImage qrImg = QRCodeUtil.createQRCode("https://blog.csdn.net/cyan20115/article/details/106553811",
-                    100, 100,
-                    Color.pink, null);
+            BufferedImage qrImg = QRCodeUtil.createQRCode("测试兔子",
+                    300, 300,
+                    new Color(Integer.parseInt("FF69B4", 16)), new Color(Integer.parseInt("FFFFFF", 16)),
+                    "https://i1.hdslb.com/bfs/face/d973f5f34a9b102a9a0d6f216f806c225d66912f.jpg");
             ImageIO.write(qrImg, "png", new File("E:\\qrImage.png"));
         } catch (Exception ex) {
             ex.printStackTrace();

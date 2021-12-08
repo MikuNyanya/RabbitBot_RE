@@ -262,6 +262,7 @@ public class PixivService {
         resultStr.append("\n[P站id] ").append(imageInfo.getId());
         resultStr.append("\n[标题] ").append(imageInfo.getTitle());
         resultStr.append("\n[作者] ").append(imageInfo.getUserName());
+        resultStr.append("\n[作者id] ").append(imageInfo.getUserId());
         resultStr.append("\n[上传时间] ").append(imageInfo.getCreateDate());
         result = result.plus(resultStr.toString());
         return result;
@@ -288,6 +289,7 @@ public class PixivService {
         resultStr.append("\n[P站id] ").append(imageInfo.getPid());
         resultStr.append("\n[标题] ").append(imageInfo.getTitle());
         resultStr.append("\n[作者] ").append(imageInfo.getUserName());
+        resultStr.append("\n[作者id] ").append(imageInfo.getUserId());
         resultStr.append("\n[创建时间] ").append(imageInfo.getCreatedTime());
         result = result.plus(resultStr.toString());
         return result;

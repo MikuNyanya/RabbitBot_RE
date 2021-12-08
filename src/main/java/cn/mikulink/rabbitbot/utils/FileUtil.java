@@ -72,6 +72,9 @@ public class FileUtil {
      * @return 指定路径的文件
      */
     public static boolean exists(String filePath) {
+        if (null == filePath || filePath.trim().length() <= 0) {
+            return false;
+        }
         File file = new File(filePath);
 
         //存在则直接返回
