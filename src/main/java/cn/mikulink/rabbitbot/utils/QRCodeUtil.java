@@ -146,47 +146,14 @@ public class QRCodeUtil {
         return bufferedImage;
     }
 
-    /**
-     * 生成默认尺寸，指定颜色二维码
-     *
-     * @param content  二维码内容
-     * @param onColor  二维码前景色
-     * @param offColor 二维码背景色
-     * @return 二维码图片 byte[]
-     * @throws WriterException
-     * @throws IOException
-     */
     public static byte[] createQRCodeByte(String content, Color onColor, Color offColor) throws WriterException, IOException {
         return createQRCodeByte(content, 0, 0, onColor, offColor, null);
     }
 
-    /**
-     * 生成默认尺寸，指定颜色二维码
-     *
-     * @param content  二维码内容
-     * @param onColor  二维码前景色
-     * @param offColor 二维码背景色
-     * @param logoPath 二维码中心logo路径
-     * @return 二维码图片 byte[]
-     * @throws WriterException
-     * @throws IOException
-     */
     public static byte[] createQRCodeByte(String content, Color onColor, Color offColor, String logoPath) throws WriterException, IOException {
         return createQRCodeByte(content, 0, 0, onColor, offColor, logoPath);
     }
 
-    /**
-     * 生成一个二维码图片
-     *
-     * @param width    图片长度
-     * @param height   图片高度
-     * @param content  二维码内容
-     * @param onColor  二维码前景色
-     * @param offColor 二维码背景色
-     * @return 二维码图片 byte[]
-     * @throws WriterException
-     * @throws IOException
-     */
     public static byte[] createQRCodeByte(String content, int width, int height, Color onColor, Color offColor) throws WriterException, IOException {
         return createQRCodeByte(content, width, height, onColor, offColor, null);
     }
@@ -206,6 +173,32 @@ public class QRCodeUtil {
      */
     public static byte[] createQRCodeByte(String content, int width, int height, Color onColor, Color offColor, String logoPath) throws WriterException, IOException {
         BufferedImage bufferedImage = createQRCode(content, width, height, onColor, offColor, logoPath);
+
+        // 位矩阵对象转流对象
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", os);
+        return os.toByteArray();
+    }
+
+    public static byte[] createGradientColorQRCodeByte(String content, Color onColorStart, Color offColorEnd, String logoPath) throws WriterException, IOException {
+        return createGradientColorQRCodeByte(content, 0, 0, onColorStart, offColorEnd, logoPath);
+    }
+
+    /**
+     * 生成一个二维码图片
+     *
+     * @param width        图片长度
+     * @param height       图片高度
+     * @param content      二维码内容
+     * @param onColorStart 二维码前景色渐变开始
+     * @param offColorEnd  二维码背景色渐变结束
+     * @param logoPath     二维码中心logo路径
+     * @return 二维码图片 byte[]
+     * @throws WriterException
+     * @throws IOException
+     */
+    public static byte[] createGradientColorQRCodeByte(String content, int width, int height, Color onColorStart, Color offColorEnd, String logoPath) throws WriterException, IOException {
+        BufferedImage bufferedImage = createGradientColorQRCode(content, width, height, onColorStart, offColorEnd, null, logoPath);
 
         // 位矩阵对象转流对象
         ByteArrayOutputStream os = new ByteArrayOutputStream();
