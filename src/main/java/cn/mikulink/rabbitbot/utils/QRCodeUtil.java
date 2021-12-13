@@ -1,11 +1,11 @@
 package cn.mikulink.rabbitbot.utils;
 
+import cn.mikulink.rabbitbot.entity.overrides.RabbitMatrixToImageConfig;
+import cn.mikulink.rabbitbot.entity.overrides.RabbitMatrixToImageWriter;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageConfig;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
@@ -32,62 +32,6 @@ public class QRCodeUtil {
     //默认二维码颜色
     private static final Color ONCOLOR_DEFAULT = new Color(0xFF000001);
     private static final Color OFFCOLOR_DEFAULT = new Color(0xFFFFFFFF);
-
-    /**
-     * 生成默认尺寸，默认颜色二维码
-     *
-     * @param content 二维码内容
-     * @return 二维码图片
-     * @throws WriterException
-     * @throws IOException
-     */
-    public static BufferedImage createQRCode(String content) throws WriterException, IOException {
-        return createQRCode(content, 0, 0);
-    }
-
-    /**
-     * 生成指定尺寸，默认颜色二维码
-     *
-     * @param width   图片长度
-     * @param height  图片高度
-     * @param content 二维码内容
-     * @return 二维码图片
-     * @throws WriterException
-     * @throws IOException
-     */
-    public static BufferedImage createQRCode(String content, int width, int height) throws WriterException, IOException {
-        return createQRCode(content, width, height, null, null);
-    }
-
-    /**
-     * 生成默认尺寸，指定颜色二维码
-     *
-     * @param content  二维码内容
-     * @param onColor  二维码前景色
-     * @param offColor 二维码背景色
-     * @return 二维码图片
-     * @throws WriterException
-     * @throws IOException
-     */
-    public static BufferedImage createQRCode(String content, Color onColor, Color offColor) throws WriterException, IOException {
-        return createQRCode(content, 0, 0, onColor, offColor);
-    }
-
-    /**
-     * 生成一个二维码图片
-     *
-     * @param width    图片长度
-     * @param height   图片高度
-     * @param content  二维码内容
-     * @param onColor  二维码前景色
-     * @param offColor 二维码背景色
-     * @return 二维码图片
-     * @throws WriterException
-     * @throws IOException
-     */
-    public static BufferedImage createQRCode(String content, int width, int height, Color onColor, Color offColor) throws WriterException, IOException {
-        return createQRCode(content, width, height, onColor, offColor, null);
-    }
 
     /**
      * 生成一个二维码图片
@@ -124,10 +68,10 @@ public class QRCodeUtil {
         // 创建位矩阵对象
         BitMatrix bitMatrix = initBitMatrix(content, width, height);
         // 设置位矩阵转图片的参数
-        MatrixToImageConfig config = new MatrixToImageConfig(onColor.getRGB(), offColor.getRGB());
+        RabbitMatrixToImageConfig config = new RabbitMatrixToImageConfig(onColor.getRGB(), offColor.getRGB());
 
         //转化为图片对象
-        BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix, config);
+        BufferedImage bufferedImage = RabbitMatrixToImageWriter.toBufferedImage(bitMatrix, config);
 
         //绘制中心logo
         if (StringUtil.isNotEmpty(logoUrl)) {
@@ -144,6 +88,60 @@ public class QRCodeUtil {
 //            qrLogoDraw(bufferedImage, new File(logoPath));
 //    }
 
+
+        return bufferedImage;
+    }
+
+    /**
+     * 生成一个渐变色二维码图片
+     *
+     * @param width        图片长度
+     * @param height       图片高度
+     * @param content      二维码内容
+     * @param onColorStart 二维码前景渐变色 开始
+     * @param onColorEnd   二维码前景渐变色 结束
+     * @param offColor     二维码背景色
+     * @return 二维码图片
+     * @throws WriterException
+     * @throws IOException
+     */
+    public static BufferedImage createGradientColorQRCode(String content, int width, int height, Color onColorStart, Color onColorEnd, Color offColor, String logoUrl) throws WriterException, IOException {
+        //尺寸边界校验
+        if (width <= 0) {
+            width = QRCODE_WIDTH_DEFAULE;
+        }
+        if (height <= 0) {
+            height = QRCODE_HEIGHT_DEFAULE;
+        }
+
+        if (null == onColorStart) {
+            onColorStart = ONCOLOR_DEFAULT;
+        }
+        if (null == onColorEnd) {
+            onColorEnd = ONCOLOR_DEFAULT;
+        }
+        if (null == offColor) {
+            offColor = OFFCOLOR_DEFAULT;
+        }
+
+        // 创建位矩阵对象
+        BitMatrix bitMatrix = initBitMatrix(content, width, height);
+        // 设置位矩阵转图片的参数
+        RabbitMatrixToImageConfig config = new RabbitMatrixToImageConfig(ONCOLOR_DEFAULT.getRGB(), offColor.getRGB());
+        config.initConfigGradientColor(offColor.getRGB(), onColorStart.getRGB(), onColorEnd.getRGB());
+
+        //转化为图片对象
+        BufferedImage bufferedImage = RabbitMatrixToImageWriter.toBufferedImage(bitMatrix, config);
+
+        //绘制中心logo
+        if (StringUtil.isNotEmpty(logoUrl)) {
+            //从网络连接读取图片
+            URL url = new URL(logoUrl);
+            InputStream inputStream = url.openStream();
+            BufferedImage logoImg = ImageIO.read(inputStream);
+            //绘制logo
+            qrLogoDraw(bufferedImage, logoImg, offColor);
+        }
 
         return bufferedImage;
     }
