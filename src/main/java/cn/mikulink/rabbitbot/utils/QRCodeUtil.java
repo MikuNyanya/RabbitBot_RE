@@ -27,11 +27,65 @@ import java.util.Map;
  */
 public class QRCodeUtil {
     //默认二维码尺寸
-    private static final int QRCODE_WIDTH_DEFAULE = 300;
-    private static final int QRCODE_HEIGHT_DEFAULE = 300;
+    public static final int QRCODE_WIDTH_DEFAULE = 300;
+    public static final int QRCODE_HEIGHT_DEFAULE = 300;
     //默认二维码颜色
-    private static final Color ONCOLOR_DEFAULT = new Color(0xFF000001);
-    private static final Color OFFCOLOR_DEFAULT = new Color(0xFFFFFFFF);
+    public static final Color ONCOLOR_DEFAULT = new Color(0xFF000001);
+    public static final Color OFFCOLOR_DEFAULT = new Color(0xFFFFFFFF);
+
+    /**
+     * 生成一个二维码
+     * 只有这么普通了
+     *
+     * @param content 二维码内容
+     * @return 二维码图片
+     * @throws WriterException
+     * @throws IOException
+     */
+    public static BufferedImage createQRCode(String content) throws WriterException, IOException {
+        return createQRCode(content, QRCODE_WIDTH_DEFAULE, QRCODE_HEIGHT_DEFAULE);
+    }
+
+    /**
+     * 生成一个二维码
+     *
+     * @param content 二维码内容
+     * @param logoUrl 中心logo
+     * @return 二维码图片
+     * @throws WriterException
+     * @throws IOException
+     */
+    public static BufferedImage createQRCode(String content, String logoUrl) throws WriterException, IOException {
+        return createQRCode(content, QRCODE_WIDTH_DEFAULE, QRCODE_HEIGHT_DEFAULE, ONCOLOR_DEFAULT, OFFCOLOR_DEFAULT, logoUrl);
+    }
+
+    /**
+     * 生成一个二维码
+     *
+     * @param width   图片长度
+     * @param height  图片高度
+     * @param content 二维码内容
+     * @return 二维码图片
+     * @throws WriterException
+     * @throws IOException
+     */
+    public static BufferedImage createQRCode(String content, int width, int height) throws WriterException, IOException {
+        return createQRCode(content, width, height, ONCOLOR_DEFAULT, OFFCOLOR_DEFAULT, null);
+    }
+
+    /**
+     * 生成一个二维码图片
+     *
+     * @param content  二维码内容
+     * @param onColor  二维码前景色
+     * @param offColor 二维码背景色
+     * @return 二维码图片
+     * @throws WriterException
+     * @throws IOException
+     */
+    public static BufferedImage createQRCode(String content, Color onColor, Color offColor) throws WriterException, IOException {
+        return createQRCode(content, QRCODE_WIDTH_DEFAULE, QRCODE_HEIGHT_DEFAULE, onColor, offColor, null);
+    }
 
     /**
      * 生成一个二维码图片
@@ -41,23 +95,17 @@ public class QRCodeUtil {
      * @param content  二维码内容
      * @param onColor  二维码前景色
      * @param offColor 二维码背景色
+     * @param logoUrl  网络图片链接
      * @return 二维码图片
      * @throws WriterException
      * @throws IOException
      */
     public static BufferedImage createQRCode(String content, int width, int height, Color onColor, Color offColor, String logoUrl) throws WriterException, IOException {
-        //尺寸边界校验
-        if (width <= 0) {
-            width = QRCODE_WIDTH_DEFAULE;
-        }
-        if (height <= 0) {
-            height = QRCODE_HEIGHT_DEFAULE;
-        }
         //颜色默认
         //https://www.iteye.com/blog/ququjioulai-2254382
         //如果使用的是默认的空格白0xFFFFFFFF,二维码黑0xFF000000,就会使用BufferedImage.TYPE_BYTE_BINARY类型,即,只有黑白二色的位图
         //这会导致logo也变成黑白的
-        //所以默认背景色改为不是白色，但跟白色差不多的颜色
+        //所以前景色改为不是黑色，但跟黑色差不多的颜色
         if (null == onColor) {
             onColor = ONCOLOR_DEFAULT;
         }
@@ -82,14 +130,37 @@ public class QRCodeUtil {
             //绘制logo
             qrLogoDraw(bufferedImage, logoImg, offColor);
         }
-//        if (FileUtil.exists(logoPath)) {
-//        //读取logo
-//        BufferedImage logo = ImageIO.read(logoFile);
-//            qrLogoDraw(bufferedImage, new File(logoPath));
-//    }
-
 
         return bufferedImage;
+    }
+
+    /**
+     * 生成一个渐变色二维码图片
+     *
+     * @param content      二维码内容
+     * @param onColorStart 二维码前景渐变色 开始
+     * @param onColorEnd   二维码前景渐变色 结束
+     * @return 二维码图片
+     * @throws WriterException
+     * @throws IOException
+     */
+    public static BufferedImage createGradientColorQRCode(String content, Color onColorStart, Color onColorEnd) throws WriterException, IOException {
+        return createGradientColorQRCode(content, QRCODE_WIDTH_DEFAULE, QRCODE_HEIGHT_DEFAULE, onColorStart, onColorEnd, OFFCOLOR_DEFAULT, null);
+    }
+
+    /**
+     * 生成一个渐变色二维码图片
+     *
+     * @param content      二维码内容
+     * @param onColorStart 二维码前景渐变色 开始
+     * @param onColorEnd   二维码前景渐变色 结束
+     * @param logoUrl      中心logo
+     * @return 二维码图片
+     * @throws WriterException
+     * @throws IOException
+     */
+    public static BufferedImage createGradientColorQRCode(String content, Color onColorStart, Color onColorEnd, String logoUrl) throws WriterException, IOException {
+        return createGradientColorQRCode(content, QRCODE_WIDTH_DEFAULE, QRCODE_HEIGHT_DEFAULE, onColorStart, onColorEnd, OFFCOLOR_DEFAULT, logoUrl);
     }
 
     /**
@@ -101,19 +172,12 @@ public class QRCodeUtil {
      * @param onColorStart 二维码前景渐变色 开始
      * @param onColorEnd   二维码前景渐变色 结束
      * @param offColor     二维码背景色
+     * @param logoUrl      中心logo
      * @return 二维码图片
      * @throws WriterException
      * @throws IOException
      */
     public static BufferedImage createGradientColorQRCode(String content, int width, int height, Color onColorStart, Color onColorEnd, Color offColor, String logoUrl) throws WriterException, IOException {
-        //尺寸边界校验
-        if (width <= 0) {
-            width = QRCODE_WIDTH_DEFAULE;
-        }
-        if (height <= 0) {
-            height = QRCODE_HEIGHT_DEFAULE;
-        }
-
         if (null == onColorStart) {
             onColorStart = ONCOLOR_DEFAULT;
         }
@@ -206,6 +270,7 @@ public class QRCodeUtil {
         return os.toByteArray();
     }
 
+    //生成BitMatrix
     private static BitMatrix initBitMatrix(String content, int width, int height) throws WriterException {
         //尺寸边界校验
         if (width <= 0) {
@@ -227,11 +292,6 @@ public class QRCodeUtil {
         BarcodeFormat format = BarcodeFormat.QR_CODE;
         // 创建位矩阵对象
         return new MultiFormatWriter().encode(content, format, width, height, hints);
-    }
-
-    //绘制二维码中间的logo
-    private static BufferedImage qrLogoDraw(BufferedImage qrImg, BufferedImage logoImg) {
-        return qrLogoDraw(qrImg, logoImg, OFFCOLOR_DEFAULT);
     }
 
     //绘制二维码中间的logo

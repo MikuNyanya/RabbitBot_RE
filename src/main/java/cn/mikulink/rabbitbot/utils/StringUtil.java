@@ -116,4 +116,23 @@ public class StringUtil {
         }
         return null;
     }
+
+    /**
+     * 累加传入字符串的ASCII值总和
+     *
+     * @param str 原字符串
+     * @return ASCII值总和
+     */
+    public static int sumASCII(String str) {
+        if (isEmpty(str)) {
+            return 0;
+        }
+
+        int sum = 0;
+        char[] chars = str.toCharArray();
+        for (char aChar : chars) {
+            sum += aChar;
+        }
+        return sum;
+    }
 }
