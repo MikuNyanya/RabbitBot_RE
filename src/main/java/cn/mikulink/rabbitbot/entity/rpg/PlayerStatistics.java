@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PlayerStatistics{
+public class PlayerStatistics {
     /**
      * 人物名称
      */
@@ -19,5 +19,16 @@ public class PlayerStatistics{
      * 力量
      */
     private int str;
-
+    /**
+     * 敏捷
+     */
+    private int dex;
+    /**
+     * 智力
+     */
+    private int inte;
+    /**
+     * 运气
+     */
+    private int luck;
 }

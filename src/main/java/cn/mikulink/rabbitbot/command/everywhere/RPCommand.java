@@ -1,17 +1,17 @@
-package cn.mikulink.rabbitbot.command.group;
+package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.command.GroupCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantRP;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
-import cn.mikulink.rabbitbot.utils.StringUtil;
-import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.contact.Member;
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +26,10 @@ import java.util.Map;
  * 每日人品
  */
 @Command
-public class RPCommand implements GroupCommand {
+public class RPCommand extends BaseEveryWhereCommand {
     public static Map<Long, Integer> MAP_RP = new HashMap<>();
+    @Autowired
+    private RabbitBotService rabbitBotService;
 
     @Override
     public CommandProperties properties() {
@@ -35,18 +37,10 @@ public class RPCommand implements GroupCommand {
     }
 
     @Override
-    public Message permissionCheck(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
-        return null;
-    }
-
-    @Override
-    public Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
-        //获取群员Q号
+    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
+        //获取群员信息
         Long groupUserId = sender.getId();
-        String groupUserName = sender.getNameCard();
-        if(StringUtil.isEmpty(groupUserName)){
-            groupUserName = sender.getNick();
-        }
+        String groupUserName = rabbitBotService.getUserName(subject, sender);
 
         //rp
         int rollNum = 0;
@@ -70,30 +64,30 @@ public class RPCommand implements GroupCommand {
             return ConstantCommon.NEXT_LINE + "这人可真是惨到家了...";
         } else if (rollNum == 9) {
             return ConstantCommon.NEXT_LINE + "baka~";
-        }else if(rollNum == 42){
+        } else if (rollNum == 42) {
             return ConstantCommon.NEXT_LINE + "嗯，宇宙中任何事情的终极答案";
-        }else if (rollNum == 100) {
+        } else if (rollNum == 100) {
             return ConstantCommon.NEXT_LINE + "哇，金色传说！";
         }
 
         //如果不属于上面的情况，则随机出现短语
         //是否附带随机短语
-        if(!RandomUtil.rollBoolean(-20)){
+        if (!RandomUtil.rollBoolean(-20)) {
             return "";
         }
 
         //获取随机短语
-        StringBuilder stringBuilder= new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(ConstantCommon.NEXT_LINE);
-        if(rollNum<=10){
+        if (rollNum <= 10) {
             stringBuilder.append(RandomUtil.rollStrFromList(ConstantRP.RP_MSGEX_WTF));
-        }else if(rollNum<=40){
+        } else if (rollNum <= 40) {
             stringBuilder.append(RandomUtil.rollStrFromList(ConstantRP.RP_MSGEX_LOW));
-        }else if(rollNum<=70){
+        } else if (rollNum <= 70) {
             stringBuilder.append(RandomUtil.rollStrFromList(ConstantRP.RP_MSGEX_NORMAL));
-        }else if(rollNum<=90){
+        } else if (rollNum <= 90) {
             stringBuilder.append(RandomUtil.rollStrFromList(ConstantRP.RP_MSGEX_HIGH));
-        }else{
+        } else {
             stringBuilder.append(RandomUtil.rollStrFromList(ConstantRP.RP_MSGEX_WOW));
         }
 

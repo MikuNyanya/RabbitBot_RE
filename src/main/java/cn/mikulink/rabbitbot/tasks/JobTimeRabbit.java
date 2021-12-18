@@ -1,7 +1,8 @@
 package cn.mikulink.rabbitbot.tasks;
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
-import cn.mikulink.rabbitbot.command.group.RPCommand;
+
+import cn.mikulink.rabbitbot.command.everywhere.RPCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;

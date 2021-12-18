@@ -1,9 +1,9 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantTarot;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.TarotInfo;
+import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.TarotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import net.mamoe.mirai.contact.Contact;
@@ -33,6 +33,8 @@ public class TarotCommand extends BaseEveryWhereCommand {
 
     @Autowired
     private TarotService tarotService;
+    @Autowired
+    private RabbitBotService rabbitBotService;
 
     @Override
     public CommandProperties properties() {
@@ -41,7 +43,7 @@ public class TarotCommand extends BaseEveryWhereCommand {
 
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        String userNick = sender.getNick();
+        String userNick = rabbitBotService.getUserName(subject, sender);
         MessageChain result = MessageUtils.newChain();
         try {
             //抽牌

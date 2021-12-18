@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.command.group;
+package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.command.GroupCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCapsuleToy;
@@ -8,8 +8,10 @@ import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
+import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
  */
 @Command
 @Slf4j
-public class CapsuleToyCommand implements GroupCommand {
+public class CapsuleToyCommand extends BaseEveryWhereCommand {
 
     @Autowired
     private RabbitBotService rabbitBotService;
@@ -40,17 +42,9 @@ public class CapsuleToyCommand implements GroupCommand {
     }
 
     @Override
-    public Message permissionCheck(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
-        return null;
-    }
-
-    @Override
-    public Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
+    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
         Long userId = sender.getId();
-        String userNick = sender.getNameCard();
-        if (StringUtil.isEmpty(userNick)) {
-            userNick = sender.getNick();
-        }
+        String userNick = rabbitBotService.getUserName(subject, sender);
 
         if (null == args || args.size() <= 0) {
             //操作间隔判断

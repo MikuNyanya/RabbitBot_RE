@@ -168,6 +168,24 @@ public class RabbitBotService {
     }
 
     /**
+     * 获取用户名，优先获取群昵称
+     *
+     * @param subject 上下文
+     * @param sender  用户信息
+     * @return 用户名称
+     */
+    public String getUserName(Contact subject, User sender) {
+        String userName = null;
+        if (subject instanceof Group) {
+            userName = ((Member) sender).getNameCard();
+        }
+        if (StringUtil.isEmpty(userName)) {
+            userName = sender.getNick();
+        }
+        return userName;
+    }
+
+    /**
      * 上传图片，获取图片id
      * 重载，单条转化
      *

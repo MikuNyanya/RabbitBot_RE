@@ -41,8 +41,8 @@ public class DrawLotsCommand extends BaseEveryWhereCommand {
 
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        
-        String userNick = sender.getNick();
+
+        String userNick = rabbitBotService.getUserName(subject,sender);
         MessageChain result = MessageUtils.newChain();
         try {
             //基于签的最大数量抽取一个数字作为索引
