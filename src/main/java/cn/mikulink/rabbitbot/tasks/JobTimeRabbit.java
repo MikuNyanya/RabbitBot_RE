@@ -1,8 +1,6 @@
 package cn.mikulink.rabbitbot.tasks;
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
-
-import cn.mikulink.rabbitbot.command.everywhere.RPCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
@@ -70,10 +68,6 @@ public class JobTimeRabbit {
         timeRabbit();
         //天气
 //        weatherRabbit();
-
-        //0点清理
-        //RP缓存
-        clearRPMap();
 
         //每日色图
         setuOnDay();
@@ -144,17 +138,6 @@ public class JobTimeRabbit {
                 return ConstantCommon.NEXT_LINE + "已经很晚了，早点休息哦~~";
         }
         return "";
-    }
-
-    //清除RP缓存，不然第二天RP值不会重置
-    private void clearRPMap() {
-        //0点清除
-        if (hour_now != 0) {
-            return;
-        }
-
-        RPCommand.MAP_RP.clear();
-        logger.info("每日人品缓存已清除");
     }
 
     //天气兔子

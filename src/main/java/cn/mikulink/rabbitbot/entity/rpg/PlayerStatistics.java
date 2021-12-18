@@ -7,6 +7,7 @@ import lombok.Setter;
  * created by MikuNyanya on 2021/12/17 17:49
  * For the Reisen
  * 人物属性
+ * 设定所有属性均衡值为 MAX/2
  */
 @Getter
 @Setter

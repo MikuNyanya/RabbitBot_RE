@@ -4,6 +4,7 @@ import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantRP;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.service.rpg.StatisticsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import net.mamoe.mirai.contact.Contact;
@@ -14,8 +15,6 @@ import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -27,9 +26,10 @@ import java.util.Map;
  */
 @Command
 public class RPCommand extends BaseEveryWhereCommand {
-    public static Map<Long, Integer> MAP_RP = new HashMap<>();
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private StatisticsService statisticsService;
 
     @Override
     public CommandProperties properties() {
@@ -39,21 +39,18 @@ public class RPCommand extends BaseEveryWhereCommand {
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
         //获取群员信息
-        Long groupUserId = sender.getId();
         String groupUserName = rabbitBotService.getUserName(subject, sender);
 
-        //rp
-        int rollNum = 0;
-        if (MAP_RP.containsKey(groupUserId)) {
-            rollNum = MAP_RP.get(groupUserId);
-        } else {
-            rollNum = RandomUtil.roll();
-            MAP_RP.put(groupUserId, rollNum);
+        //rp 与人物属性的运气值对齐 问题就是可能不会出现0和100的运气了
+        int rp = statisticsService.getPlayerLUCK(groupUserName);
+        //如果是99直接当做100吧，弥补下没有100封顶的遗憾
+        if (rp == 99) {
+            rp = 100;
         }
 
         //可以随机点装饰性语句
-        String msgEx = getMsgEx(rollNum);
-        String resultStr = String.format("【%s】今天的人品值：%s%s", groupUserName, rollNum, msgEx);
+        String msgEx = getMsgEx(rp);
+        String resultStr = String.format("【%s】今天的人品值：%s%s", groupUserName, rp, msgEx);
         return new PlainText(resultStr);
     }
 

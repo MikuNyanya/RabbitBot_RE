@@ -24,6 +24,9 @@ public class StatisticsService {
      * 根据名字获取一个值
      * 所有字符的ASCII累加，取最后值不是0的两位
      * 我也不知道该拿这个值干啥
+     * <p>
+     * 淦，我怕不是把自己绕进去了
+     * 得关注着这块算法，也许会有更好的方式
      *
      * @param name 人物名
      * @return rab值
