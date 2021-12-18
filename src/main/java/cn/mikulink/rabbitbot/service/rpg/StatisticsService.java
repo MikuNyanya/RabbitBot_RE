@@ -22,16 +22,14 @@ public class StatisticsService {
 
     /**
      * 根据名字获取一个值
-     * 所有字符的ASCII累加，取最后两位
+     * 所有字符的ASCII累加，取最后值不是0的两位
      * 我也不知道该拿这个值干啥
      *
      * @param name 人物名
      * @return rab值
      */
     public int getPlayerRab(String name) {
-        String asciiSumStr = String.valueOf(StringUtil.sumASCII(name));
-        int subStr = asciiSumStr.length() > 1 ? asciiSumStr.length() - 2 : 0;
-        return NumberUtil.toInt(asciiSumStr.substring(subStr));
+        return subASCIIStatis(StringUtil.sumASCII(name));
     }
 
     /**
@@ -42,9 +40,7 @@ public class StatisticsService {
      */
     public int getPlayerSTR(String name) {
         int rab = getPlayerRab(name);
-        String tempSTR = String.valueOf(rab * StringUtil.sumASCII(ConstantRPG.STR));
-        int subStr = tempSTR.length() > 1 ? tempSTR.length() - 2 : 0;
-        return NumberUtil.toInt(tempSTR.substring(subStr));
+        return subASCIIStatis(rab + StringUtil.sumASCII(ConstantRPG.STR));
     }
 
     /**
@@ -55,9 +51,7 @@ public class StatisticsService {
      */
     public int getPlayerDEX(String name) {
         int rab = getPlayerRab(name);
-        String temp = String.valueOf(rab * StringUtil.sumASCII(ConstantRPG.DEX));
-        int subStr = temp.length() > 1 ? temp.length() - 2 : 0;
-        return NumberUtil.toInt(temp.substring(subStr));
+        return subASCIIStatis(rab + StringUtil.sumASCII(ConstantRPG.DEX));
     }
 
     /**
@@ -68,9 +62,7 @@ public class StatisticsService {
      */
     public int getPlayerINTE(String name) {
         int rab = getPlayerRab(name);
-        String temp = String.valueOf(rab * StringUtil.sumASCII(ConstantRPG.INTE));
-        int subStr = temp.length() > 1 ? temp.length() - 2 : 0;
-        return NumberUtil.toInt(temp.substring(subStr));
+        return subASCIIStatis(rab + StringUtil.sumASCII(ConstantRPG.INTE));
     }
 
     /**
@@ -84,9 +76,7 @@ public class StatisticsService {
         int rab = getPlayerRab(name);
         //年月日拼一起加入运算
         String dateStr = DateUtil.toString(new Date(), "yyyyMMdd");
-        String temp = String.valueOf(rab * StringUtil.sumASCII(ConstantRPG.LUCK) * NumberUtil.toInt(dateStr));
-        int subStr = temp.length() > 1 ? temp.length() - 2 : 0;
-        return NumberUtil.toInt(temp.substring(subStr));
+        return subASCIIStatis((rab + StringUtil.sumASCII(ConstantRPG.LUCK)) * StringUtil.sumASCII(dateStr));
     }
 
     /**
@@ -131,5 +121,24 @@ public class StatisticsService {
         //无关哪个属性，用传进来的值生成一个属性条即可
         Double full = NumberUtil.keepDecimalPoint((statistics / (ConstantRPG.Statistics_MAX * 1.0)) * 10, 1);
         return BarUtil.createStatusBar(full.intValue());
+    }
+
+    //从后向前获取一个两位数，如果结果为0，则再向前移动一位
+    private int subASCIIStatis(int num) {
+        if (num < 100) {
+            return num;
+        }
+        String numStr = String.valueOf(num);
+
+        int tempNum = 0;
+        for (int i = numStr.length() - 2; i > 0; i--) {
+            String tempStr = numStr.substring(i, i + 2);
+            tempNum = NumberUtil.toInt(tempStr);
+            if (tempNum != 0) {
+                break;
+            }
+        }
+
+        return tempNum;
     }
 }

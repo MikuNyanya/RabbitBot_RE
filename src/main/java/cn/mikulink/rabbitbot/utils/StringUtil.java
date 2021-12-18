@@ -118,10 +118,7 @@ public class StringUtil {
     }
 
     /**
-     * 累加传入字符串的ASCII值总和
-     *
-     * @param str 原字符串
-     * @return ASCII值总和
+     * 使用ascii生成点看似随机的数字
      */
     public static int sumASCII(String str) {
         if (isEmpty(str)) {
@@ -129,9 +126,11 @@ public class StringUtil {
         }
 
         int sum = 0;
+        int i = 1;
         char[] chars = str.toCharArray();
         for (char aChar : chars) {
-            sum += aChar;
+            sum += (aChar * i);
+            i++;
         }
         return sum;
     }
