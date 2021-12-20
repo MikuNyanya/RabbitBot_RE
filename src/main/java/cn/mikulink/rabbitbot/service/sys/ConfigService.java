@@ -10,6 +10,7 @@ import cn.mikulink.rabbitbot.service.TarotService;
 import cn.mikulink.rabbitbot.service.WeatherService;
 import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
+import cn.mikulink.rabbitbot.utils.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -336,5 +337,23 @@ public class ConfigService {
             configGroupInfo = new ConfigGroupInfo();
         }
         return configGroupInfo;
+    }
+
+    /**
+     * 获取今天的全局随机数
+     * 该随机数会用于一些神奇的计算
+     *
+     * @return 本日内不会变动的随机数
+     */
+    public int getRabbitRandomNum() {
+        String rabbitRandomNum = ConstantCommon.common_config.get("rabbitRandomNum");
+        if(null == rabbitRandomNum){
+            //生成一个新的随机数
+            int randomNum = RandomUtil.roll(100);
+            ConstantCommon.common_config.put("rabbitRandomNum",String.valueOf(randomNum));
+            this.refreshConfigFile();
+            return randomNum;
+        }
+        return NumberUtil.toInt(rabbitRandomNum);
     }
 }

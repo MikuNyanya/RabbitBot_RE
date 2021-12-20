@@ -7,6 +7,7 @@ import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
 import cn.mikulink.rabbitbot.service.*;
+import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.sys.ProxyService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
@@ -58,6 +59,8 @@ public class JobTimeRabbit {
     private ProxyService proxyService;
     @Autowired
     private PetService petService;
+    @Autowired
+    private ConfigService configService;
 
     @Scheduled(cron = "0 0 * * * ?")
     public void execute() {
@@ -68,6 +71,9 @@ public class JobTimeRabbit {
         timeRabbit();
         //天气
 //        weatherRabbit();
+
+        //全局随机数刷新
+        rabbitRandomRefresh();
 
         //每日色图
         setuOnDay();
@@ -281,6 +287,22 @@ public class JobTimeRabbit {
         } catch (Exception ex) {
             logger.error("养成数据刷新执行异常", ex);
         }
+    }
+
+    //全局随机数刷新
+    private void rabbitRandomRefresh() {
+        if (hour_now != 0) {
+            return;
+        }
+
+        int rabbitRandomNum = configService.getRabbitRandomNum();
+
+        //生成一个新的随机数
+        int randomNum = RandomUtil.roll(100);
+        ConstantCommon.common_config.put("rabbitRandomNum", String.valueOf(randomNum));
+        configService.refreshConfigFile();
+
+        logger.info("全局随机数刷新,{}->{}", rabbitRandomNum, randomNum);
     }
 
 }

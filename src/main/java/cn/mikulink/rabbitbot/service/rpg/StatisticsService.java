@@ -2,14 +2,13 @@ package cn.mikulink.rabbitbot.service.rpg;
 
 import cn.mikulink.rabbitbot.constant.ConstantRPG;
 import cn.mikulink.rabbitbot.entity.rpg.PlayerStatistics;
+import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.utils.BarUtil;
-import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 /**
  * created by MikuNyanya on 2021/12/17 17:45
@@ -19,6 +18,8 @@ import java.util.Date;
 @Service
 @Slf4j
 public class StatisticsService {
+    @Autowired
+    private ConfigService configService;
 
     /**
      * 根据名字获取一个值
@@ -77,9 +78,9 @@ public class StatisticsService {
      */
     public int getPlayerLUCK(String name) {
         int rab = getPlayerRab(name);
-        //年月日拼一起加入运算
-        String dateStr = DateUtil.toString(new Date(), "yyyyMMdd");
-        return subASCIIStatis((rab + StringUtil.sumASCII(ConstantRPG.LUCK)) * StringUtil.sumASCII(dateStr));
+        //获取每日的全局随机数
+        int rabbitRandomNum = configService.getRabbitRandomNum();
+        return subASCIIStatis((rab + StringUtil.sumASCII(ConstantRPG.LUCK)) * rabbitRandomNum);
     }
 
     /**
@@ -127,7 +128,7 @@ public class StatisticsService {
     }
 
     //从后向前获取一个两位数，如果结果为0，则再向前移动一位
-    private int subASCIIStatis(int num) {
+    public int subASCIIStatis(int num) {
         if (num < 100) {
             return num;
         }
