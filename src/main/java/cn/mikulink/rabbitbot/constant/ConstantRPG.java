@@ -33,4 +33,40 @@ public class ConstantRPG extends ConstantCommon {
 
     public static final String NO_NAME = "你的名字是空的，得起个名字才行";
     public static final String COMMON_PARAM_ERROR = "输入的属性参数不正确";
+
+
+    public static final String KICKASS_EXPLAIN = "使用[.vs @群友]来发起群友互殴,比如："
+            + ".vs @兔叽"
+            + "这场互殴结束后才能发起下一场互殴";
+
+    //互殴操作超时时间 秒
+    public static final int KICKASS_TIME_OUT = 1;
+    //操作 todo 写为配置，每个动作为一个对象，包含id，名称，类型信息，从文件读取，缓存
+    //力量系
+    public static final String KICKASS_ACTION_TUNKHEAD_NO = "1";
+    public static final String KICKASS_ACTION_TUNKHEAD = "敲脑阔";
+    public static final String KICKASS_ACTION_PUNCH_NO = "2";
+    public static final String KICKASS_ACTION_PUNCH_EN = "PUNCH";
+    public static final String KICKASS_ACTION_PUNCH = "给他一拳";
+    //敏捷系
+    public static final String KICKASS_ACTION_NYAPUNCH_NO = "3";
+    public static final String KICKASS_ACTION_NYAPUNCH = "速攻猫猫拳";
+    public static final String KICKASS_ACTION_JUMPKICK_NO = "4";
+    public static final String KICKASS_ACTION_JUMPKICK = "飞踢";
+    //智力系
+    public static final String KICKASS_ACTION_PLANB_NO = "5";
+    public static final String KICKASS_ACTION_PLANB = "尝试切他中路";
+    public static final String KICKASS_ACTION_TALK_NO = "6";
+    public static final String KICKASS_ACTION_TALK = "聊天流";
+
+    //当然可以有混乱系，要单独写计算公式
+
+
+    public static final String KICKASS_STARTED = "本群已经开始一场互殴，结束后才能开始下一场";
+    public static final String KICKASS_TARGET_404 = "目标群友不存在";
+    public static final String KICKASS_TARGET_ERROR = "获取目标群友信息失败";
+    public static final String KICKASS_404 = "本群没有正在进行的互殴";
+    public static final String KICKASS_IS_NOT_STARTER = "";
+
+
 }

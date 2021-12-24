@@ -79,7 +79,7 @@ public class RollCommand extends BaseEveryWhereCommand {
             default:
                 return new PlainText(ConstantRPG.EXPLAIN);
         }
-        int roll = rollD(statisticsValue, luckValue);
+        int roll = statisticsService.rollD(statisticsValue, luckValue);
 
         //附加文本
         StringBuilder exText = new StringBuilder();
@@ -101,49 +101,6 @@ public class RollCommand extends BaseEveryWhereCommand {
                 roll,
                 parseSuccessText(roll));
         return new PlainText(resultStr);
-    }
-
-    /**
-     * 根据属性掷点 0-100
-     *
-     * @param statisticsValue 属性值
-     * @param luckValue       运气值，null代表不使用运气修正
-     * @return 最终掷点结果
-     */
-    public static int rollD(int statisticsValue, Integer luckValue) {
-        //传入的属性和运气作为加成
-        //以满属性的中间值为界限，少于该值会减少掷点成功率，高于该值会增加掷点成功率
-        //加成值 = 传入属性 - (满属性/2) + 运气值 - (满属性/2)
-        //以double计算，最后结果转为int
-        Double additionD = (statisticsValue - ConstantRPG.Statistics_MAX / 2.0);
-        if (null != luckValue) {
-            additionD += (luckValue - ConstantRPG.Statistics_MAX / 2.0);
-        }
-        //加成值
-        int addition = additionD.intValue();
-        //算法修正
-//        if (addition > 0) {
-//            addition += 50;
-//        } else if (addition < 0) {
-//            addition -= 50;
-//        }
-        addition = addition * 2;
-        //基础值为100
-        int roll = RandomUtil.roll(100 + Math.abs(addition));
-
-        //如果加成值为负数，则需要对最终结果进行修正
-        if (addition < 0) {
-            roll = roll + addition;
-        }
-
-        //最终结果限制在0-100
-        if (roll < 0) {
-            roll = 0;
-        }
-        if (roll > 100) {
-            roll = 100;
-        }
-        return roll;
     }
 
     //生成成功与否文本

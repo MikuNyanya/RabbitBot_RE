@@ -30,6 +30,12 @@ public class PlayerStatistics {
     private int inte;
     /**
      * 运气
+     * 一般是随机的
      */
     private int luck;
+    /**
+     * 血量
+     * 一般由基础属性计算而来
+     */
+    private int health;
 }

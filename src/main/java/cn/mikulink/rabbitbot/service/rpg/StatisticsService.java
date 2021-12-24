@@ -5,6 +5,7 @@ import cn.mikulink.rabbitbot.entity.rpg.PlayerStatistics;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.utils.BarUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
+import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,6 +126,49 @@ public class StatisticsService {
         //无关哪个属性，用传进来的值生成一个属性条即可
         Double full = NumberUtil.keepDecimalPoint((statistics / (ConstantRPG.Statistics_MAX * 1.0)) * 10, 1);
         return BarUtil.createStatusBar(full.intValue());
+    }
+
+    /**
+     * 根据属性掷点 0-100
+     *
+     * @param statisticsValue 属性值
+     * @param luckValue       运气值，null代表不使用运气修正
+     * @return 最终掷点结果
+     */
+    public int rollD(int statisticsValue, Integer luckValue) {
+        //传入的属性和运气作为加成
+        //以满属性的中间值为界限，少于该值会减少掷点成功率，高于该值会增加掷点成功率
+        //加成值 = 传入属性 - (满属性/2) + 运气值 - (满属性/2)
+        //以double计算，最后结果转为int
+        Double additionD = (statisticsValue - ConstantRPG.Statistics_MAX / 2.0);
+        if (null != luckValue) {
+            additionD += (luckValue - ConstantRPG.Statistics_MAX / 2.0);
+        }
+        //加成值
+        int addition = additionD.intValue();
+        //算法修正
+//        if (addition > 0) {
+//            addition += 50;
+//        } else if (addition < 0) {
+//            addition -= 50;
+//        }
+        addition = addition * 2;
+        //基础值为100
+        int roll = RandomUtil.roll(100 + Math.abs(addition));
+
+        //如果加成值为负数，则需要对最终结果进行修正
+        if (addition < 0) {
+            roll = roll + addition;
+        }
+
+        //最终结果限制在0-100
+        if (roll < 0) {
+            roll = 0;
+        }
+        if (roll > 100) {
+            roll = 100;
+        }
+        return roll;
     }
 
     //从后向前获取一个两位数，如果结果为0，则再向前移动一位

@@ -303,11 +303,11 @@ public class RabbitBotService {
     /**
      * 发送群消息
      *
-     * @param qq           群号
+     * @param groupId       群号
      * @param messageChain 消息链
      */
-    public void sendGroupMessage(Long qq, MessageChain messageChain) {
-        Group group = RabbitBot.getBot().getGroup(qq);
+    public void sendGroupMessage(Long groupId, MessageChain messageChain) {
+        Group group = RabbitBot.getBot().getGroup(groupId);
         if (null == group) {
             return;
         }
