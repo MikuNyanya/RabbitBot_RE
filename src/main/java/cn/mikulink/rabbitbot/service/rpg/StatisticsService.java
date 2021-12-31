@@ -109,10 +109,21 @@ public class StatisticsService {
     public String parseStatMsg(PlayerStatistics playerStatistics) {
         StringBuilder result = new StringBuilder();
         result.append("======").append(playerStatistics.getName()).append("=======").append("\n")
-                .append("[力量] ").append(getStatisticsBar(playerStatistics.getStr())).append(" ").append(playerStatistics.getStr()).append("\n")
-                .append("[敏捷] ").append(getStatisticsBar(playerStatistics.getDex())).append(" ").append(playerStatistics.getDex()).append("\n")
-                .append("[智力] ").append(getStatisticsBar(playerStatistics.getInte())).append(" ").append(playerStatistics.getInte()).append("\n")
-                .append("[运气] ").append(getStatisticsBar(playerStatistics.getLuck())).append(" ").append(playerStatistics.getLuck()).append("\n");
+                .append("[力量] ")
+                .append(getStatisticsBar(playerStatistics.getStr())).append(" ")
+                .append(playerStatistics.getStr()).append("\n")
+
+                .append("[敏捷] ")
+                .append(getStatisticsBar(playerStatistics.getDex())).append(" ")
+                .append(playerStatistics.getDex()).append("\n")
+
+                .append("[智力] ")
+                .append(getStatisticsBar(playerStatistics.getInte())).append(" ")
+                .append(playerStatistics.getInte()).append("\n")
+
+                .append("[运气] ")
+                .append(getStatisticsBar(playerStatistics.getLuck())).append(" ")
+                .append(playerStatistics.getLuck()).append("\n");
         return result.toString();
     }
 

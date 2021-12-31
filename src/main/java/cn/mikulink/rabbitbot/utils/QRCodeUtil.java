@@ -11,6 +11,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -302,32 +303,54 @@ public class QRCodeUtil {
         int matrixWidth = qrImg.getWidth();
         int matrixHeigh = qrImg.getHeight();
 
-        //开始绘制图片
-        g2.drawImage(logoImg, matrixWidth / 5 * 2, matrixHeigh / 5 * 2, matrixWidth / 5, matrixHeigh / 5, null);//绘制
-        BasicStroke stroke = new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-        g2.setStroke(stroke);// 设置笔画对象
+        //绘制坐标 使其居中
+        int x = matrixWidth / 5 * 2;
+        int y = matrixHeigh / 5 * 2;
 
-        //开始绘制周围边框
+        //logo尺寸
+        int logoWidth = matrixWidth / 5;
+        int logoHeigh = matrixHeigh / 5;
+
         //从角落圆弧的宽度
         int arcw = 10;
         //从角落圆弧的高度
         int arch = 10;
 
+        //圆形logo
+//        arcw = logoWidth;
+//        arch = logoHeigh;
+//        Ellipse2D.Double shape = new Ellipse2D.Double(x, y, arcw, arch);
+//        g2.setClip(shape);
+        //不使用锯齿
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        //开始绘制图片
+        g2.drawImage(logoImg, x, y, logoWidth, logoHeigh, null);//绘制
+        //开始绘制周围边框
         //默认为白色周边背景
         if (null == bgColor) {
             bgColor = OFFCOLOR_DEFAULT;
         }
+        //白色边框宽度
+        int roundW = 8;
+
+        BasicStroke stroke = new BasicStroke(roundW, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        g2.setStroke(stroke);// 设置笔画对象
         //指定弧度的圆角矩形
-        RoundRectangle2D.Float round = new RoundRectangle2D.Float(matrixWidth / 5 * 2, matrixHeigh / 5 * 2, matrixWidth / 5, matrixHeigh / 5, arcw, arch);
+        RoundRectangle2D.Float round = new RoundRectangle2D.Float(x, y, logoWidth, logoHeigh, arcw, arch);
         g2.setColor(bgColor);
         g2.draw(round);// 绘制圆弧矩形
 
         //绘制logo灰色线条边框
-        BasicStroke stroke2 = new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        //线条粗细
+        int borderWidth = 1;
+        //线条修正数值，由于存在周边留白，想要使线条贴着logo，需要根据上线的白色边框进行修正
+        int borderFix = roundW / 2;
+
+        BasicStroke stroke2 = new BasicStroke(borderWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         g2.setStroke(stroke2);// 设置笔画对象
-        RoundRectangle2D.Float round2 = new RoundRectangle2D.Float(matrixWidth / 5 * 2 + 2, matrixHeigh / 5 * 2 + 2, matrixWidth / 5 - 4, matrixHeigh / 5 - 4, arcw, arch);
+        RoundRectangle2D.Float border = new RoundRectangle2D.Float(x + borderFix, y + borderFix, logoWidth - (borderFix * 2), logoHeigh - (borderFix * 2), arcw, arch);
         g2.setColor(new Color(128, 128, 128));
-        g2.draw(round2);// 绘制圆弧矩形
+        g2.draw(border);// 绘制圆弧矩形
 
         g2.dispose();
         qrImg.flush();
