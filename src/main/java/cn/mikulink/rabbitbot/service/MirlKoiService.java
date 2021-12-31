@@ -1,7 +1,9 @@
 package cn.mikulink.rabbitbot.service;
 
+import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.ImageUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
+import com.alibaba.fastjson.JSONObject;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.slf4j.Logger;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * created by MikuNyanya on 2021/10/22 14:15
@@ -34,7 +38,10 @@ public class MirlKoiService {
      * @throws IOException 异常
      */
     public String downloadASetu() throws IOException {
-        return ImageUtil.downloadImage(mirlkoiSetuUrl, "data/images/mirlkoi", System.currentTimeMillis() + ".jpg");
+        byte[] response = HttpsUtil.doGet(mirlkoiSetuUrl);
+        String body = new String(response);
+        Map<String, String> bodyMap = JSONObject.parseObject(body, HashMap.class);
+        return ImageUtil.downloadImage(bodyMap.get("pic"), "data/images/mirlkoi", System.currentTimeMillis() + ".jpg");
     }
 
     public void sendRandomSetu(Contact subject) {
