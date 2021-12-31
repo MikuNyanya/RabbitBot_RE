@@ -7,6 +7,7 @@ import net.mamoe.mirai.message.data.MessageChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,6 +21,9 @@ import java.io.IOException;
 public class MirlKoiService {
     private static final Logger logger = LoggerFactory.getLogger(MirlKoiService.class);
 
+    @Value("${mirlkoi.setu.url:}")
+    private String mirlkoiSetuUrl;
+
     @Autowired
     private RabbitBotService rabbitBotService;
 
@@ -30,7 +34,7 @@ public class MirlKoiService {
      * @throws IOException 异常
      */
     public String downloadASetu() throws IOException {
-        return ImageUtil.downloadImage("https://iw233.cn/API/Ghs.php", "data/images/mirlkoi", System.currentTimeMillis() + ".jpg");
+        return ImageUtil.downloadImage(mirlkoiSetuUrl, "data/images/mirlkoi", System.currentTimeMillis() + ".jpg");
     }
 
     public void sendRandomSetu(Contact subject) {

@@ -91,15 +91,15 @@ public class SetuCommand extends BaseEveryWhereCommand {
             //Pixiv 和 MirKoi各5成概率 反正他们只要有色图看就行
             //如果请求的色图数量超过1张，则不使用pixiv，因为太慢了
             boolean isPixiv = setuCount == 1 && RandomUtil.rollBoolean(0);
-//            if (isPixiv) {
+            if (isPixiv) {
                 PixivImageInfo pixivImageInfo = setuService.getSetu();
                 pixivImageInfo.setSender(sender);
                 pixivImageInfo.setSubject(subject);
                 return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
-//            } else {
-//                mirlKoiService.sendRandomSetu(subject, setuCount);
-//                return null;
-//            }
+            } else {
+                mirlKoiService.sendRandomSetu(subject, setuCount);
+                return null;
+            }
         } catch (FileNotFoundException fileNotFoundEx) {
             logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
             return new PlainText(ConstantPixiv.PIXIV_IMAGE_DELETE);
