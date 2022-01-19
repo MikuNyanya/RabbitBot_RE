@@ -4,7 +4,7 @@ package cn.mikulink.rabbitbot.command.everywhere;
 import cn.mikulink.rabbitbot.constant.ConstantQRCode;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import cn.mikulink.rabbitbot.utils.QRCodeUtil;
+import cn.mikulink.rabbitbot.qrcodes.QRCodeUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.internal.message.OnlineImage;

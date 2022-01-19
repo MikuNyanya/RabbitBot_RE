@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.entity.overrides;
+package cn.mikulink.rabbitbot.qrcodes;
 
 import lombok.Getter;
 import lombok.Setter;

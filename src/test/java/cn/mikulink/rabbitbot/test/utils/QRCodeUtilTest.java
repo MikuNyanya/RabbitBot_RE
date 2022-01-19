@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.test.utils;
 
-import cn.mikulink.rabbitbot.utils.QRCodeUtil;
+import cn.mikulink.rabbitbot.qrcodes.QRCodeUtil;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;

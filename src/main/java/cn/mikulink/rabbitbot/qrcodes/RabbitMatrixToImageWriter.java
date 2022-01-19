@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.entity.overrides;
+package cn.mikulink.rabbitbot.qrcodes;
 
 import com.google.zxing.common.BitArray;
 import com.google.zxing.common.BitMatrix;

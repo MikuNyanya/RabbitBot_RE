@@ -1,7 +1,6 @@
-package cn.mikulink.rabbitbot.utils;
+package cn.mikulink.rabbitbot.qrcodes;
 
-import cn.mikulink.rabbitbot.entity.overrides.RabbitMatrixToImageConfig;
-import cn.mikulink.rabbitbot.entity.overrides.RabbitMatrixToImageWriter;
+import cn.mikulink.rabbitbot.utils.StringUtil;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -11,7 +10,6 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
