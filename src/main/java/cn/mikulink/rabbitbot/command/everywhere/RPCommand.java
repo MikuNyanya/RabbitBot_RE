@@ -4,7 +4,7 @@ import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantRP;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
-import cn.mikulink.rabbitbot.service.rpg.StatisticsService;
+import cn.mikulink.rabbitbot.service.rpg.CharacterStatsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import net.mamoe.mirai.contact.Contact;
@@ -29,7 +29,7 @@ public class RPCommand extends BaseEveryWhereCommand {
     @Autowired
     private RabbitBotService rabbitBotService;
     @Autowired
-    private StatisticsService statisticsService;
+    private CharacterStatsService characterStatsService;
 
     @Override
     public CommandProperties properties() {
@@ -42,7 +42,7 @@ public class RPCommand extends BaseEveryWhereCommand {
         String groupUserName = rabbitBotService.getUserName(subject, sender);
 
         //rp 与人物属性的运气值对齐 问题就是可能不会出现0和100的运气了
-        int rp = statisticsService.getPlayerLUCK(groupUserName);
+        int rp = characterStatsService.getPlayerLUCK(groupUserName);
         //如果是99直接当做100吧，弥补下没有100封顶的遗憾
         if (rp == 99) {
             rp = 100;

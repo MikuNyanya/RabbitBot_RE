@@ -29,7 +29,7 @@ public class ConstantRPG extends ConstantCommon {
     public static final String LINTE = "LINTE";   //智力
 
     //属性最大值
-    public static final int Statistics_MAX = 99;
+    public static final int STATS_MAX = 99;
 
     public static final String NO_NAME = "你的名字是空的，得起个名字才行";
     public static final String COMMON_PARAM_ERROR = "输入的属性参数不正确";
@@ -37,7 +37,7 @@ public class ConstantRPG extends ConstantCommon {
 
     public static final String KICKASS_EXPLAIN = "使用[.vs @群友]来发起群友互殴,比如："
             + ".vs @兔叽"
-            + "这场互殴结束后才能发起下一场互殴";
+            + "一场互殴结束后才能发起下一场互殴";
 
     //互殴操作超时时间 秒
     public static final int KICKASS_TIME_OUT = 1;

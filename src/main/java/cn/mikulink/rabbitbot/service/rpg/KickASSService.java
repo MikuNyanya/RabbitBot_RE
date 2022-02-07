@@ -29,7 +29,7 @@ public class KickASSService {
     public static Map<Long, KickingASSInfo> ROUND_NOW = new HashMap<>();
 
     @Autowired
-    private StatisticsService statisticsService;
+    private CharacterStatsService characterStatsService;
 
 
     /**
@@ -78,14 +78,14 @@ public class KickASSService {
 
         //计算行动结果
         //使用双方的力量+运气进行掷骰
-        int strP1 = statisticsService.getPlayerSTR(info.getPlayNameOne());
-        int luckP1 = statisticsService.getPlayerLUCK(info.getPlayNameOne());
+        int strP1 = characterStatsService.getPlayerSTR(info.getPlayNameOne());
+        int luckP1 = characterStatsService.getPlayerLUCK(info.getPlayNameOne());
 
-        int strP2 = statisticsService.getPlayerSTR(info.getPlayNameTwo());
-        int luckP2 = statisticsService.getPlayerLUCK(info.getPlayNameTwo());
+        int strP2 = characterStatsService.getPlayerSTR(info.getPlayNameTwo());
+        int luckP2 = characterStatsService.getPlayerLUCK(info.getPlayNameTwo());
 
-        int rollP1 = statisticsService.rollD(strP1, luckP1);
-        int rollP2 = statisticsService.rollD(strP2, luckP2);
+        int rollP1 = characterStatsService.rollD(strP1, luckP1);
+        int rollP2 = characterStatsService.rollD(strP2, luckP2);
 
         //回合结束时hp 根据掷点造成伤害
         int hpUpdateP1 = info.getPlayHealthOne() - rollP2;
@@ -133,14 +133,14 @@ public class KickASSService {
 
         //计算行动结果
         //使用双方的力量+运气进行掷骰
-        int dexP1 = statisticsService.getPlayerDEX(info.getPlayNameOne());
-        int luckP1 = statisticsService.getPlayerLUCK(info.getPlayNameOne());
+        int dexP1 = characterStatsService.getPlayerDEX(info.getPlayNameOne());
+        int luckP1 = characterStatsService.getPlayerLUCK(info.getPlayNameOne());
 
-        int dexP2 = statisticsService.getPlayerDEX(info.getPlayNameTwo());
-        int luckP2 = statisticsService.getPlayerLUCK(info.getPlayNameTwo());
+        int dexP2 = characterStatsService.getPlayerDEX(info.getPlayNameTwo());
+        int luckP2 = characterStatsService.getPlayerLUCK(info.getPlayNameTwo());
 
-        int rollP1 = statisticsService.rollD(dexP1, luckP1);
-        int rollP2 = statisticsService.rollD(dexP2, luckP2);
+        int rollP1 = characterStatsService.rollD(dexP1, luckP1);
+        int rollP2 = characterStatsService.rollD(dexP2, luckP2);
 
         //回合结束时hp 根据掷点造成伤害
         int hpUpdateP1 = info.getPlayHealthOne() - rollP2;
@@ -188,14 +188,14 @@ public class KickASSService {
 
         //计算行动结果
         //使用双方的力量+运气进行掷骰
-        int inteP1 = statisticsService.getPlayerINTE(info.getPlayNameOne());
-        int luckP1 = statisticsService.getPlayerLUCK(info.getPlayNameOne());
+        int inteP1 = characterStatsService.getPlayerINTE(info.getPlayNameOne());
+        int luckP1 = characterStatsService.getPlayerLUCK(info.getPlayNameOne());
 
-        int inteP2 = statisticsService.getPlayerINTE(info.getPlayNameTwo());
-        int luckP2 = statisticsService.getPlayerLUCK(info.getPlayNameTwo());
+        int inteP2 = characterStatsService.getPlayerINTE(info.getPlayNameTwo());
+        int luckP2 = characterStatsService.getPlayerLUCK(info.getPlayNameTwo());
 
-        int rollP1 = statisticsService.rollD(inteP1, luckP1);
-        int rollP2 = statisticsService.rollD(inteP2, luckP2);
+        int rollP1 = characterStatsService.rollD(inteP1, luckP1);
+        int rollP2 = characterStatsService.rollD(inteP2, luckP2);
 
         //回合结束时hp 根据掷点造成伤害
         int hpUpdateP1 = info.getPlayHealthOne() - rollP2;

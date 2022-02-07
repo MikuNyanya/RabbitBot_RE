@@ -1,7 +1,7 @@
 package cn.mikulink.rabbitbot.service.rpg;
 
 import cn.mikulink.rabbitbot.constant.ConstantRPG;
-import cn.mikulink.rabbitbot.entity.rpg.PlayerStatistics;
+import cn.mikulink.rabbitbot.entity.rpg.PlayerCharacterStats;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.utils.BarUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class StatisticsService {
+public class CharacterStatsService {
     @Autowired
     private ConfigService configService;
 
@@ -90,8 +90,8 @@ public class StatisticsService {
      * @param name 人物名
      * @return 人物属性
      */
-    public PlayerStatistics parseStatisticsList(String name) {
-        PlayerStatistics result = new PlayerStatistics();
+    public PlayerCharacterStats parseCharacterStatsList(String name) {
+        PlayerCharacterStats result = new PlayerCharacterStats();
         result.setName(name);
         result.setStr(this.getPlayerSTR(name));
         result.setDex(this.getPlayerDEX(name));
@@ -103,57 +103,57 @@ public class StatisticsService {
     /**
      * 转化为文本
      *
-     * @param playerStatistics 人物属性对象
+     * @param playerStats 人物属性对象
      * @return 属性文本
      */
-    public String parseStatMsg(PlayerStatistics playerStatistics) {
+    public String parseStatMsg(PlayerCharacterStats playerStats) {
         StringBuilder result = new StringBuilder();
-        result.append("======").append(playerStatistics.getName()).append("=======").append("\n")
+        result.append("======").append(playerStats.getName()).append("=======").append("\n")
                 .append("[力量] ")
-                .append(getStatisticsBar(playerStatistics.getStr())).append(" ")
-                .append(playerStatistics.getStr()).append("\n")
+                .append(getStatsBar(playerStats.getStr())).append(" ")
+                .append(playerStats.getStr()).append("\n")
 
                 .append("[敏捷] ")
-                .append(getStatisticsBar(playerStatistics.getDex())).append(" ")
-                .append(playerStatistics.getDex()).append("\n")
+                .append(getStatsBar(playerStats.getDex())).append(" ")
+                .append(playerStats.getDex()).append("\n")
 
                 .append("[智力] ")
-                .append(getStatisticsBar(playerStatistics.getInte())).append(" ")
-                .append(playerStatistics.getInte()).append("\n")
+                .append(getStatsBar(playerStats.getInte())).append(" ")
+                .append(playerStats.getInte()).append("\n")
 
                 .append("[运气] ")
-                .append(getStatisticsBar(playerStatistics.getLuck())).append(" ")
-                .append(playerStatistics.getLuck()).append("\n");
+                .append(getStatsBar(playerStats.getLuck())).append(" ")
+                .append(playerStats.getLuck()).append("\n");
         return result.toString();
     }
 
     /**
      * 生成属性条
      *
-     * @param statistics 属性值
+     * @param statsValue 属性值
      * @return 属性条
      */
-    private String getStatisticsBar(int statistics) {
+    private String getStatsBar(int statsValue) {
         //无关哪个属性，用传进来的值生成一个属性条即可
-        Double full = NumberUtil.keepDecimalPoint((statistics / (ConstantRPG.Statistics_MAX * 1.0)) * 10, 1);
+        Double full = NumberUtil.keepDecimalPoint((statsValue / (ConstantRPG.STATS_MAX * 1.0)) * 10, 1);
         return BarUtil.createStatusBar(full.intValue());
     }
 
     /**
      * 根据属性掷点 0-100
      *
-     * @param statisticsValue 属性值
+     * @param statsValue 属性值
      * @param luckValue       运气值，null代表不使用运气修正
      * @return 最终掷点结果
      */
-    public int rollD(int statisticsValue, Integer luckValue) {
+    public int rollD(int statsValue, Integer luckValue) {
         //传入的属性和运气作为加成
         //以满属性的中间值为界限，少于该值会减少掷点成功率，高于该值会增加掷点成功率
         //加成值 = 传入属性 - (满属性/2) + 运气值 - (满属性/2)
         //以double计算，最后结果转为int
-        Double additionD = (statisticsValue - ConstantRPG.Statistics_MAX / 2.0);
+        Double additionD = (statsValue - ConstantRPG.STATS_MAX / 2.0);
         if (null != luckValue) {
-            additionD += (luckValue - ConstantRPG.Statistics_MAX / 2.0);
+            additionD += (luckValue - ConstantRPG.STATS_MAX / 2.0);
         }
         //加成值
         int addition = additionD.intValue();

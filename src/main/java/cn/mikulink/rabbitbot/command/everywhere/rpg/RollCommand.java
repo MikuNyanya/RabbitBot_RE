@@ -3,11 +3,10 @@ package cn.mikulink.rabbitbot.command.everywhere.rpg;
 import cn.mikulink.rabbitbot.command.everywhere.BaseEveryWhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantRPG;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
-import cn.mikulink.rabbitbot.entity.rpg.PlayerStatistics;
+import cn.mikulink.rabbitbot.entity.rpg.PlayerCharacterStats;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
-import cn.mikulink.rabbitbot.service.rpg.StatisticsService;
+import cn.mikulink.rabbitbot.service.rpg.CharacterStatsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import cn.mikulink.rabbitbot.utils.RandomUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
@@ -30,7 +29,7 @@ public class RollCommand extends BaseEveryWhereCommand {
     @Autowired
     private RabbitBotService rabbitBotService;
     @Autowired
-    private StatisticsService statisticsService;
+    private CharacterStatsService characterStatsService;
 
     @Override
     public CommandProperties properties() {
@@ -47,39 +46,39 @@ public class RollCommand extends BaseEveryWhereCommand {
         String userName = rabbitBotService.getUserName(subject, sender);
         //输入的指令
         String commandParam = args.get(0).toUpperCase();
-        PlayerStatistics userStat = statisticsService.parseStatisticsList(userName);
+        PlayerCharacterStats userStat = characterStatsService.parseCharacterStatsList(userName);
         //属性值
-        Integer statisticsValue = 0;
+        Integer statsValue = 0;
         //运气 null 代表没有使用运气修正
         Integer luckValue = null;
         //根据传入的指令来计算对应的
         //先暴力列举吧，实现为上
         switch (commandParam) {
             case ConstantRPG.STR:
-                statisticsValue = userStat.getStr();
+                statsValue = userStat.getStr();
                 break;
             case ConstantRPG.DEX:
-                statisticsValue = userStat.getDex();
+                statsValue = userStat.getDex();
                 break;
             case ConstantRPG.INTE:
-                statisticsValue = userStat.getInte();
+                statsValue = userStat.getInte();
                 break;
             case ConstantRPG.LSTR:
-                statisticsValue = userStat.getStr();
+                statsValue = userStat.getStr();
                 luckValue = userStat.getLuck();
                 break;
             case ConstantRPG.LDEX:
-                statisticsValue = userStat.getDex();
+                statsValue = userStat.getDex();
                 luckValue = userStat.getLuck();
                 break;
             case ConstantRPG.LINTE:
-                statisticsValue = userStat.getInte();
+                statsValue = userStat.getInte();
                 luckValue = userStat.getLuck();
                 break;
             default:
                 return new PlainText(ConstantRPG.EXPLAIN);
         }
-        int roll = statisticsService.rollD(statisticsValue, luckValue);
+        int roll = characterStatsService.rollD(statsValue, luckValue);
 
         //附加文本
         StringBuilder exText = new StringBuilder();
@@ -97,7 +96,7 @@ public class RollCommand extends BaseEveryWhereCommand {
                 userName,
                 exText.toString(),
                 commandParam,
-                null == luckValue ? statisticsValue : statisticsValue + " " + luckValue,
+                null == luckValue ? statsValue : statsValue + " " + luckValue,
                 roll,
                 parseSuccessText(roll));
         return new PlainText(resultStr);

@@ -4,10 +4,10 @@ package cn.mikulink.rabbitbot.command.everywhere.rpg;
 import cn.mikulink.rabbitbot.command.everywhere.BaseEveryWhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantRPG;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
-import cn.mikulink.rabbitbot.entity.rpg.PlayerStatistics;
+import cn.mikulink.rabbitbot.entity.rpg.PlayerCharacterStats;
 import cn.mikulink.rabbitbot.service.ImageService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
-import cn.mikulink.rabbitbot.service.rpg.StatisticsService;
+import cn.mikulink.rabbitbot.service.rpg.CharacterStatsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.Contact;
@@ -26,17 +26,17 @@ import java.util.ArrayList;
  * 人物属性界面
  */
 @Command
-public class StatisticsCommand extends BaseEveryWhereCommand {
+public class StatsCommand extends BaseEveryWhereCommand {
     @Autowired
     private RabbitBotService rabbitBotService;
     @Autowired
-    private StatisticsService statisticsService;
+    private CharacterStatsService characterStatsService;
     @Autowired
     private ImageService imageService;
 
     @Override
     public CommandProperties properties() {
-        return new CommandProperties("Statistics", "人物属性");
+        return new CommandProperties("Stats", "人物属性");
     }
 
     @Override
@@ -47,8 +47,8 @@ public class StatisticsCommand extends BaseEveryWhereCommand {
             return new PlainText(ConstantRPG.NO_NAME);
         }
         //生成属性面板，最前面加头像
-        PlayerStatistics playerStatistics = statisticsService.parseStatisticsList(userNick);
-        String msg = statisticsService.parseStatMsg(playerStatistics);
+        PlayerCharacterStats playerStats = characterStatsService.parseCharacterStatsList(userNick);
+        String msg = characterStatsService.parseStatMsg(playerStats);
 
         //如果没有自定义公告，则发送默认消息
         //获取头像

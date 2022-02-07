@@ -40,7 +40,7 @@ public class KickASSCommand implements GroupCommand {
 
     @Override
     public CommandProperties properties() {
-        return new CommandProperties("KickASS", "vs", "kickass");
+        return new CommandProperties("KickASS", "vs", "kickass", "狠狠踢他的屁股");
     }
 
     @Override
@@ -98,7 +98,7 @@ public class KickASSCommand implements GroupCommand {
         }
 
         //临时终结用代码
-        if(arg.equalsIgnoreCase("clear")){
+        if (arg.equalsIgnoreCase("clear")) {
             KickASSService.ROUND_NOW.remove(groupId);
             return new PlainText("互殴已恢复初始化");
         }
