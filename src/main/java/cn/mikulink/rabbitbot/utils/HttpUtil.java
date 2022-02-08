@@ -143,7 +143,7 @@ public class HttpUtil {
             //多个参数之间使用&连接
             urlEncode.append("&");
             //转化格式，并拼接参数和值
-            urlEncode.append(name).append("=").append(URLEncoder.encode(value, charset));
+            urlEncode.append(name).append("=").append(EncodingUtil.encodeURIComponent(value));
         }
         if (urlEncode.length() <= 0) {
             return "";

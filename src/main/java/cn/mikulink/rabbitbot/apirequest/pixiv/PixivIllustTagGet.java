@@ -2,6 +2,7 @@ package cn.mikulink.rabbitbot.apirequest.pixiv;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.utils.EncodingUtil;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
@@ -10,8 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
-import java.net.Proxy;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,7 +72,7 @@ public class PixivIllustTagGet extends BaseRequest {
         //拼装参数
         addParam();
         //爬虫获取排行榜信息
-        byte[] resultBytes = HttpsUtil.doGet(URL + URLEncoder.encode(word, "UTF-8") + HttpUtil.parseUrlEncode(param), proxy);
+        byte[] resultBytes = HttpsUtil.doGet(URL + EncodingUtil.encodeURIComponent(word) + HttpUtil.parseUrlEncode(param), this.getHeader(), proxy);
         body = new String(resultBytes);
     }
 
