@@ -132,7 +132,7 @@ public class DanbooruService {
         resultStr.append("\n[来源] ").append(source);
         resultStr.append("\n[主要TAG] ").append(danbooruImageInfo.getTagStringCharacter()).append(" ").append(danbooruImageInfo.getTagStringCopyright());
         resultStr.append("\n[上传时间] ").append(createdAt);
-        result.plus(resultStr.toString());
+        result = result.plus(resultStr.toString());
         return result;
     }
 }
