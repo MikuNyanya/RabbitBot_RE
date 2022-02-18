@@ -201,7 +201,7 @@ public class RabbitBotService {
             }
         }
         //上传
-        return group.uploadImage(ExternalResource.create(new File(localImagesPath)));
+        return group.uploadImage(ExternalResource.create(new File(localImagesPath)).toAutoCloseable());
     }
 
     /**

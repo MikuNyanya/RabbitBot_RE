@@ -101,7 +101,7 @@ public class QRCodeCommand extends BaseEveryWhereCommand {
             }
 
             byte[] qrBytes = QRCodeUtil.createQRCodeByte(qrContext.toString(), onColor, offColor, logoUrl);
-            return subject.uploadImage(ExternalResource.create(qrBytes));
+            return subject.uploadImage(ExternalResource.create(qrBytes).toAutoCloseable());
         } catch (Exception ex) {
             logger.error("二维码转化失败", ex);
             return new PlainText(ConstantQRCode.QRCODE_FAIL);

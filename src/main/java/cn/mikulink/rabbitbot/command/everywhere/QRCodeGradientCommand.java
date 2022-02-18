@@ -3,8 +3,8 @@ package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.constant.ConstantQRCode;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
-import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.qrcodes.QRCodeUtil;
+import cn.mikulink.rabbitbot.sys.annotate.Command;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.internal.message.OnlineImage;
@@ -95,7 +95,7 @@ public class QRCodeGradientCommand extends BaseEveryWhereCommand {
             }
 
             byte[] qrBytes = QRCodeUtil.createGradientColorQRCodeByte(qrContext.toString(), onColorStart, onColorEnd, logoUrl);
-            return subject.uploadImage(ExternalResource.create(qrBytes));
+            return subject.uploadImage(ExternalResource.create(qrBytes).toAutoCloseable());
         } catch (Exception ex) {
             logger.error("渐变二维码转化失败", ex);
             return new PlainText(ConstantQRCode.QRCODE_FAIL);
