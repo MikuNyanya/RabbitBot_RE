@@ -50,4 +50,9 @@ public class KickingASSInfo implements Serializable {
     private Long playIdTwo;
     private String playNameTwo;
     private Integer playHealthTwo;
+
+    /**
+     * 互殴目标是否是自己
+     */
+    private boolean isKickSelf = false;
 }

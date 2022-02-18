@@ -48,6 +48,8 @@ public class ConstantImage extends ConstantCommon {
 
     //搜图相关
     public static final String IMAGE_SEARCH_NO_IMAGE_INPUT = "你得给我一张图";
+    public static final String IMAGE_SEARCH_NO_IMAGE_ID_INPUT = "你得给我一个图片id";
+    public static final String IMAGE_SEARCH_IMAGE_ID_NOT_NUMBER_ONLY = "图片id只能是纯数字";
     public static final String IMAGE_SEARCH_IMAGE_URL_PARSE_FAIL = "图片解析失败......啊咧？";
     public static final String IMAGE_GET_ERROR = "图片获取异常";
     public static final String IMAGE_GET_TIMEOUT_ERROR = "图片获取超时";
@@ -64,6 +66,7 @@ public class ConstantImage extends ConstantCommon {
     ///Danbooru
     public static final String DANBOORU_ID_GET_NOT_FOUND = "根据Danbooru图片id没有找到图片";
     public static final String DANBOORU_IMAGE_DOWNLOAD_FAIL = "Danbooru图片下载失败";
+    public static final String DANBOORU_ID_GET_TIMEOUT_GROUP_MESSAGE = "根据Danbooru图片id获取信息超时";
     public static final String DANBOORU_ID_GET_FAIL_GROUP_MESSAGE = "根据Danbooru图片id获取信息失败";
     public static final String DANBOORU_ID_GET_ERROR_GROUP_MESSAGE = "根据Danbooru图片id获取信息异常";
 }

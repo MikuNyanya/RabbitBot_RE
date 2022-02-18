@@ -1,22 +1,21 @@
 package cn.mikulink.rabbitbot.apirequest.danbooru;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
-import cn.mikulink.rabbitbot.utils.HttpUtil;
+import cn.mikulink.rabbitbot.entity.DanbooruImageInfo;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
+import cn.mikulink.rabbitbot.utils.StringUtil;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.io.IOException;
-import java.net.Proxy;
 
 /**
  * create by MikuLink on 2020/12/18 3:10
  * for the Reisen
  * 根据图片id，从danbooru获取图片信息
  * https://danbooru.donmai.us/posts/4239811
+ * https://danbooru.donmai.us/posts/4239811.json
  */
 public class DanbooruImageGet extends BaseRequest {
     //单张图片页面链接
@@ -29,31 +28,24 @@ public class DanbooruImageGet extends BaseRequest {
     @Getter
     private String danbooruId;
 
-    //原图链接
-    @Getter
-    private String danbooruImageUrl;
-
     /**
      * 执行请求
      *
      * @throws IOException 所有异常上抛，由业务处理
      */
     public void doRequest() throws IOException {
-        //通过请求获取到返回的页面
-        String htmlStr = new String(HttpsUtil.doGet(URL + danbooruId, proxy));
-        //使用jsoup解析html
-        Document document = Jsoup.parse(htmlStr);
-        //选择目标节点，类似于JS的选择器
-        Element element = document.getElementById("image-resize-link");
-        String imageUrl = null;
-        if (null != element) {
-            //获取原图
-            imageUrl = element.attributes().get("href");
-        } else {
-            //本身图片比较小就没有显示原图的
-            imageUrl = document.getElementById("image").attributes().get("src");
-        }
-
-        danbooruImageUrl = imageUrl;
+        //通过请求获取到图片json数据，这是由官方提供的渠道
+        this.body = new String(HttpsUtil.doGet(URL + danbooruId + ".json", proxy));
     }
+
+    /**
+     * 解析图片信息
+     */
+    public DanbooruImageInfo parseDanbooruImageInfo() {
+        if (StringUtil.isEmpty(this.body)) {
+            return null;
+        }
+        return JSONObject.parseObject(this.body, DanbooruImageInfo.class);
+    }
+
 }

@@ -1,13 +1,22 @@
 package cn.mikulink.rabbitbot.service.rpg;
 
+import cn.mikulink.rabbitbot.constant.ConstantPet;
 import cn.mikulink.rabbitbot.constant.ConstantRPG;
+import cn.mikulink.rabbitbot.entity.PetInfo;
 import cn.mikulink.rabbitbot.entity.rpg.KickingASSInfo;
+import cn.mikulink.rabbitbot.utils.FileUtil;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,10 +36,18 @@ public class KickASSService {
     //以群区分，保存当前互殴信息
     //同一时间同一个群只能开启异常互殴
     public static Map<Long, KickingASSInfo> ROUND_NOW = new HashMap<>();
+    @Value("${file.path.data:}")
+    private String dataPath;
 
     @Autowired
     private CharacterStatsService characterStatsService;
 
+    /**
+     * 获取资源文件路径
+     */
+    public String getFilePath() {
+        return dataPath + File.separator + "files" + File.separator + "KickASS";
+    }
 
     /**
      * 在群里发起一场互殴
@@ -98,7 +115,7 @@ public class KickASSService {
                 .plus("HP:").plus(String.valueOf(info.getPlayHealthTwo())).plus("\n")
                 .plus("掷点:").plus("力量(").plus(String.valueOf(strP2)).plus(") 运气(").plus(String.valueOf(luckP2)).plus(")=").plus(String.valueOf(rollP2)).plus("\n")
                 .plus("=======================").plus("\n")
-                .plus("这里随便整点啥描述然后展示剩余生命").plus("\n")
+                .plus("剩余生命").plus("\n")
                 .plus(info.getPlayNameOne()).plus(":").plus(String.valueOf(hpUpdateP1)).plus("\n")
                 .plus(info.getPlayNameTwo()).plus(":").plus(String.valueOf(hpUpdateP2));
 
@@ -153,7 +170,7 @@ public class KickASSService {
                 .plus("HP:").plus(String.valueOf(info.getPlayHealthTwo())).plus("\n")
                 .plus("掷点:").plus("敏捷(").plus(String.valueOf(dexP2)).plus(") 运气(").plus(String.valueOf(luckP2)).plus(")=").plus(String.valueOf(rollP2)).plus("\n")
                 .plus("=======================").plus("\n")
-                .plus("这里随便整点啥描述然后展示剩余生命").plus("\n")
+                .plus("剩余生命").plus("\n")
                 .plus(info.getPlayNameOne()).plus(":").plus(String.valueOf(hpUpdateP1)).plus("\n")
                 .plus(info.getPlayNameTwo()).plus(":").plus(String.valueOf(hpUpdateP2));
 
@@ -208,7 +225,7 @@ public class KickASSService {
                 .plus("HP:").plus(String.valueOf(info.getPlayHealthTwo())).plus("\n")
                 .plus("掷点:").plus("智力(").plus(String.valueOf(inteP2)).plus(") 运气(").plus(String.valueOf(luckP2)).plus(")=").plus(String.valueOf(rollP2)).plus("\n")
                 .plus("=======================").plus("\n")
-                .plus("这里随便整点啥描述然后展示剩余生命").plus("\n")
+                .plus("剩余生命").plus("\n")
                 .plus(info.getPlayNameOne()).plus(":").plus(String.valueOf(hpUpdateP1)).plus("\n")
                 .plus(info.getPlayNameTwo()).plus(":").plus(String.valueOf(hpUpdateP2));
 
@@ -257,4 +274,29 @@ public class KickASSService {
         return result;
     }
 
+    /**
+     * 加载文件内容
+     *
+     * @throws IOException 读写异常
+     */
+    public void loadPetInfo() throws IOException {
+//        FileUtil.fileCheck(this.getFilePath());
+//
+//        //创建读取器
+//        BufferedReader reader = new BufferedReader(new FileReader(this.getFilePath()));
+//        //读取第一行
+//        String configJson = null;
+//        while ((configJson = reader.readLine()) != null) {
+//            //过滤掉空行
+//            if (configJson.length() <= 0) continue;
+//            ConstantPet.petInfo = JSONObject.parseObject(configJson, PetInfo.class);
+//        }
+//        //关闭读取器
+//        reader.close();
+//
+//        //初始化
+//        if (null == ConstantPet.petInfo) {
+//            ConstantPet.petInfo = new PetInfo();
+//        }
+    }
 }

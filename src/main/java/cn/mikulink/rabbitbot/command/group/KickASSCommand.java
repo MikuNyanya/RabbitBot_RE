@@ -92,6 +92,8 @@ public class KickASSCommand implements GroupCommand {
             kickInfo.setPlayNameOne(senderName);
             kickInfo.setPlayIdTwo(playIdTwo);
             kickInfo.setPlayNameTwo(playNameTwo);
+            //是否互殴目标是自己
+            kickInfo.setKickSelf(senderId.equals(playIdTwo));
 
             //开启群友互殴
             return kickASSService.kickASSStart(kickInfo);
