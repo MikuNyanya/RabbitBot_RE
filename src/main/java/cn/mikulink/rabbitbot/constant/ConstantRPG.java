@@ -37,7 +37,8 @@ public class ConstantRPG extends ConstantCommon {
 
     public static final String KICKASS_EXPLAIN = "使用[.vs @群友]来发起群友互殴,比如："
             + ".vs @兔叽"
-            + "一场互殴结束后才能发起下一场互殴";
+            + "一场互殴结束后才能发起下一场互殴"
+            + "可以使用.vs clear来中断正在进行的互殴";
 
     //互殴操作超时时间 秒
     public static final int KICKASS_TIME_OUT = 1;

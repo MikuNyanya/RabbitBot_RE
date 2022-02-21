@@ -279,7 +279,7 @@ public class KickASSService {
      *
      * @throws IOException 读写异常
      */
-    public void loadPetInfo() throws IOException {
+    public void loadKickASSInfo() throws IOException {
 //        FileUtil.fileCheck(this.getFilePath());
 //
 //        //创建读取器
