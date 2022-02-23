@@ -91,6 +91,16 @@ public class WeiboNewsService {
 
         //发送微博
         for (InfoStatuses info : statuses) {
+            Long userId = info.getUser().getId();
+
+            //针对一些需要特殊处理的微博，减少无用信息推送
+            if (userId == 5790531279L) {
+                //这位的正常作品只发在指定超话里
+                if (!info.getTopic_id().contains("100808dc68345f628fecbcf4caa5c755e05891")) {
+                    continue;
+                }
+            }
+
             //解析微博报文
             MessageChain msgChain = null;
 
@@ -113,7 +123,7 @@ public class WeiboNewsService {
                     continue;
                 }
                 //检查该群是否订阅了这个微博账号
-                if (!configService.checkWeiboPushId(groupId, info.getUser().getId())) {
+                if (!configService.checkWeiboPushId(groupId, userId)) {
                     continue;
                 }
 
@@ -210,13 +220,15 @@ public class WeiboNewsService {
     public MessageChain parseWeiboBody(InfoStatuses info, boolean retweetedStatus) throws IOException {
         MessageChain result = MessageUtils.newChain();
 
+        Long userId = info.getUser().getId();
+
         //如果是转发微博
         if (retweetedStatus) {
             result = result.plus("\n-----------↓转发微博↓----------\n");
         }
 
         //头像
-        if (1312997677 != info.getUser().getId()) {
+        if (1312997677 != userId) {
             //解析推主头像
             Image userImgInfo = getMiraiImageByWeiboImgUrl(info.getUser().getProfile_image_url());
             if (null != userImgInfo) {

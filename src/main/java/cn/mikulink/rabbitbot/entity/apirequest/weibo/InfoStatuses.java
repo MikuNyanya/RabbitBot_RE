@@ -18,6 +18,8 @@ public class InfoStatuses {
     private String text;
     //微博来源
     private String source;
+    //跟超话有关的字段，包含超话id
+    private String topic_id;
     //推文图片列表
     private List<InfoPicUrl> pic_urls;
     //用户信息
