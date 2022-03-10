@@ -2,6 +2,7 @@ package cn.mikulink.rabbitbot.tasks;
 
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
+import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.service.BilibiliService;
@@ -54,6 +55,9 @@ public class JobMain {
         //日常语句
         freeTimeRabbit();
 
+        //清理已过期的搜图指令
+        imageSearchExpire();
+
         //B站视频动态
         biliDynamicSvrPush();
 
@@ -96,6 +100,22 @@ public class JobMain {
         free_time_last_send_time = System.currentTimeMillis();
         //刷新下次发送的随机延迟时间
         free_time_random_send_time = 1000L * 60 * RandomUtil.roll(SPLIT_RANDOM_MAX + 1);
+    }
+
+    private void imageSearchExpire() {
+        try {
+//            Iterator<ImageSearchMemberInfo> iterator = ConstantImage.IMAGE_SEARCH_WITE_LIST.iterator();
+//            while (iterator.hasNext()){
+//                ImageSearchMemberInfo searchMemberInfo = iterator.next();
+//                if (System.currentTimeMillis() >= searchMemberInfo.getExpireIn().getTime()) {
+//                    iterator.remove();
+//                }
+//            }
+
+            ConstantImage.IMAGE_SEARCH_WITE_LIST.removeIf(item -> System.currentTimeMillis() >= item.getExpireIn().getTime());
+        } catch (Exception ex) {
+            logger.error("清理已过期的搜图指令时发生异常", ex);
+        }
     }
 
     //B站视频动态

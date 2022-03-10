@@ -1,9 +1,8 @@
 package cn.mikulink.rabbitbot.constant;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import cn.mikulink.rabbitbot.entity.ImageSearchMemberInfo;
+
+import java.util.*;
 
 /**
  * create by MikuLink on 2020/1/10 15:19
@@ -47,6 +46,8 @@ public class ConstantImage extends ConstantCommon {
     public static final String NETWORK_IMAGE_URL_IS_EMPRY = "网络图片链接为空";
 
     //搜图相关
+    public static final List<ImageSearchMemberInfo> IMAGE_SEARCH_WITE_LIST = new ArrayList<>();
+    public static final String IMAGE_SEARCH_WITE_IMAGE_INPUT = "请在一分钟内发送要搜索的图片";
     public static final String IMAGE_SEARCH_NO_IMAGE_INPUT = "你得给我一张图";
     public static final String IMAGE_SEARCH_NO_IMAGE_ID_INPUT = "你得给我一个图片id";
     public static final String IMAGE_SEARCH_IMAGE_ID_NOT_NUMBER_ONLY = "图片id只能是纯数字";

@@ -4,13 +4,22 @@ import cn.mikulink.rabbitbot.apirequest.saucenao.SaucenaoImageSearch;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ImageInfo;
+import cn.mikulink.rabbitbot.entity.ImageSearchMemberInfo;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchResult;
+import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.service.sys.ProxyService;
 import cn.mikulink.rabbitbot.utils.*;
 import net.coobird.thumbnailator.Thumbnails;
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.contact.User;
+import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.internal.message.OnlineImage;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -39,6 +49,10 @@ public class ImageService {
 
     @Autowired
     private ProxyService proxyService;
+    @Autowired
+    private PixivService pixivService;
+    @Autowired
+    private DanbooruService danbooruService;
 
     /**
      * 随机获取一张鸽子图
@@ -232,5 +246,77 @@ public class ImageService {
             throw new RabbitException(ConstantImage.SAUCENAO_API_REQUEST_ERROR);
         }
         return null;
+    }
+
+
+    public void partSearchImg(MessageEvent event) {
+        try {
+            Long senderId = event.getSender().getId();
+            String oriMsg = event.getMessage().contentToString();
+
+            //发送的必须为纯图片
+            if (!oriMsg.equals("[图片]")) {
+                return;
+            }
+            //发送者已经触发了搜图指令
+            boolean senderExists = false;
+            for (ImageSearchMemberInfo searchMemberInfo : ConstantImage.IMAGE_SEARCH_WITE_LIST) {
+                if (searchMemberInfo.getId().equals(senderId)) {
+                    senderExists = true;
+                    ConstantImage.IMAGE_SEARCH_WITE_LIST.remove(searchMemberInfo);
+                    break;
+                }
+            }
+            if (!senderExists) {
+                return;
+            }
+
+            //搜图
+            MessageChain messageChain = event.getMessage();
+            String imgUrl = ((OnlineImage) messageChain.get(1)).getOriginUrl();
+            messageChain = searchImgByImgUrl(imgUrl, event.getSender(), event.getSubject());
+
+            //发送结果
+            event.getSubject().sendMessage(messageChain);
+        } catch (Exception ex) {
+            logger.error("partSearchImg " + ConstantImage.IMAGE_GET_ERROR, ex);
+        }
+    }
+
+    public MessageChain searchImgByImgUrl(String imgUrl, User sender, Contact subject) {
+        MessageChain messageChain = MessageUtils.newChain();
+        try {
+            SaucenaoSearchInfoResult searchResult = this.searchImgFromSaucenao(imgUrl);
+            if (null == searchResult) {
+                //没有符合条件的图片，识图失败
+                messageChain = messageChain.plus(ConstantImage.SAUCENAO_SEARCH_FAIL_PARAM);
+                return messageChain;
+            }
+
+            //获取信息，并返回结果
+            if (5 == searchResult.getHeader().getIndex_id()) {
+                //pixiv
+                PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById((long) searchResult.getData().getPixiv_id());
+                pixivImageInfo.setSender(sender);
+                pixivImageInfo.setSubject(subject);
+                messageChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo, searchResult.getHeader().getSimilarity());
+            } else {
+                //Danbooru
+                messageChain = danbooruService.parseDanbooruImgRequest(searchResult);
+            }
+        } catch (RabbitException rabEx) {
+            //业务异常，日志吃掉
+            messageChain = messageChain.plus(rabEx.getMessage());
+        } catch (FileNotFoundException fileNotFoundEx) {
+            logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
+            messageChain = messageChain.plus(ConstantPixiv.PIXIV_IMAGE_DELETE);
+        } catch (SocketTimeoutException timeoutException) {
+            logger.error(ConstantImage.IMAGE_GET_TIMEOUT_ERROR + timeoutException.toString(), timeoutException);
+            messageChain = messageChain.plus(ConstantImage.IMAGE_GET_TIMEOUT_ERROR);
+        } catch (Exception ex) {
+            logger.error(ConstantImage.IMAGE_GET_ERROR + ex.toString(), ex);
+            messageChain = messageChain.plus(ConstantImage.IMAGE_GET_ERROR);
+        }
+        return messageChain;
     }
 }

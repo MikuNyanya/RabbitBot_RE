@@ -8,6 +8,7 @@ import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
@@ -76,7 +77,7 @@ public class GroupEvents extends SimpleListenerHost {
     @EventHandler
     public ListeningStatus onMemberJoinGroup(@NotNull MemberJoinEvent.Active event) {
         Group group = event.getGroup();
-        User sender = event.getMember();
+        NormalMember sender = event.getMember();
         logger.info("{新增群员_主动加群} userId:{},userNick:{},groupId:{},groupName:{}", sender.getId(), sender.getNick(), group.getId(), group.getName());
         groupMemberJoinMsg(group, sender);
         return ListeningStatus.LISTENING; // 表示继续监听事件

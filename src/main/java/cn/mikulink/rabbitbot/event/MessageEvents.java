@@ -3,6 +3,7 @@ package cn.mikulink.rabbitbot.event;
 
 import cn.mikulink.rabbitbot.command.*;
 import cn.mikulink.rabbitbot.constant.ConstantBlackList;
+import cn.mikulink.rabbitbot.service.ImageService;
 import cn.mikulink.rabbitbot.service.KeyWordService;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import kotlin.coroutines.CoroutineContext;
@@ -38,6 +39,8 @@ public class MessageEvents extends SimpleListenerHost {
     private CommandConfig commandConfig;
     @Autowired
     private KeyWordService keyWordService;
+    @Autowired
+    private ImageService imageService;
 
 
     @Override
@@ -68,6 +71,8 @@ public class MessageEvents extends SimpleListenerHost {
 
         //是否指令模式
         if (!commandConfig.isCommand(oriMsg)) {
+            //分步骤搜图相关
+            imageService.partSearchImg(event);
             return ListeningStatus.LISTENING;
         }
         EverywhereCommand command = (EverywhereCommand) commandConfig.getCommand(oriMsg, CommandConfig.everywhereCommands);

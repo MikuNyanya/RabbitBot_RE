@@ -1,10 +1,15 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ImageSearchMemberInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
+import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.exceptions.RabbitException;
+import cn.mikulink.rabbitbot.service.DanbooruService;
 import cn.mikulink.rabbitbot.service.ImageService;
-import cn.mikulink.rabbitbot.sys.annotate.Command;
+import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.Contact;
@@ -17,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.FileNotFoundException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,12 +35,16 @@ import java.util.Date;
  * <p>
  * 搜图指令
  */
-@Command
-public class ImageSearchCommand extends BaseEveryWhereCommand {
-    private static final Logger logger = LoggerFactory.getLogger(ImageSearchCommand.class);
+//@Command
+public class ImageSearchCommandBak extends BaseEveryWhereCommand {
+    private static final Logger logger = LoggerFactory.getLogger(ImageSearchCommandBak.class);
 
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private PixivService pixivService;
+    @Autowired
+    private DanbooruService danbooruService;
 
     @Override
     public CommandProperties properties() {
@@ -43,11 +54,9 @@ public class ImageSearchCommand extends BaseEveryWhereCommand {
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
         if (null == args || args.size() == 0) {
-            //搜图功能针对手机操作优化
-            //首先触发搜图指令，然后同样的账号单独发一张图片，也可以触发搜图
-            this.soutuTrigger(sender);
-            return new PlainText(ConstantImage.IMAGE_SEARCH_WITE_IMAGE_INPUT);
+            return new PlainText(ConstantImage.IMAGE_SEARCH_NO_IMAGE_INPUT);
         }
+
         //获取传入图片，解析mirai消息中的网络图片链接
         //[mirai:image:{FD4A1FC8-45F7-A3A9-FB8A-C75AFE71C47E}.mirai]
 //         String temp_msg_part = messageChain.get(messageChain.size()-1).toString();
@@ -67,25 +76,36 @@ public class ImageSearchCommand extends BaseEveryWhereCommand {
         if (StringUtil.isEmpty(imgUrl)) {
             return new PlainText(ConstantImage.IMAGE_SEARCH_IMAGE_URL_PARSE_FAIL);
         }
-        return imageService.searchImgByImgUrl(imgUrl, sender, subject);
-    }
-
-
-    //触发搜图指令
-    private void soutuTrigger(User sender) {
-        Long id = sender.getId();
-        String nick = sender.getNick();
-        for (int i = 0; i < ConstantImage.IMAGE_SEARCH_WITE_LIST.size(); i++) {
-            if (ConstantImage.IMAGE_SEARCH_WITE_LIST.get(i).getId().equals(id)) {
-                ConstantImage.IMAGE_SEARCH_WITE_LIST.remove(i);
-                break;
+        try {
+            SaucenaoSearchInfoResult searchResult = imageService.searchImgFromSaucenao(imgUrl);
+            if (null == searchResult) {
+                //没有符合条件的图片，识图失败
+                return new PlainText(ConstantImage.SAUCENAO_SEARCH_FAIL_PARAM);
             }
+
+            //获取信息，并返回结果
+            if (5 == searchResult.getHeader().getIndex_id()) {
+                //pixiv
+                PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById((long) searchResult.getData().getPixiv_id());
+                pixivImageInfo.setSender(sender);
+                pixivImageInfo.setSubject(subject);
+                return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo, searchResult.getHeader().getSimilarity());
+            } else {
+                //Danbooru
+                return danbooruService.parseDanbooruImgRequest(searchResult);
+            }
+        } catch (RabbitException rabEx) {
+            //业务异常，日志吃掉
+            return new PlainText(rabEx.getMessage());
+        } catch (FileNotFoundException fileNotFoundEx) {
+            logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_DELETE);
+        } catch (SocketTimeoutException timeoutException) {
+            logger.error(ConstantImage.IMAGE_GET_TIMEOUT_ERROR + timeoutException.toString(), timeoutException);
+            return new PlainText(ConstantImage.IMAGE_GET_TIMEOUT_ERROR);
+        } catch (Exception ex) {
+            logger.error(ConstantImage.IMAGE_GET_ERROR + ex.toString(), ex);
+            return new PlainText(ConstantImage.IMAGE_GET_ERROR);
         }
-        ImageSearchMemberInfo searchMemberInfo = new ImageSearchMemberInfo();
-        searchMemberInfo.setId(id);
-        searchMemberInfo.setNick(nick);
-        //标记1分钟后到期
-        searchMemberInfo.setExpireIn(DateUtil.dateChange(new Date(), Calendar.MINUTE, 1));
-        ConstantImage.IMAGE_SEARCH_WITE_LIST.add(searchMemberInfo);
     }
 }
