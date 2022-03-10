@@ -1,5 +1,6 @@
 package cn.mikulink.rabbitbot.service;
 
+import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.ImageUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
@@ -38,8 +39,14 @@ public class MirlKoiService {
      * @throws IOException 异常
      */
     public String downloadASetu() throws IOException {
-        byte[] response = HttpsUtil.doGet(mirlkoiSetuUrl);
-        String body = new String(response);
+        String body = null;
+        if (mirlkoiSetuUrl.startsWith("https")) {
+            byte[] response = HttpsUtil.doGet(mirlkoiSetuUrl);
+            body = new String(response);
+        } else {
+            body = HttpUtil.get(mirlkoiSetuUrl);
+        }
+
         Map<String, String> bodyMap = JSONObject.parseObject(body, HashMap.class);
         return ImageUtil.downloadImage(bodyMap.get("pic"), "data/images/mirlkoi", System.currentTimeMillis() + ".jpg");
     }
