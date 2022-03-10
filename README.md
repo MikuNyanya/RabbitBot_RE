@@ -87,8 +87,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.扭蛋|.扭蛋|随机抽取一个神奇的东西|
 |.pid (pixivImgId)|.pid 59294081|根据pixiv图片id搜索图片|
 |.ptag (pixivImgTag)|.ptag 初音ミク|根据pixiv图片tag搜索图片，结果是随机的，但分数越高的作品权重越高|
-|.搜图 (图片)|.搜图 `这里是你的图片`|接入Saucenao的搜图功能|
-|.搜番 (图片)|.搜番 `这里是你的图片`|接入trace.moe的搜图功能|
+|.搜图|.搜图|接入Saucenao的搜图功能。触发搜图后，发送一张图进行搜索|
 |.来点色图|.来点色图|随机出现一张涩图，图片都源于pixiv|
 |.say|.say|随机发言，是些日常语句|
 |.cls|.清屏<br/>.cls|回复一个很高的空白消息，可以帮助所有人快速清理屏幕，比如上班摸鱼时突然有人发涩图的时候|
