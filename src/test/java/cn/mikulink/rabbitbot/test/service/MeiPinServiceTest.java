@@ -1,9 +1,8 @@
 package cn.mikulink.rabbitbot.test.service;
 
-import cn.mikulink.rabbitbot.utils.HttpsUtil;
+import cn.mikulink.rabbitbot.utils.HttpUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
 
@@ -15,20 +14,23 @@ public class MeiPinServiceTest {
 
     @Test
     public void test() {
-        //解析 article
-        //article  header
-        //使用jsoup解析html
-        Document document = Jsoup.parse(htmlStr);
-        //选择目标节点，类似于JS的选择器
+        try {
+            String htmlStr = HttpUtil.get("http://meipin.im/");
+
+            //解析 article
+            //article  header
+            //使用jsoup解析html
+            Document document = Jsoup.parse(htmlStr);
+            //选择目标节点，类似于JS的选择器
 //        Element element = document.getElementById("image-resize-link");
-        Elements elements = document.getElementsByTag("article");
+            Elements elements = document.getElementsByTag("article");
 
-        //文本
-        String text = elements.get(0).getElementsByTag("a").get(0).text();
-        //链接
-        String url = elements.get(0).getElementsByTag("a").get(0).attr("href");
+            //文本
+            String text = elements.get(0).getElementsByTag("a").get(0).text();
+            //链接
+            String url = elements.get(0).getElementsByTag("a").get(0).attr("href");
 
-        System.out.println("");
+
 //        String imageUrl = null;
 //        if (null != element) {
 //            //获取原图
@@ -37,6 +39,10 @@ public class MeiPinServiceTest {
 //            //本身图片比较小就没有显示原图的
 //            imageUrl = document.getElementById("image").attributes().get("src");
 //        }
+            System.out.println("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 

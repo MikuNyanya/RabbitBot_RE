@@ -49,6 +49,9 @@ public class MeiPinService {
         } catch (SocketTimeoutException timeoutEx) {
             log.warn("获取没品文章，链接超时，即将进行重试");
             htmlStr = HttpUtil.get(url);
+        } catch (IOException ioEx) {
+            log.warn("获取没品文章异常，即将进行重试");
+            htmlStr = HttpUtil.get(url);
         }
 
         //使用jsoup解析html

@@ -102,6 +102,7 @@ public class JobMain {
         free_time_random_send_time = 1000L * 60 * RandomUtil.roll(SPLIT_RANDOM_MAX + 1);
     }
 
+    //清理已过期的搜图指令
     private void imageSearchExpire() {
         try {
 //            Iterator<ImageSearchMemberInfo> iterator = ConstantImage.IMAGE_SEARCH_WITE_LIST.iterator();
