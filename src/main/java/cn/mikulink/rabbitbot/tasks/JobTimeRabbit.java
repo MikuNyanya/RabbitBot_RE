@@ -61,6 +61,8 @@ public class JobTimeRabbit {
     private PetService petService;
     @Autowired
     private ConfigService configService;
+    @Autowired
+    private VirusService virusService;
 
     @Scheduled(cron = "0 0 * * * ?")
     public void execute() {
@@ -89,6 +91,9 @@ public class JobTimeRabbit {
 
         //养成系统数据刷新
         petRefresh();
+
+        //新冠数据
+        virusPush();
 
         //pixiv日榜，最好放在最后执行，要下载图片
         //也可以另起一个线程，但我懒
@@ -303,6 +308,29 @@ public class JobTimeRabbit {
         configService.refreshConfigFile();
 
         logger.info("全局随机数刷新,{}->{}", rabbitRandomNum, randomNum);
+    }
+
+    //新冠数据推送
+    private void virusPush() {
+        if (hour_now != 23) {
+            return;
+        }
+        try {
+            MessageChain msg = virusService.parseMsg(virusService.getVirusInfo());
+            //给每个群发送消息
+            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
+            for (Group groupInfo : groupList) {
+                //检查功能开关
+                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "virus");
+                if (!reStringSwitch.isSuccess()) {
+                    continue;
+                }
+
+                groupInfo.sendMessage(msg);
+            }
+        } catch (Exception ex) {
+            logger.error("新冠数据定时推送异常", ex);
+        }
     }
 
 }
