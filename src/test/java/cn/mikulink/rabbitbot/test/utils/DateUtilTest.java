@@ -31,6 +31,21 @@ public class DateUtilTest {
     }
 
     @Test
+    public void dateToWeek() {
+        try {
+            Date test = DateUtil.toDate("2022-04-4 1:1:11");
+
+            Date start = DateUtil.dateToWeekStart(test);
+            Date end = DateUtil.dateToWeekEnd(test);
+
+
+            System.out.println("");
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    @Test
     public void dateToMonth() {
         try {
             Date test = DateUtil.toDate("2000-2-28 1:1:11");

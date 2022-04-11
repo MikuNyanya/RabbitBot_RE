@@ -126,6 +126,84 @@ public class DateUtil {
         return calendar.getTime();
     }
 
+
+    /**
+     * 获取当前周的开始时间
+     * 从周一开始
+     *
+     * @return
+     */
+    public static Date dateToWeekStart() {
+        return dateToWeekStart(null);
+    }
+
+    /**
+     * 获取当前天周的开始时间
+     * 从周一开始
+     *
+     * @return
+     */
+    public static Date dateToWeekStart(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        if (null != date) {
+            calendar.setTime(date);
+        }
+        //星期 外国的星期是从星期天开始
+        int dayOfMonthTemp = calendar.get(Calendar.DAY_OF_MONTH);
+        int dayOfWeekTemp = calendar.get(Calendar.DAY_OF_WEEK);
+        int changeValue = 0;
+        if (dayOfWeekTemp == 1) {
+            changeValue = -6;
+        } else {
+            changeValue = 2 - dayOfWeekTemp;
+        }
+
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonthTemp + changeValue);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
+    }
+
+    /**
+     * 获取当前天周的结束时间
+     *
+     * @return
+     */
+    public static Date dateToWeekEnd() {
+        return dateToWeekEnd(null);
+    }
+
+    /**
+     * 获取当前天周的结束时间
+     *
+     * @return
+     */
+    public static Date dateToWeekEnd(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        if (null != date) {
+            calendar.setTime(date);
+        }
+        //星期 外国的星期是从星期天开始
+        int dayOfMonthTemp = calendar.get(Calendar.DAY_OF_MONTH);
+        int dayOfWeekTemp = calendar.get(Calendar.DAY_OF_WEEK);
+        int changeValue = 0;
+        if (dayOfWeekTemp != 1) {
+            changeValue = 8 - dayOfWeekTemp;
+        }
+
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonthTemp + changeValue);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+
+        return calendar.getTime();
+    }
+
+
     /**
      * 获取当前月数的开始时间
      */
