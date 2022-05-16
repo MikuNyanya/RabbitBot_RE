@@ -32,6 +32,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!--一个工具类，包含http请求等封装-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.7.20</version>
+        </dependency>
+
         <!--一个轻量化代码的工具 lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
