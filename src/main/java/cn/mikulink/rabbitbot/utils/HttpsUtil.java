@@ -68,7 +68,13 @@ public class HttpsUtil {
      * post请求方法列表
      */
     public static byte[] doPost(String uri, String data, Proxy proxy) throws IOException {
-        HttpsURLConnection httpsConn = getHttpsURLConnection(uri, "POST", proxy);
+        return doPost(uri,data,null,null);
+    }
+    /**
+     * post请求方法列表
+     */
+    public static byte[] doPost(String uri, String data,Map<String,String> headers, Proxy proxy) throws IOException {
+        HttpsURLConnection httpsConn = getHttpsURLConnection(uri, "POST",headers, proxy);
         setBytesToStream(httpsConn.getOutputStream(), data.getBytes());
         return getBytesFromStream(httpsConn.getInputStream());
     }

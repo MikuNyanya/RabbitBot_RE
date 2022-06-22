@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  * 周定时器
  */
 @Component
-@EnableScheduling
+//@EnableScheduling
 @Slf4j
 public class JobWeek {
     private static final Logger logger = LoggerFactory.getLogger(JobWeek.class);
@@ -28,7 +28,7 @@ public class JobWeek {
     @Autowired
     private MeiPinService meiPinService;
 
-    @Scheduled(cron = "0 0 10 ? * MON")
+//    @Scheduled(cron = "0 0 10 ? * MON")
     public void meipin4chanPush() {
         //没品网站文章更新推送
         //计划每周一上午10点进行推送

@@ -1,8 +1,12 @@
 package cn.mikulink.rabbitbot.apirequest.danbooru;
 
+import cn.hutool.http.HttpGlobalConfig;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
 import cn.mikulink.rabbitbot.entity.DanbooruImageInfo;
-import cn.mikulink.rabbitbot.utils.HttpsUtil;
+import cn.mikulink.rabbitbot.utils.ProxyUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
@@ -35,7 +39,9 @@ public class DanbooruImageGet extends BaseRequest {
      */
     public void doRequest() throws IOException {
         //通过请求获取到图片json数据，这是由官方提供的渠道
-        this.body = new String(HttpsUtil.doGet(URL + danbooruId + ".json", proxy));
+        HttpRequest httpRequest = HttpUtil.createGet(URL + danbooruId + ".json");
+        HttpResponse response = httpRequest.timeout(HttpGlobalConfig.getTimeout()).setProxy(ProxyUtil.getProxy("127.0.0.1", 31051)).execute();
+        this.body = response.body();
     }
 
     /**
