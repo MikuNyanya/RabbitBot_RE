@@ -16,21 +16,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * create by MikuLink on 2021/11/1 13:48
+ * create by MikuLink on 2022/07/09 13:48
  * for the Reisen
- * 易即今日api
- * https://shimo.im/docs/kRy9yp6PdJD89ppV/read
+ * 每日新闻
+ * http://api.2xb.cn/zaob
  */
 @Getter
 @Setter
 public class SoyijiGet extends BaseRequest {
     private static final Logger logger = LoggerFactory.getLogger(SoyijiGet.class);
-    private static final String URL = "http://api.soyiji.com//news_jpg";
+    private static final String URL = "http://api.2xb.cn/zaob";
 
     //执行接口请求
     public void doRequest() throws IOException {
         //请求
-        //response:{"url": "http://news.soyiji.com/29641-2021-11-01.jpg"}
+        //response:{"code":200,"msg":"Success","imageUrl":"https://img03.sogoucdn.com/app/a/200692/621_2948_feedback_faa7dde25b26444882228dd22de6aed1.png","datatime":"2022-07-09"}
         body = HttpUtil.get(URL + HttpUtil.parseUrlEncode(param), header, null);
     }
 
@@ -40,10 +40,10 @@ public class SoyijiGet extends BaseRequest {
             return null;
         }
         Map<?, ?> rootMap = JSONObject.parseObject(body, HashMap.class);
-        if (null == rootMap || !rootMap.containsKey("url")) {
+        if (null == rootMap || !rootMap.containsKey("imageUrl")) {
             logger.warn("Api SoyijiGet getEntity warn,body:{}", body);
             return null;
         }
-        return String.valueOf(rootMap.get("url"));
+        return String.valueOf(rootMap.get("imageUrl"));
     }
 }

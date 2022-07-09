@@ -40,7 +40,7 @@ public class DanbooruImageGet extends BaseRequest {
     public void doRequest() throws IOException {
         //通过请求获取到图片json数据，这是由官方提供的渠道
         HttpRequest httpRequest = HttpUtil.createGet(URL + danbooruId + ".json");
-        HttpResponse response = httpRequest.timeout(HttpGlobalConfig.getTimeout()).setProxy(ProxyUtil.getProxy("127.0.0.1", 31051)).execute();
+        HttpResponse response = httpRequest.timeout(HttpGlobalConfig.getTimeout()).setProxy(proxy).execute();
         this.body = response.body();
     }
 

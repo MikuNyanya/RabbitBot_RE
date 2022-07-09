@@ -123,7 +123,7 @@ public class HttpUtil {
     public static String parseUrlEncode(Map<String, Object> params, String charset) throws IOException {
         //非空判断
         if (params == null || params.isEmpty()) {
-            return null;
+            return "";
         }
 
         StringBuilder urlEncode = new StringBuilder();

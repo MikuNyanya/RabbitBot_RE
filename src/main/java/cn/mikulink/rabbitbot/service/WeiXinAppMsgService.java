@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -180,7 +179,7 @@ public class WeiXinAppMsgService {
     }
 
     /**
-     * 获取今日简报信息,专通过用api
+     * 通过api获取每日新闻
      */
     public MessageChain getSoyijiNews() {
         MessageChain result = MessageUtils.newChain();
@@ -190,20 +189,15 @@ public class WeiXinAppMsgService {
             String imageUrl = request.getImageUrl();
 
             //下载图片
-            String fileName = imageUrl.substring(imageUrl.indexOf("com/") + "com/".length());
-
-            HashMap<String, String> header = new HashMap<>();
-
-            //加入防爬链
-            header.put("referer", "safe.soyiji.com");
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
             //下载图片
-            String localUrl = ImageUtil.downloadImage(header, imageUrl, ConstantImage.IMAGE_WEIXIN_SAVE_PATH, fileName, null);
+            String localUrl = ImageUtil.downloadImage(null, imageUrl, ConstantImage.IMAGE_WEIXIN_SAVE_PATH, fileName, null);
             if (StringUtil.isEmpty(localUrl)) {
                 throw new RabbitApiException(ConstantWeiXin.WEIXIN_IMAGE_DOWNLOAD_FAIL);
             }
             result = result.plus(rabbitBotService.uploadMiraiImage(localUrl));
         } catch (Exception ex) {
-            logger.error("今日简报图片获取异常", ex);
+            logger.error("每日新闻图片获取异常", ex);
         }
         return result;
     }
