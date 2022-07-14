@@ -11,7 +11,7 @@
 
     <groupId>cn.mikulink</groupId>
     <artifactId>rabbitbot</artifactId>
-    <version>v1.3.5</version>
+    <version>v1.3.6</version>
     <name>RabbitBot_RE</name>
     <description>for the Resien</description>
 

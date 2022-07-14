@@ -210,7 +210,7 @@ public class JobTimeRabbit {
 //            //转化为消息链
 //            MessageChain messageChain = weiXinAppMsgService.parseNewsToday(weiXinAppMsgInfo);
 
-            MessageChain messageChain = weiXinAppMsgService.getSoyijiNews();
+            MessageChain messageChain = weiXinAppMsgService.getNewsUseSourceConfig();
 
             //给每个群发送消息
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();

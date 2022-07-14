@@ -2,8 +2,8 @@ package cn.mikulink.rabbitbot.apirequest.soyiji;
 
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
+import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
-import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
@@ -13,24 +13,27 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * create by MikuLink on 2022/07/09 13:48
+ * create by MikuLink on 2021/11/1 13:48
  * for the Reisen
- * 每日新闻
- * http://api.2xb.cn/zaob
+ * 易即今日api
+ * https://shimo.im/docs/kRy9yp6PdJD89ppV/read
  */
 @Getter
 @Setter
 public class SoyijiGet extends BaseRequest {
     private static final Logger logger = LoggerFactory.getLogger(SoyijiGet.class);
-    private static final String URL = "http://api.2xb.cn/zaob";
+    //    private static final String URL = "http://api.soyiji.com//news_jpg";
+    private static final String URL = "http://118.31.18.68:8080/news/api/news-file/get";
 
     //执行接口请求
     public void doRequest() throws IOException {
         //请求
-        //response:{"code":200,"msg":"Success","imageUrl":"https://img03.sogoucdn.com/app/a/200692/621_2948_feedback_faa7dde25b26444882228dd22de6aed1.png","datatime":"2022-07-09"}
+        //response:{"url": "http://news.soyiji.com/29641-2021-11-01.jpg"}
+        //{"success":true,"message":"查询成功","code":200,"result":["http://118.31.18.68:8080/yiji/f40d2dd3489f42968fb5fe8168caab9c.jpg"],"timestamp":1657793459253}
         body = HttpUtil.get(URL + HttpUtil.parseUrlEncode(param), header, null);
     }
 
@@ -40,10 +43,16 @@ public class SoyijiGet extends BaseRequest {
             return null;
         }
         Map<?, ?> rootMap = JSONObject.parseObject(body, HashMap.class);
-        if (null == rootMap || !rootMap.containsKey("imageUrl")) {
-            logger.warn("Api SoyijiGet getEntity warn,body:{}", body);
+        if (null == rootMap || !rootMap.containsKey("result")) {
+            logger.warn("Api SoyijiGet getImageUrl warn,body:{}", body);
             return null;
         }
-        return String.valueOf(rootMap.get("imageUrl"));
+        List<String> results = JSONObject.parseArray(String.valueOf(rootMap.get("result")),String.class);
+        if (CollectionUtil.isEmpty(results)) {
+            logger.warn("Api SoyijiGet results is empty,body:{}", body);
+            return null;
+        }
+
+        return results.get(0);
     }
 }

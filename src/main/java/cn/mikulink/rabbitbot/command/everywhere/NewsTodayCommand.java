@@ -5,6 +5,8 @@ import cn.mikulink.rabbitbot.constant.ConstantWeiXin;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.service.WeiXinAppMsgService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
+import cn.mikulink.rabbitbot.utils.CollectionUtil;
+import cn.mikulink.rabbitbot.utils.NumberUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
@@ -39,30 +41,19 @@ public class NewsTodayCommand extends BaseEveryWhereCommand {
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
         try {
-//            if (CollectionUtil.isNotEmpty(args) && args.size() >= 2) {
-//                String token = null;
-//                StringBuilder stringBuilder = new StringBuilder();
-//                //更新授权信息
-//                for (String arg : args) {
-//                    if (token == null) {
-//                        token = arg;
-//                        continue;
-//                    }
-//                    stringBuilder.append(arg);
-//                }
-//                weiXinAppMsgService.reTokenCookie(token, stringBuilder.toString());
-//                return new PlainText("done");
-//            }
-//
-//            //请求API获取今日简报
-//            WeiXinAppMsgInfo weiXinAppMsgInfo = weiXinAppMsgService.getNewsTodayMsg();
-//            //转化为消息链
-//            return weiXinAppMsgService.parseNewsToday(weiXinAppMsgInfo);
+            //切换新闻来源
+            if (CollectionUtil.isNotEmpty(args) && args.size() >= 2) {
+                if (!NumberUtil.isNumberOnly(args.get(1))) {
+                    return new PlainText("参数错误");
+                }
+                weiXinAppMsgService.newsSource(args.get(1));
+                return new PlainText("新闻源设置完成");
+            }
 
-            return weiXinAppMsgService.getSoyijiNews();
+            return weiXinAppMsgService.getNewsUseSourceConfig();
         } catch (Exception ex) {
             logger.error("NewsTodayCommand error", ex);
-            return new PlainText(ConstantWeiXin.EXEC_ERROR);
+            return new PlainText("新闻简报，他挂了");
         }
     }
 }

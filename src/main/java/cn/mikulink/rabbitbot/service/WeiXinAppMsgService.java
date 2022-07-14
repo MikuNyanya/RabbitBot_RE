@@ -1,5 +1,6 @@
 package cn.mikulink.rabbitbot.service;
 
+import cn.mikulink.rabbitbot.apirequest.other.ZaobGet;
 import cn.mikulink.rabbitbot.apirequest.soyiji.SoyijiGet;
 import cn.mikulink.rabbitbot.apirequest.weixin.WeixinAppMsgGet;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -179,12 +181,46 @@ public class WeiXinAppMsgService {
     }
 
     /**
+     * 切换新闻来源
+     *
+     * @param newsSourceNo 新闻来源编号 0.Soyiji 1.Zaob
+     */
+    public void newsSource(String newsSourceNo) {
+        //覆写SINCEID配置
+        ConstantCommon.common_config.put("newsSource", newsSourceNo);
+        //更新配置文件
+        configService.refreshConfigFile();
+    }
+
+    /**
+     * 根据配置，从指定的新闻源获取新闻
+     */
+    public MessageChain getNewsUseSourceConfig() {
+        String newsSource = ConstantCommon.common_config.get("newsSource");
+        if(StringUtil.isEmpty(newsSource)){
+            newsSource = "0";
+        }
+        MessageChain result = null;
+        switch (newsSource) {
+//            case "0":
+//                result = getSoyijiNews();
+//                break;
+            case "1":
+                result = getZaobNews();
+                break;
+            default:
+                result = getSoyijiNews();
+        }
+        return result;
+    }
+
+    /**
      * 通过api获取每日新闻
      */
-    public MessageChain getSoyijiNews() {
+    public MessageChain getZaobNews() {
         MessageChain result = MessageUtils.newChain();
         try {
-            SoyijiGet request = new SoyijiGet();
+            ZaobGet request = new ZaobGet();
             request.doRequest();
             String imageUrl = request.getImageUrl();
 
@@ -198,6 +234,35 @@ public class WeiXinAppMsgService {
             result = result.plus(rabbitBotService.uploadMiraiImage(localUrl));
         } catch (Exception ex) {
             logger.error("每日新闻图片获取异常", ex);
+        }
+        return result;
+    }
+
+    /**
+     * 获取今日简报信息,专通过用api
+     */
+    public MessageChain getSoyijiNews() {
+        MessageChain result = MessageUtils.newChain();
+        try {
+            SoyijiGet request = new SoyijiGet();
+            request.doRequest();
+            String imageUrl = request.getImageUrl();
+
+            //下载图片
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+
+            HashMap<String, String> header = new HashMap<>();
+
+            //加入防爬链
+            header.put("referer", "safe.soyiji.com");
+            //下载图片
+            String localUrl = ImageUtil.downloadImage(header, imageUrl, ConstantImage.IMAGE_WEIXIN_SAVE_PATH, fileName, null);
+            if (StringUtil.isEmpty(localUrl)) {
+                throw new RabbitApiException(ConstantWeiXin.WEIXIN_IMAGE_DOWNLOAD_FAIL);
+            }
+            result = result.plus(rabbitBotService.uploadMiraiImage(localUrl));
+        } catch (Exception ex) {
+            logger.error("今日简报图片获取异常", ex);
         }
         return result;
     }

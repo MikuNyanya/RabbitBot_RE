@@ -8,7 +8,7 @@ package cn.mikulink.rabbitbot.constant;
  */
 public class ConstantConfig extends ConstantCommon {
     public static final String ARGS_ERROR = ".config [action] [configName] [configValue]" +
-            "\nsinceId,amapKey,saucenaoKey,weiboToken,weiboNewStatus,pixivImageIgnore,usePixivApi,r18,imageScaleForce,pixivImagesShowCount,switchForce,weixinAppmsgToken,weixinAppmsgCookie";
+            "\nsinceId,amapKey,saucenaoKey,weiboToken,weiboNewStatus,pixivImageIgnore,usePixivApi,r18,imageScaleForce,pixivImagesShowCount,switchForce,weixinAppmsgToken,weixinAppmsgCookie,newsSource";
     public static final String CONFIG_NAME_EMPTY = "参数名称不能为空";
     public static final String CONFIG_VALUE_EMPTY = "参数值不能为空";
     public static final String CONFIG_SET_SUCCESS = "参数设置完成";
