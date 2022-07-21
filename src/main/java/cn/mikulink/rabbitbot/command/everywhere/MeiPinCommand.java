@@ -21,8 +21,9 @@ import java.util.ArrayList;
  * For the Reisen
  * 由Fall_ark翻译的没品+4chan笑话集
  * http://meipin.im/
+ * 已停更
  */
-@Command
+//@Command
 @Slf4j
 public class MeiPinCommand extends BaseEveryWhereCommand {
 

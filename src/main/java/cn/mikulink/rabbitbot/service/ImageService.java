@@ -17,7 +17,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.event.events.MessageEvent;
-import net.mamoe.mirai.internal.message.OnlineImage;
+import net.mamoe.mirai.internal.message.image.OnlineGroupImageImpl;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
 import org.slf4j.Logger;
@@ -273,7 +273,7 @@ public class ImageService {
 
             //搜图
             MessageChain messageChain = event.getMessage();
-            String imgUrl = ((OnlineImage) messageChain.get(1)).getOriginUrl();
+            String imgUrl = ((OnlineGroupImageImpl) messageChain.get(1)).getOriginUrl();
             messageChain = searchImgByImgUrl(imgUrl, event.getSender(), event.getSubject());
 
             //发送结果

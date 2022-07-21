@@ -11,7 +11,7 @@ import cn.mikulink.rabbitbot.utils.RegexUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.internal.message.OnlineGroupImageImpl;
+import net.mamoe.mirai.internal.message.image.OnlineGroupImageImpl;
 import net.mamoe.mirai.message.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -107,7 +107,8 @@ public class KeyWordService {
             if (singleMessage.getClass() == net.mamoe.mirai.message.data.PlainText.class) {
                 //普通文本 直接拼接
                 sbMsg.append(((PlainText) singleMessage).getContent());
-            } else if (singleMessage.getClass() == net.mamoe.mirai.internal.message.OnlineGroupImageImpl.class) {
+
+            } else if (singleMessage.getClass() == net.mamoe.mirai.internal.message.image.OnlineGroupImageImpl.class) {
                 //图片
                 sbMsg.append(((OnlineGroupImageImpl) singleMessage).getImageId());
             } else if (singleMessage.getClass() == net.mamoe.mirai.message.data.Face.class) {

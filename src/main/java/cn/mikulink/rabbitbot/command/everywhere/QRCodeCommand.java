@@ -7,7 +7,7 @@ import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.qrcodes.QRCodeUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.internal.message.OnlineImage;
+import net.mamoe.mirai.internal.message.image.OnlineGroupImageImpl;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
@@ -69,12 +69,12 @@ public class QRCodeCommand extends BaseEveryWhereCommand {
             //判断是否带有logo
             if (args.get(0).equals("[图片]") || args.get(0).equals("\n[图片]\n")) {
                 //第一个参数是logo
-                logoUrl = ((OnlineImage) messageChain.get(2)).getOriginUrl();
+                logoUrl = ((OnlineGroupImageImpl) messageChain.get(2)).getOriginUrl();
                 type = 3;
             }
             if (args.size() >= 4 && (args.get(2).equals("[图片]") || args.get(2).equals("\n[图片]\n"))) {
                 //第三个参数是logo
-                logoUrl = ((OnlineImage) messageChain.get(2)).getOriginUrl();
+                logoUrl = ((OnlineGroupImageImpl) messageChain.get(2)).getOriginUrl();
                 type = 4;
             }
 
