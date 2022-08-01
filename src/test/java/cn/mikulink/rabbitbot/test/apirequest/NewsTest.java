@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.test.apirequest;
 
 import cn.mikulink.rabbitbot.apirequest.soyiji.SoyijiGet;
+import cn.mikulink.rabbitbot.entity.apirequest.soyiji.SoyijiResponseInfo;
 import org.junit.Test;
 
 /**
@@ -15,7 +16,8 @@ public class NewsTest {
             SoyijiGet soyijiGet = new SoyijiGet();
             soyijiGet.doRequest();
 
-            String str = soyijiGet.getImageUrl();
+            SoyijiResponseInfo responseInfo = soyijiGet.getResponseInfo();
+            String imageUrl = responseInfo.getResult().getData().get(0);
 
             System.out.println("");
         } catch (Exception ex) {

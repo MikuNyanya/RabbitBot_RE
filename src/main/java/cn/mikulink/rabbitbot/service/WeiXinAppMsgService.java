@@ -6,6 +6,7 @@ import cn.mikulink.rabbitbot.apirequest.weixin.WeixinAppMsgGet;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantWeiXin;
+import cn.mikulink.rabbitbot.entity.apirequest.soyiji.SoyijiResponseInfo;
 import cn.mikulink.rabbitbot.entity.apirequest.weixin.WeiXinAppMsgInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
@@ -246,7 +247,8 @@ public class WeiXinAppMsgService {
         try {
             SoyijiGet request = new SoyijiGet();
             request.doRequest();
-            String imageUrl = request.getImageUrl();
+            SoyijiResponseInfo responseInfo = request.getResponseInfo();
+            String imageUrl = responseInfo.getResult().getData().get(0);
 
             //下载图片
             String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
