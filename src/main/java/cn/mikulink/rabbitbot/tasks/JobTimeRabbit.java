@@ -12,6 +12,7 @@ import cn.mikulink.rabbitbot.service.sys.ProxyService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
+import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -46,6 +47,8 @@ public class JobTimeRabbit {
     private int hour_now = 0;
 
     @Autowired
+    private RabbitBotService rabbitBotService;
+    @Autowired
     private WeatherService weatherService;
     @Autowired
     private PixivService pixivService;
@@ -63,6 +66,8 @@ public class JobTimeRabbit {
     private ConfigService configService;
     @Autowired
     private VirusService virusService;
+    @Autowired
+    private MirlKoiService mirlKoiService;
 
     @Scheduled(cron = "0 0 * * * ?")
     public void execute() {
@@ -178,7 +183,14 @@ public class JobTimeRabbit {
             return;
         }
         try {
-            PixivImageInfo pixivImageInfo = setuService.getSetu();
+            String pixivSetu = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_SETU);
+            List<String> setu = null;
+            PixivImageInfo pixivImageInfo = null;
+            if (StringUtil.isNotEmpty(pixivSetu) && "1".equalsIgnoreCase(pixivSetu)) {
+                pixivImageInfo = setuService.getSetu();
+            } else {
+                setu = mirlKoiService.downloadASetu(1);
+            }
             //给每个群发送消息
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group groupInfo : groupList) {
@@ -187,14 +199,19 @@ public class JobTimeRabbit {
                 if (!reStringSwitch.isSuccess()) {
                     continue;
                 }
-                pixivImageInfo.setSubject(groupInfo);
-                MessageChain messageChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
+                MessageChain messageChain = null;
+                if (StringUtil.isNotEmpty(pixivSetu) && "1".equalsIgnoreCase(pixivSetu)) {
+                    pixivImageInfo.setSubject(groupInfo);
+                    messageChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
+                } else {
+                    messageChain = rabbitBotService.parseMsgChainByLocalImgs(setu.get(0));
+                }
 
                 groupInfo.sendMessage(RandomUtil.rollStrFromList(ConstantPixiv.SETU_DAY_EX_MSG_List));
                 groupInfo.sendMessage(messageChain);
             }
         } catch (Exception ex) {
-            logger.error(ConstantPixiv.SETU_DAY_ERROR + ex.toString(), ex);
+            logger.error(ConstantPixiv.SETU_DAY_ERROR, ex);
         }
     }
 

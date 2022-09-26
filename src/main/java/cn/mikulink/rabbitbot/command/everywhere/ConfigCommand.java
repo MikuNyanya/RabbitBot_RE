@@ -27,7 +27,6 @@ import java.util.ArrayList;
  */
 @Command
 public class ConfigCommand extends BaseEveryWhereCommand {
-    private static String clsMessage = null;
 
     @Autowired
     private RabbitBotService rabbitBotService;

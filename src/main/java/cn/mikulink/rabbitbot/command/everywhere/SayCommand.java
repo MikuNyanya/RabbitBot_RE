@@ -44,10 +44,10 @@ public class SayCommand extends BaseEveryWhereCommand {
         if (!reStringSwitch.isSuccess()) {
             return new PlainText(reStringSwitch.getMessage());
         }
-
-        if (ConstantFreeTime.MSG_TYPE_FREE_TIME.size() <= 0) {
-            return new PlainText(ConstantFreeTime.MSG_TYPE_FREE_TIME_EMPTY);
-        }
+//
+//        if (ConstantFreeTime.MSG_TYPE_FREE_TIME.size() <= 0) {
+//            return new PlainText(ConstantFreeTime.MSG_TYPE_FREE_TIME_EMPTY);
+//        }
 
         //随机一条日常语句
         String msg = freeTimeService.randomMsg();

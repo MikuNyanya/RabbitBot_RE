@@ -56,6 +56,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 * 抽签
 * 塔罗牌(伪)
 * 设置入群公告
+* 点歌(网易云)
 
 ### 计划
 - [x] 自行解析pixiv，不再依靠第三方api
@@ -74,6 +75,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 - [x] 可以设置入群公告
 - [ ] 扩充应答库
 - [ ] 兔叽养成系统
+- [x] 点歌系统(自己搭建时，该功能需要额外的网易云自建api，请参考[NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi))
 - [x] ~~鸽了，咕咕咕~~
 
 ### 指令
@@ -100,6 +102,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.群公告|.群公告|设置和查看入群公告|
 |.pet|.pet<br/>.养成|打开养成系统界面|
 |.二维码 [前景颜色] [背景颜色] [图片] (内容)|.二维码 #66CCFF #FFFFFF Hello World|可生成带颜色，带中心logo的二维码，默认为常规黑白主题色|
+|.点歌|.点歌 鈴木みのり - リップ|来源于网易云的音乐分享，可以使用关键词搜索|
 |~~这个人~~|~~鸽了(咕)~~|~~不想补全了~~|
 
 ### 其他

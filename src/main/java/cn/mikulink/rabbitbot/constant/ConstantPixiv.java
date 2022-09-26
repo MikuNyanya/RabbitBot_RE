@@ -18,6 +18,7 @@ public class ConstantPixiv extends ConstantCommon {
     //配置，p站
     public static final int PIXIV_IMAGE_PAGESIZE = 5;
     public static final String PIXIV_CONFIG_IMAGE_IGNORE = "pixivImageIgnore";
+    public static final String PIXIV_CONFIG_SETU = "pixivSetu";
     public static final String PIXIV_IMAGE_IGNORE_WARNING = "[P站图片已忽略加载]";
     public static final String PIXIV_IMAGE_DOWNLOAD_FAIL = "[P站图片下载失败]";
     public static final String PIXIV_IMAGE_DELETE = "[P站图片已被删除]";
