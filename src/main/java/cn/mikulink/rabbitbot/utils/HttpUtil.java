@@ -42,7 +42,7 @@ public class HttpUtil {
     public static String get(String connUrl, Map<String, String> header, Proxy proxy) throws IOException {
         HttpURLConnection httpURLConnection = getHttpURLConnection(connUrl, REQUEST_METHOD_GET, proxy);
         //模拟chrome
-        httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36");
+        httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36");
         if (null != header) {
             //加入请求头
             for (String key : header.keySet()) {

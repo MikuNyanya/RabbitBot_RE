@@ -115,6 +115,8 @@ public class GroupEvents extends SimpleListenerHost {
         String qlogoLocalPath = imageService.getQLogoCq(sender.getId());
         //上传头像
         Image miraiImage = rabbitBotService.uploadMiraiImage(qlogoLocalPath);
+        //获取群头像
+        //http://p.qlogo.cn/gh/QQ群号码/QQ群号码/100/
 
         //返回消息
         Message result = MessageUtils.newChain();

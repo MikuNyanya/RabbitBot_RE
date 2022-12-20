@@ -70,6 +70,9 @@ public class PixivService {
         }
         //根据pid获取图片列表
         PixivIllustGet request = new PixivIllustGet(pid);
+        Map<String, String> header = new HashMap<>();
+        header.put("cookie", pixivCookie);
+        request.setHeader(header);
         request.setProxy(proxyService.getProxy());
         request.doRequest();
         return request.getPixivImageInfo();
@@ -275,10 +278,16 @@ public class PixivService {
      * @return 群消息
      */
     public MessageChain parsePixivImgInfoByApiInfo(PixivRankImageInfo imageInfo) {
+        MessageChain result = null;
         //日榜正常榜，不用r18过滤
         //展示图片
-        List<Image> miraiImageList = rabbitBotService.uploadMiraiImage(imageInfo.getLocalImagesPath());
-        MessageChain result = rabbitBotService.parseMsgChainByImgs(miraiImageList);
+        if (CollectionUtil.isNotEmpty(imageInfo.getLocalImagesPath())) {
+            List<Image> miraiImageList = rabbitBotService.uploadMiraiImage(imageInfo.getLocalImagesPath());
+            result = rabbitBotService.parseMsgChainByImgs(miraiImageList);
+        }else{
+            result = MessageUtils.newChain().plus("[未获取到相关图片]");
+        }
+
 
         StringBuilder resultStr = new StringBuilder();
         if (1 < imageInfo.getPageCount()) {
@@ -371,11 +380,15 @@ public class PixivService {
 
     //下载图片到本地
     public void parseImages(PixivImageInfo imageInfo) throws IOException {
+        if (StringUtil.isEmpty(imageInfo.getUrls().getOriginal())) {
+            imageInfo.setLocalImgPathList(null);
+            return;
+        }
         Long pixivId = NumberUtil.toLong(imageInfo.getId());
         List<String> localImagesPathList = new ArrayList<>();
 
         if (1 < imageInfo.getPageCount()) {
-            //多图 如果因为没登录而获取不到，则只取封面
+            //多图
             try {
                 localImagesPathList.addAll(downloadPixivImgs(pixivId));
             } catch (FileNotFoundException fileNotFoundEx) {

@@ -217,10 +217,11 @@ public class JobTimeRabbit {
 
     //每日简报
     private void newsToday() {
-        //每天早晨9点播报，刚好上班的时间，美好的一天，从摸鱼开始
-        if (hour_now != 9) {
+        //每天早晨10点播报，接口好像有点爆炸
+        if (hour_now != 10) {
             return;
         }
+        logger.info("开始获取每日简报");
         try {
 //            //请求API获取今日简报
 //            WeiXinAppMsgInfo weiXinAppMsgInfo = weiXinAppMsgService.getNewsTodayMsg();

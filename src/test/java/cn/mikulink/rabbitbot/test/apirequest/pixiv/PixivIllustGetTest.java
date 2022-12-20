@@ -6,14 +6,19 @@ import org.junit.Test;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PixivIllustGetTest {
 
     @Test
     public void test() {
         try {
-            PixivIllustGet request = new PixivIllustGet(75717389L);
-            request.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("33837ddc-243b-4f60-91c1-11bd9b602eed.hk.node.touhou.place",88)));
+            PixivIllustGet request = new PixivIllustGet(103689041L);
+//            Map<String, String> header = new HashMap<>();
+//            header.put("cookie", "cookie111");
+//            request.setHeader(header);
+            request.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost",31051)));
             request.doRequest();
             PixivImageInfo imageInfo = request.getPixivImageInfo();
 

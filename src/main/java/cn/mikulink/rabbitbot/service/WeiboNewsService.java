@@ -99,6 +99,11 @@ public class WeiboNewsService {
                 if (!info.getTopic_id().contains("100808dc68345f628fecbcf4caa5c755e05891")) {
                     continue;
                 }
+            }else if(userId == 5762457113L){
+                //游戏动力，屏蔽部分广告
+                if(info.getText().contains("转发抽奖")){
+                    continue;
+                }
             }
 
             //解析微博报文
