@@ -300,7 +300,9 @@ public class WeiboNewsService {
         String imageName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 
         //先把图片下载下来
-        String localImageUrl = ImageUtil.downloadImage(imageUrl, ConstantImage.IMAGE_WEIBO_SAVE_PATH, null);
+        HashMap<String, String> header = new HashMap<>();
+        header.put("referer", "https://weibo.com/");
+        String localImageUrl = ImageUtil.downloadImage(header,imageUrl, ConstantImage.IMAGE_WEIBO_SAVE_PATH, null);
         if (StringUtil.isEmpty(localImageUrl)) {
             return null;
         }

@@ -55,8 +55,10 @@ public class MirlKoiService {
         Map<String, String> bodyMap = JSONObject.parseObject(body, HashMap.class);
         List<String> picUrls = JSONObject.parseArray(String.valueOf(bodyMap.get("pic")), String.class);
         List<String> returnUrls = new ArrayList<>();
+        HashMap<String, String> header = new HashMap<>();
+        header.put("referer", "https://weibo.com/");
         for (String picUrl : picUrls) {
-            returnUrls.add(ImageUtil.downloadImage(picUrl, "data/images/mirlkoi", System.currentTimeMillis() + ".jpg"));
+            returnUrls.add(ImageUtil.downloadImage(header, picUrl, "data/images/mirlkoi", System.currentTimeMillis() + ".jpg"));
         }
         return returnUrls;
     }
