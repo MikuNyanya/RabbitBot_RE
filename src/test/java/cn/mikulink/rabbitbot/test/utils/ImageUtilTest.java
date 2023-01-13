@@ -24,4 +24,22 @@ public class ImageUtilTest {
         }
 
     }
+
+
+    @Test
+    public void noProxy(){
+        try{
+//           String localPath = ImageUtil.downloadImage("http://wx2.sinaimg.cn/thumbnail/92ccf492gy1glukvzgh3gj21900u07wh.jpg");
+
+            HashMap<String, String> header = new HashMap<>();
+            header.put("referer", "https://weibo.com/");
+            String localPath_proxy = ImageUtil.downloadImage(header,"https://tvax3.sinaimg.cn/crop.0.0.439.439.50/006hYGkFly8h8v7gcauejj30c80c8glm.jpg",
+                    "data/images",null,null);
+
+            System.out.println("");
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+    }
 }

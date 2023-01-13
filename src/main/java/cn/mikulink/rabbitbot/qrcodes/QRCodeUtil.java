@@ -1,11 +1,10 @@
 package cn.mikulink.rabbitbot.qrcodes;
 
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
+import com.google.zxing.*;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import javax.imageio.ImageIO;
@@ -13,11 +12,14 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
+import java.util.Vector;
 
 /**
  * created by MikuNyanya on 2021/12/6 11:41
@@ -31,6 +33,79 @@ public class QRCodeUtil {
     //默认二维码颜色
     public static final Color ONCOLOR_DEFAULT = new Color(0xFF000001);
     public static final Color OFFCOLOR_DEFAULT = new Color(0xFFFFFFFF);
+
+
+    public static String decoder(String filePath) throws IOException, NotFoundException {
+        File file = new File(filePath);
+        return decoder(file);
+    }
+
+    public static String decoder(File qrImageFile) throws IOException, NotFoundException {
+        BufferedImage bufferedImage = ImageIO.read(qrImageFile);
+        return decoder(bufferedImage);
+    }
+
+    public static String decoder(BufferedImage qrImage) throws NotFoundException {
+        return decoder(qrImage, null);
+    }
+
+    /**
+     * 解析二维码
+     *
+     * @param qrImage      图片
+     * @param characterSet 编码格式 默认utf-8
+     * @return 二维码包含的字符串
+     * @throws NotFoundException
+     */
+    public static String decoder(BufferedImage qrImage, String characterSet) throws NotFoundException {
+        if (null == characterSet) {
+            characterSet = "utf-8";
+        }
+
+        LuminanceSource source = new BufferedImageLuminanceSource(qrImage);
+        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+        //设置解析参数
+        Hashtable<DecodeHintType, Object> hints = new Hashtable<>();
+
+        Vector<BarcodeFormat> PRODUCT_FORMATS = new Vector<>(5);
+        PRODUCT_FORMATS.add(BarcodeFormat.UPC_A);
+        PRODUCT_FORMATS.add(BarcodeFormat.UPC_E);
+        PRODUCT_FORMATS.add(BarcodeFormat.EAN_13);
+        PRODUCT_FORMATS.add(BarcodeFormat.EAN_8);
+        // PRODUCT_FORMATS.add(BarcodeFormat.RSS14);
+
+        Vector<BarcodeFormat> ONE_D_FORMATS = new Vector<>(PRODUCT_FORMATS.size() + 4);
+        ONE_D_FORMATS.addAll(PRODUCT_FORMATS);
+        ONE_D_FORMATS.add(BarcodeFormat.CODE_39);
+        ONE_D_FORMATS.add(BarcodeFormat.CODE_93);
+        ONE_D_FORMATS.add(BarcodeFormat.CODE_128);
+        ONE_D_FORMATS.add(BarcodeFormat.ITF);
+
+        Vector<BarcodeFormat> QR_CODE_FORMATS = new Vector<>(1);
+        QR_CODE_FORMATS.add(BarcodeFormat.QR_CODE);
+
+        Vector<BarcodeFormat> DATA_MATRIX_FORMATS = new Vector<>(1);
+        DATA_MATRIX_FORMATS.add(BarcodeFormat.DATA_MATRIX);
+
+        Vector<BarcodeFormat> decodeFormats = new Vector<>();
+        decodeFormats.addAll(ONE_D_FORMATS);
+        decodeFormats.addAll(QR_CODE_FORMATS);
+        decodeFormats.addAll(DATA_MATRIX_FORMATS);
+
+        hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
+        hints.put(DecodeHintType.CHARACTER_SET, characterSet);
+        hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+//        QRCodeReader reader = new QRCodeReader();
+//        try{
+//            Result result=reader.decode(bitmap,hints);
+//            return result.toString();
+//        }catch (Exception ex){
+//            ex.printStackTrace();
+//        }
+        Result result = new MultiFormatReader().decode(bitmap, hints);
+        return result.toString();
+    }
+
 
     /**
      * 生成一个二维码

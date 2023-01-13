@@ -4,9 +4,11 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.http.*;
 import cn.mikulink.rabbitbot.apirequest.weibo.WeiboHomeTimelineGet;
 import cn.mikulink.rabbitbot.apirequest.weibo.WeiboImageUpload;
+import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.ImageUploadResponseInfo;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
 import cn.mikulink.rabbitbot.utils.FileUtil;
+import cn.mikulink.rabbitbot.utils.NumberUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 
@@ -30,8 +32,8 @@ public class WeiboApiTest {
             request.setAccessToken("token");
             request.setPage(1);
             //每次获取最近的5条
-            request.setCount(30);
-//            request.setSince_id(NumberUtil.toLong(ConstantCommon.common_config.get("sinceId")));
+            request.setCount(5);
+//            request.setSince_id(NumberUtil.toLong(ConstantCommon.common_config.get("4856051796541578")));
 
             //发送请求
             request.doRequest();

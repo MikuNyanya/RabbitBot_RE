@@ -15,7 +15,7 @@ import java.io.File;
 public class QRCodeUtilTest {
 
     @Test
-    public void test() {
+    public void createQr() {
         try {
             BufferedImage qrImg = QRCodeUtil.createGradientColorQRCode("https://github.com/MikuNyanya/RabbitBot_RE",
                     500, 500,
@@ -29,4 +29,15 @@ public class QRCodeUtilTest {
         }
     }
 
+
+    @Test
+    public void decoderQr() {
+        try {
+            String filePath = "E:\\qrcode.png";
+            String qrStr = QRCodeUtil.decoder(filePath);
+            System.out.println("解码结果文本:" + qrStr);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 }
