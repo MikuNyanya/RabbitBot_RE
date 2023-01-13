@@ -52,17 +52,20 @@ public class QRCodeUtil {
     /**
      * 解析二维码
      *
-     * @param qrImage      图片
-     * @param characterSet 编码格式 默认utf-8
+     * @param qrImageOriginal 原始二维码图片
+     * @param characterSet    编码格式 默认utf-8
      * @return 二维码包含的字符串
      * @throws NotFoundException
      */
-    public static String decoder(BufferedImage qrImage, String characterSet) throws NotFoundException {
+    public static String decoder(BufferedImage qrImageOriginal, String characterSet) throws NotFoundException {
         if (null == characterSet) {
             characterSet = "utf-8";
         }
 
-        LuminanceSource source = new BufferedImageLuminanceSource(qrImage);
+        //对图片特殊处理 因为zxing对彩色二维码识别很弱
+        BufferedImage qrImageOptimization = QRImageOptimizationUtil.binarizationToBufferedImage(qrImageOriginal);
+
+        LuminanceSource source = new BufferedImageLuminanceSource(qrImageOptimization);
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
         //设置解析参数
         Hashtable<DecodeHintType, Object> hints = new Hashtable<>();

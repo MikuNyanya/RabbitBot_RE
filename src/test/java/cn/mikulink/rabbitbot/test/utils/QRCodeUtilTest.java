@@ -1,5 +1,6 @@
 package cn.mikulink.rabbitbot.test.utils;
 
+import cn.mikulink.rabbitbot.qrcodes.QRImageOptimizationUtil;
 import cn.mikulink.rabbitbot.qrcodes.QRCodeUtil;
 import org.junit.Test;
 
@@ -33,8 +34,12 @@ public class QRCodeUtilTest {
     @Test
     public void decoderQr() {
         try {
-            String filePath = "E:\\qrcode.png";
+            String filePath = "E:\\0.jpg";
+            String newPath = "E:\\0_ex.jpg";
+
             String qrStr = QRCodeUtil.decoder(filePath);
+//            QRImageOptimizationUtil.binarization(filePath, newPath);
+
             System.out.println("解码结果文本:" + qrStr);
         } catch (Exception ex) {
             ex.printStackTrace();
