@@ -100,12 +100,12 @@
         <dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-core-jvm</artifactId>
-            <version>2.13.2</version>
+            <version>2.14.0</version>
         </dependency>
         <dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-core-api-jvm</artifactId>
-            <version>2.13.2</version>
+            <version>2.14.0</version>
         </dependency>
 
         <!--kotlin相关，因启动报错，在此显式引用-->
