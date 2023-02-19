@@ -95,7 +95,7 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 |.cls|.清屏<br/>.cls|回复一个很高的空白消息，可以帮助所有人快速清理屏幕，比如上班摸鱼时突然有人发涩图的时候|
 |.morse (action) (value)|.摩斯 编码 r<br>.morse encode r<br>.摩斯 解码 .-.<br/>.morse decode .-.|摩斯电码相关，编码，解码|
 |.rp|.rp|每日人品，每天的人品固定|
-|.塔罗牌|.塔罗牌|当然你得知道，这只是个随机抽取，并不能算真正的塔罗牌玩法|
+|.塔罗牌|.塔罗牌|当然得知道，这只是个随机抽取，并不能算真正的塔罗牌玩法|
 |.猫罗牌|.猫罗牌|跟塔罗牌一样，但是换了图片|
 |.抽签|.抽签|就是抽签|
 |.world|.world 这里是兔叽广播|可以给所有群发消息|
@@ -127,5 +127,10 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 于是我决定修复RabbitBot，代码也开始认真写起来了<br/>
 还有很多旧功能没修复，还有很多新功能没实现，还有很多问题没解决<br/>
 但我都会搞定的，嗯      		
+
+### 赞助兔叽
+    若您愿意赞助本项目，不胜感激
+![啊，图片挂了](https://github.com/MikuNyanya/RabbitBot_RE/blob/master/data/images/other/zy.png)
+
 
 __联系兔子：q群(857489126)__

@@ -1,9 +1,9 @@
 # 兔叽的发布与使用说明
 -----
 ## 下载:
-[RabbitBot_RE_v1.3.7](https://github.com/MikuNyanya/RabbitBot_RE/releases/tag/v1.3.7)       
+[RabbitBot_RE_v1.4.0](https://github.com/MikuNyanya/RabbitBot_RE/releases/tag/v1.4.0)       
 解压完毕的文件列表简要说明：      
-![ ](https://github.com/MikuNyanya/RabbitBot_RE/blob/master/data/images/help/rabbitbotre7zhelp.png)
+![啊，图片挂了](https://github.com/MikuNyanya/RabbitBot_RE/blob/master/data/images/help/rabbitbotre7zhelp.png)
 
 
 ### 使用说明:
