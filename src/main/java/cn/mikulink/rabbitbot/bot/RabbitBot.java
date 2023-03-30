@@ -5,6 +5,7 @@ import cn.mikulink.rabbitbot.command.CommandConfig;
 import cn.mikulink.rabbitbot.event.GroupEvents;
 import cn.mikulink.rabbitbot.event.MessageEvents;
 import cn.mikulink.rabbitbot.event.NudgeEvents;
+import cn.mikulink.rabbitbot.service.sys.BotAuthorizationImpl;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.sys.AnnotateScanner;
 import net.mamoe.mirai.Bot;
@@ -60,6 +61,12 @@ public class RabbitBot implements ApplicationRunner {
     //密码
     @Value("${bot.pwd:}")
     private String botPwd;
+    //登录协议
+    @Value("${bot.protocol:ANDROID_PHONE}")
+    private String protocol;
+    //是否二维码登录
+    @Value("${bot.isQrLogin:false}")
+    private boolean isQrLogin;
     //设备认证信息文件
     private static final String deviceInfo = "deviceInfo.json";
 
@@ -80,13 +87,15 @@ public class RabbitBot implements ApplicationRunner {
         //加载资源文件
         configService.dataFileInit();
 
-        bot = BotFactory.INSTANCE.newBot(botAccount, botPwd, new BotConfiguration() {
+        BotConfiguration botConfiguration = new BotConfiguration() {
             {
-                //保存设备信息到文件deviceInfo.json文件里相当于是个设备认证信息
+                // 保存设备信息到文件deviceInfo.json文件里相当于是个设备认证信息
                 fileBasedDeviceInfo(deviceInfo);
-                setProtocol(MiraiProtocol.ANDROID_PHONE); // 切换协议
+                // 登录协议
+                setProtocol(protocolParse(protocol));
             }
-        });
+        };
+        bot = BotFactory.INSTANCE.newBot(botAccount, new BotAuthorizationImpl(botPwd, isQrLogin), botConfiguration);
         bot.login();
 
         //注册指令
@@ -111,5 +120,21 @@ public class RabbitBot implements ApplicationRunner {
         new Thread(() -> {
             bot.join();
         }).start();
+    }
+
+
+    private BotConfiguration.MiraiProtocol protocolParse(String protocolConfig) {
+        switch (protocolConfig) {
+            case "ANDROID_PAD":
+                return BotConfiguration.MiraiProtocol.ANDROID_PAD;
+            case "ANDROID_WATCH":
+                return BotConfiguration.MiraiProtocol.ANDROID_WATCH;
+            case "IPAD":
+                return BotConfiguration.MiraiProtocol.IPAD;
+            case "MACOS":
+                return BotConfiguration.MiraiProtocol.MACOS;
+            default:
+                return BotConfiguration.MiraiProtocol.ANDROID_PHONE;
+        }
     }
 }

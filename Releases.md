@@ -46,6 +46,15 @@ q号，重要参数必须填写，填写作为群机器人的q号
 计划是权限在普通用户和最高权限之间，但由于实际没啥需求，这个功能也就没太多关注
 
 -----
+    bot.protocol       
+登录协议，可不填，默认为安卓      
+控制bot登录协议，可选的参数有 ANDROID_PHONE / ANDROID_PAD / ANDROID_WATCH / IPAD / MACOS
+
+-----
+    bot.isQrLogin       
+是否使用扫码方式登录，可不填，默认不使用扫码登录      
+
+-----
     file.path.config
 配置文件存放路径，重要参数，已预先配置好，建议不更改     
 
