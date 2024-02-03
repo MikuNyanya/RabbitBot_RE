@@ -1,7 +1,8 @@
 # RabbitBot_RE 兔叽
 -----
 RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很可惜，它没有挺过来(        
-但有幸遇到 [mirai](https://github.com/mamoe/mirai) ，兔叽还有复活的机会(°∀°)ﾉ
+~~但有幸遇到 [mirai](https://github.com/mamoe/mirai) ，兔叽还有复活的机会(°∀°)ﾉ~~
+#### 现在Mirai也寄了 本项目暂停更新 也许忙完这段时间以后再研究其他中间通讯件
 
     请注意，该项目不是群聊机器人框架，也不是插件平台，是建立在mirai上的一个完整的群聊机器人
     很多功能都是为自家群量身定制的，项目中部分功能需要去申请自己的token，比如 Saucenao搜图 微博消息获取等等
