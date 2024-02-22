@@ -129,9 +129,5 @@ RabbitBot_RE前身为 [RabbitBot](https://github.com/MikuNyanya/RabbitBot) 很�
 还有很多旧功能没修复，还有很多新功能没实现，还有很多问题没解决<br/>
 但我都会搞定的，嗯      		
 
-### 赞助兔叽
-    若您愿意赞助本项目，不胜感激
-![啊，图片挂了](https://github.com/MikuNyanya/RabbitBot_RE/blob/master/data/images/other/zy.png)
-
 
 __联系兔子：q群(857489126)__
