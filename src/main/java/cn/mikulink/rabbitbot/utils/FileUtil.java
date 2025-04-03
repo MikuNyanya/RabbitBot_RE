@@ -109,22 +109,20 @@ public class FileUtil {
         //目标文件地址
         desPathStr = desPathStr + File.separator + newFileName;
 
-        //创建输入流对象
-        FileInputStream inputStream = new FileInputStream(srcPathStr);
-        //创建输出流对象
-        FileOutputStream outputStream = new FileOutputStream(desPathStr);
-        //创建搬运工具
-        byte[] tempDatas = new byte[1024 * 8];
+        //创建输入输出流对象
+        try (FileInputStream inputStream = new FileInputStream(srcPathStr);
+             FileOutputStream outputStream = new FileOutputStream(desPathStr)) {
+            //创建搬运工具
+            byte[] tempDatas = new byte[1024 * 8];
 
-        //创建长度
-        int len = 0;
-        //向目标路径写入数据
-        while ((len = inputStream.read(tempDatas)) != -1) {
-            outputStream.write(tempDatas, 0, len);
+            //创建长度
+            int len = 0;
+            //向目标路径写入数据
+            while ((len = inputStream.read(tempDatas)) != -1) {
+                outputStream.write(tempDatas, 0, len);
+            }
+            outputStream.flush();
         }
-        //关闭流
-        outputStream.close();
-        inputStream.close();
     }
 
     /**

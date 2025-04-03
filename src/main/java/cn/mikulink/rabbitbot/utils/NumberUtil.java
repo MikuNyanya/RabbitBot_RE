@@ -20,7 +20,7 @@ public class NumberUtil {
         }
         char[] cc = str.toCharArray();
         for (char c : cc) {
-            if (!RegexUtil.regex(String.valueOf(c), "[0-9]")) {
+            if (!Character.isDigit(c)) {
                 return false;
             }
         }

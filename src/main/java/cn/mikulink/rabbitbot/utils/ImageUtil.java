@@ -119,10 +119,10 @@ public class ImageUtil {
 
         //写入图片数据
         String fileFullName = result + File.separator + fileName;
-        FileOutputStream fileOutputStream = new FileOutputStream(fileFullName);
-        fileOutputStream.write(data);
-        fileOutputStream.flush();
-        fileOutputStream.close();
+        try (FileOutputStream fileOutputStream = new FileOutputStream(fileFullName)) {
+            fileOutputStream.write(data);
+            fileOutputStream.flush();
+        }
 
         //返回文件路径
         return fileFullName;
