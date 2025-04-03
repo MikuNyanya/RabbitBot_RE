@@ -8,7 +8,7 @@ import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.MessageChain;

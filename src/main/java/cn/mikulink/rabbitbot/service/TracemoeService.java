@@ -7,7 +7,7 @@ import cn.mikulink.rabbitbot.entity.apirequest.tracemoe.TracemoeSearchDoc;
 import cn.mikulink.rabbitbot.entity.apirequest.tracemoe.TracemoeSearchResult;
 import cn.mikulink.rabbitbot.utils.EncodingUtil;
 import cn.mikulink.rabbitbot.utils.ImageUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
 import org.slf4j.Logger;

@@ -2,7 +2,6 @@ package cn.mikulink.rabbitbot.command.group;
 
 import cn.mikulink.rabbitbot.command.GroupCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;

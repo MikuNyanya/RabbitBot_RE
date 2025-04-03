@@ -10,7 +10,7 @@ import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson2.JSONException;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;

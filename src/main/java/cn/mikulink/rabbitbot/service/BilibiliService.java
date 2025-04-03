@@ -1,18 +1,14 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.apirequest.bilibili.BilibiliDynamicSvrGet;
-import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
-import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.bilibili.*;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
+import cn.mikulink.rabbitbot.tasks.JobMain;
 import cn.mikulink.rabbitbot.utils.*;
-import com.alibaba.fastjson.JSONObject;
-import net.mamoe.mirai.contact.ContactList;
-import net.mamoe.mirai.contact.Group;
+import com.alibaba.fastjson2.JSONObject;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
@@ -110,39 +106,10 @@ public class BilibiliService {
             Long uid = dynamicSvrCardsInfo.getDesc().getUid();
 
             //组装消息 懒加载
-            MessageChain msgChain = null;
+            MessageChain msgChain = parseDynamicSvrBody(dynamicSvrCardsInfo);
 
-            //给每个群推送消息
-            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-            for (Group groupInfo : groupList) {
-                //检查功能开关
-                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "biliVideo");
-                if (!reStringSwitch.isSuccess()) {
-                    continue;
-                }
-                //检查该群是否订阅了这个账号
-                if (!configService.checkBiliPushId(groupInfo.getId(), uid)) {
-                    continue;
-                }
-
-                //懒加载
-                if (null == msgChain) {
-                    msgChain = parseDynamicSvrBody(dynamicSvrCardsInfo);
-                }
-                if (null == msgChain) {
-                    continue;
-                }
-
-                try {
-                    groupInfo.sendMessage(msgChain);
-                } catch (kotlinx.coroutines.TimeoutCancellationException ex) {
-                    logger.warn("B站视频动态消息mirai发送超时");
-                }
-
-                //每个群之间间隔半秒意思一下
-                Thread.sleep(500);
-            }
-            Thread.sleep(1000L * 5);
+            JobMain.msgList.add(msgChain);
+            logger.info("一条b站消息 已加入肯德基豪华午餐 " + dynamicSvrCardsInfo.getDesc().getUid());
         } catch (Exception ioEx) {
             logger.error("BilibiliService groupDynamicSvrPush error,dynamicSvrCardsInfo:{}", JSONObject.toJSONString(dynamicSvrCardsInfo), ioEx);
         }
@@ -174,7 +141,7 @@ public class BilibiliService {
                     userInfo.getUname(),
                     userInfo.getUid(),
                     new Date(descInfo.getTimestamp() * 1000L),
-                    cardInfo.getShortLink());
+                    "https://www.bilibili.com/video/" + descInfo.getBvid());
         } else if (type == 512) {
             //追番视频动态
             BilibiliDynamicSvrCardApiSeasonInfo apiSeasonInfo = cardInfo.getApiSeasonInfo();
@@ -220,8 +187,8 @@ public class BilibiliService {
 
         //视频简介 最多展示50个字符
         if (StringUtil.isNotEmpty(desc)) {
-            if (desc.length() > 50) {
-                desc = desc.substring(0, 50);
+            if (desc.length() > 100) {
+                desc = desc.substring(0, 100);
                 desc = desc + "......";
             }
             result = result.plus(desc);

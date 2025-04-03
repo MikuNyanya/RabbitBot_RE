@@ -26,14 +26,14 @@ public class NeteaseCloudSearchResponse {
         @Data
         public static class SongsBean {
             private String name;
-            private Integer id;
-            private List<ArBean> ar;
-            private AlBean al;
+            private Long id;
+            private List<ArBean> artists;
+            private AlBean album;
 
             @NoArgsConstructor
             @Data
             public static class AlBean {
-                private Integer id;
+                private Long id;
                 private String name;
                 private String picUrl;
                 private List<?> tns;
@@ -44,7 +44,7 @@ public class NeteaseCloudSearchResponse {
             @NoArgsConstructor
             @Data
             public static class ArBean {
-                private Integer id;
+                private Long id;
                 private String name;
                 private List<String> tns;
                 private List<?> alias;

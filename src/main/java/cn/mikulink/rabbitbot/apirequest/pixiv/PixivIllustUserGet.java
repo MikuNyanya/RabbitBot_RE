@@ -5,8 +5,8 @@ import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONWriter;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,11 +17,11 @@ import java.util.*;
  * create by MikuLink on 2021/1/6 4:36
  * for the Reisen
  * 根据用户id获取该用户的所有插画id
- * https://www.pixiv.net/ajax/user/19469841/profile/all
  */
 @Setter
 @Getter
 public class PixivIllustUserGet extends BaseRequest {
+    //https://www.pixiv.net/ajax/user/19469841/profile/all
     //返回的是标准json
     private static final String URL = "https://www.pixiv.net/ajax/user/%s/profile/all";
 
@@ -58,8 +58,8 @@ public class PixivIllustUserGet extends BaseRequest {
         }
 
         //解析所有pid 需要关闭fastjson针对null值的自动过滤
-        Map<?, ?> bodyMap = JSONObject.parseObject(JSONObject.toJSONString(rootMap.get("body"), SerializerFeature.WriteMapNullValue), HashMap.class);
-        Map<String, ?> illustsMap = JSONObject.parseObject(JSONObject.toJSONString(bodyMap.get("illusts"), SerializerFeature.WriteMapNullValue), HashMap.class);
+        Map<?, ?> bodyMap = JSONObject.parseObject(JSONObject.toJSONString(rootMap.get("body"), JSONWriter.Feature.WriteMapNullValue), HashMap.class);
+        Map<String, ?> illustsMap = JSONObject.parseObject(JSONObject.toJSONString(bodyMap.get("illusts"), JSONWriter.Feature.WriteMapNullValue), HashMap.class);
 
         Set<String> tempSet = illustsMap.keySet();
         responseList = new ArrayList<>(tempSet);

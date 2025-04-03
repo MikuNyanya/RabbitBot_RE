@@ -72,7 +72,9 @@ public class RabbitBot implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        this.startBot();
+//        this.startBot();
+
+        System.out.println("项目启动");
     }
 
     /**

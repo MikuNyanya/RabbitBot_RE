@@ -3,7 +3,7 @@ package cn.mikulink.rabbitbot.test.service;
 import cn.mikulink.rabbitbot.entity.bilibili.BilibiliDynamicSvrCardInfo;
 import cn.mikulink.rabbitbot.entity.bilibili.BilibiliDynamicSvrCardsInfo;
 import cn.mikulink.rabbitbot.service.BilibiliService;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

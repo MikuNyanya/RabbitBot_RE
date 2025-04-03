@@ -1,24 +1,20 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.apirequest.weibo.WeiboHomeTimelineGet;
-import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
-import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoPicUrl;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
+import cn.mikulink.rabbitbot.tasks.JobMain;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.ImageUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import net.mamoe.mirai.contact.ContactList;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
@@ -30,7 +26,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * create by MikuLink on 2020/1/9 16:42
@@ -93,66 +92,18 @@ public class WeiboNewsService {
         for (InfoStatuses info : statuses) {
             Long userId = info.getUser().getId();
 
-            //针对一些需要特殊处理的微博，减少无用信息推送
-            if (userId == 5790531279L) {
-                //这位的正常作品只发在指定超话里
-                if (!info.getTopic_id().contains("100808dc68345f628fecbcf4caa5c755e05891")) {
-                    continue;
-                }
-            }else if(userId == 5762457113L){
-                //游戏动力，屏蔽部分广告
-                if(info.getText().contains("转发抽奖")){
-                    continue;
-                }
-            }
-
             //解析微博报文
-            MessageChain msgChain = null;
-
-            Map<Long, Long> groupReMap = new HashMap<>();
-
-            //给每个群推送消息
-            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-            for (Group groupInfo : groupList) {
-                Long groupId = groupInfo.getId();
-
-                //针对偶尔双发问题处理
-                if (groupReMap.containsKey(groupId)) {
-                    continue;
-                }
-                groupReMap.put(groupId, groupId);
-
-                //检查功能开关
-                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "weibo");
-                if (!reStringSwitch.isSuccess()) {
-                    continue;
-                }
-                //检查该群是否订阅了这个微博账号
-                if (!configService.checkWeiboPushId(groupId, userId)) {
-                    continue;
-                }
-
-                //懒加载
-                if (null == msgChain) {
-                    msgChain = parseWeiboBody(info);
-                    if (null != info.getRetweeted_status()) {
-                        //追加被转发的微博消息
-                        msgChain = msgChain.plus(parseWeiboBody(info.getRetweeted_status(), true));
-                    }
-                }
-
-                try {
-                    groupInfo.sendMessage(msgChain);
-
-                } catch (kotlinx.coroutines.TimeoutCancellationException ex) {
-                    logger.warn("微博消息mirai发送超时");
-                }
-
-                //每个群之间间隔半秒意思一下
-                Thread.sleep(500);
+            MessageChain msgChain = parseWeiboBody(info);
+            if (null != info.getRetweeted_status()) {
+                //追加被转发的微博消息
+                msgChain = msgChain.plus(parseWeiboBody(info.getRetweeted_status(), true));
             }
-            Thread.sleep(1000L * 5);
+
+            JobMain.msgList.add(msgChain);
+            logger.info("一条微博消息 已加入肯德基豪华午餐 " + info.getUser().getName());
+
         }
+
     }
 
     /**
@@ -302,7 +253,7 @@ public class WeiboNewsService {
         //先把图片下载下来
         HashMap<String, String> header = new HashMap<>();
         header.put("referer", "https://weibo.com/");
-        String localImageUrl = ImageUtil.downloadImage(header,imageUrl, ConstantImage.IMAGE_WEIBO_SAVE_PATH, null);
+        String localImageUrl = ImageUtil.downloadImage(header, imageUrl, ConstantImage.IMAGE_WEIBO_SAVE_PATH, null);
         if (StringUtil.isEmpty(localImageUrl)) {
             return null;
         }

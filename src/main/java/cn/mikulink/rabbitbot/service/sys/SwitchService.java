@@ -2,14 +2,13 @@ package cn.mikulink.rabbitbot.service.sys;
 
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
-import cn.mikulink.rabbitbot.constant.ConstantFile;
 import cn.mikulink.rabbitbot.constant.ConstantSwitch;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.User;

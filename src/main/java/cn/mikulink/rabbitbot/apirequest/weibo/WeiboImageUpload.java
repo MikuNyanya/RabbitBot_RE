@@ -4,7 +4,7 @@ package cn.mikulink.rabbitbot.apirequest.weibo;
 import cn.hutool.http.*;
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.ImageUploadResponseInfo;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;

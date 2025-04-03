@@ -6,7 +6,8 @@ import cn.mikulink.rabbitbot.entity.pixiv.PixivImageUrlInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -68,7 +69,7 @@ public class PixivIllustPagesGet extends BaseRequest {
 
         //解析结果
         responseList = new ArrayList<>();
-        List<PixivImageInfo> pixivImageInfos = JSONObject.parseArray(JSONObject.toJSONString(rootMap.get("body")), PixivImageInfo.class);
+        List<PixivImageInfo> pixivImageInfos = JSON.parseArray(JSONObject.toJSONString(rootMap.get("body")), PixivImageInfo.class);
         for (PixivImageInfo pixivImageInfo : pixivImageInfos) {
             responseList.add(pixivImageInfo.getUrls());
         }

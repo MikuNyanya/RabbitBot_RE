@@ -79,7 +79,7 @@ public class GroupEvents extends SimpleListenerHost {
         Group group = event.getGroup();
         NormalMember sender = event.getMember();
         logger.info("{新增群员_主动加群} userId:{},userNick:{},groupId:{},groupName:{}", sender.getId(), sender.getNick(), group.getId(), group.getName());
-        groupMemberJoinMsg(group, sender);
+//        groupMemberJoinMsg(group, sender);
         return ListeningStatus.LISTENING; // 表示继续监听事件
     }
 
@@ -95,7 +95,7 @@ public class GroupEvents extends SimpleListenerHost {
         Group group = event.getGroup();
         User sender = event.getMember();
         logger.info("{新增群员_被邀请加群} userId:{},userNick:{},groupId:{},groupName:{}", sender.getId(), sender.getNick(), group.getId(), group.getName());
-        groupMemberJoinMsg(group, sender);
+//        groupMemberJoinMsg(group, sender);
         return ListeningStatus.LISTENING; // 表示继续监听事件
     }
 
@@ -140,7 +140,7 @@ public class GroupEvents extends SimpleListenerHost {
         Group group = event.getGroup();
         User sender = event.getMember();
         logger.info("{群员离群_主动离群} userId:{},userNick:{},groupId:{},groupName:{}", sender.getId(), sender.getNick(), group.getId(), group.getName());
-        groupMemberLeaveMsg(group, sender);
+//        groupMemberLeaveMsg(group, sender);
         return ListeningStatus.LISTENING; // 表示继续监听事件
     }
 
@@ -156,7 +156,7 @@ public class GroupEvents extends SimpleListenerHost {
         Group group = event.getGroup();
         User sender = event.getMember();
         logger.info("{群员离群_被踢出群} userId:{},userNick:{},groupId:{},groupName:{}", sender.getId(), sender.getNick(), group.getId(), group.getName());
-        groupMemberLeaveMsg(group, sender);
+//        groupMemberLeaveMsg(group, sender);
         return ListeningStatus.LISTENING; // 表示继续监听事件
     }
 

@@ -5,7 +5,8 @@ import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.ImageUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public class MirlKoiService {
         }
 
         Map<String, String> bodyMap = JSONObject.parseObject(body, HashMap.class);
-        List<String> picUrls = JSONObject.parseArray(String.valueOf(bodyMap.get("pic")), String.class);
+        List<String> picUrls = JSON.parseArray(String.valueOf(bodyMap.get("pic")), String.class);
         List<String> returnUrls = new ArrayList<>();
         HashMap<String, String> header = new HashMap<>();
         header.put("referer", "https://weibo.com/");

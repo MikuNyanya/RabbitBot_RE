@@ -1,6 +1,5 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.constant.ConstantBilibili;
 import cn.mikulink.rabbitbot.constant.ConstantBlackList;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.entity.CommandProperties;

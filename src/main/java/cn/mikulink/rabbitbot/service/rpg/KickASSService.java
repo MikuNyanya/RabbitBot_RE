@@ -5,7 +5,7 @@ import cn.mikulink.rabbitbot.constant.ConstantRPG;
 import cn.mikulink.rabbitbot.entity.PetInfo;
 import cn.mikulink.rabbitbot.entity.rpg.KickingASSInfo;
 import cn.mikulink.rabbitbot.utils.FileUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;

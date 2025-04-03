@@ -4,7 +4,7 @@ import cn.mikulink.rabbitbot.apirequest.BaseRequest;
 import cn.mikulink.rabbitbot.entity.apirequest.neteaseCloud.NeteaseCloudSearchResponse;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 

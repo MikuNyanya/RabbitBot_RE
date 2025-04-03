@@ -6,7 +6,8 @@ import cn.mikulink.rabbitbot.utils.EncodingUtil;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -87,7 +88,7 @@ public class PixivIllustTagGet extends BaseRequest {
         Map<?, ?> illustMap = JSONObject.parseObject(JSONObject.toJSONString(bodyMap.get("illust")), HashMap.class);
 
         //解析结果
-        responseList = JSONObject.parseArray(JSONObject.toJSONString(illustMap.get("data")), PixivImageInfo.class);
+        responseList = JSON.parseArray(JSONObject.toJSONString(illustMap.get("data")), PixivImageInfo.class);
         return responseList;
     }
 

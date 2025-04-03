@@ -1,10 +1,10 @@
 package cn.mikulink.rabbitbot.tasks;
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
+import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
 import cn.mikulink.rabbitbot.service.*;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
@@ -12,7 +12,6 @@ import cn.mikulink.rabbitbot.service.sys.ProxyService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
-import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -21,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -65,17 +63,15 @@ public class JobTimeRabbit {
     @Autowired
     private ConfigService configService;
     @Autowired
-    private VirusService virusService;
-    @Autowired
     private MirlKoiService mirlKoiService;
 
-    @Scheduled(cron = "0 0 * * * ?")
+    //    @Scheduled(cron = "0 0 * * * ?")
     public void execute() {
         //刷新当前时间
         hour_now = DateUtil.getHour();
 
         //报时兔子
-        timeRabbit();
+//        timeRabbit();
         //天气
 //        weatherRabbit();
 
@@ -95,14 +91,11 @@ public class JobTimeRabbit {
 //        proxyCheck();
 
         //养成系统数据刷新
-        petRefresh();
-
-        //新冠数据
-        virusPush();
+//        petRefresh();
 
         //pixiv日榜，最好放在最后执行，要下载图片
         //也可以另起一个线程，但我懒
-        pixivRankDay();
+        //pixivRankDay();
     }
 
     //报时兔子
@@ -183,33 +176,13 @@ public class JobTimeRabbit {
             return;
         }
         try {
-            String pixivSetu = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_SETU);
-            List<String> setu = null;
-            PixivImageInfo pixivImageInfo = null;
-            if (StringUtil.isNotEmpty(pixivSetu) && "1".equalsIgnoreCase(pixivSetu)) {
-                pixivImageInfo = setuService.getSetu();
-            } else {
-                setu = mirlKoiService.downloadASetu(1);
-            }
-            //给每个群发送消息
-            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-            for (Group groupInfo : groupList) {
-                //检查功能开关
-                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "setuday");
-                if (!reStringSwitch.isSuccess()) {
-                    continue;
-                }
-                MessageChain messageChain = null;
-                if (StringUtil.isNotEmpty(pixivSetu) && "1".equalsIgnoreCase(pixivSetu)) {
-                    pixivImageInfo.setSubject(groupInfo);
-                    messageChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
-                } else {
-                    messageChain = rabbitBotService.parseMsgChainByLocalImgs(setu.get(0));
-                }
 
-                groupInfo.sendMessage(RandomUtil.rollStrFromList(ConstantPixiv.SETU_DAY_EX_MSG_List));
-                groupInfo.sendMessage(messageChain);
-            }
+            List<String> setu = mirlKoiService.downloadASetu(1);
+
+            MessageChain messageChain = rabbitBotService.parseMsgChainByLocalImgs(setu.get(0));
+
+            rabbitBotService.sendGroupMessage(669863883L, messageChain);
+
         } catch (Exception ex) {
             logger.error(ConstantPixiv.SETU_DAY_ERROR, ex);
         }
@@ -231,26 +204,21 @@ public class JobTimeRabbit {
             MessageChain messageChain = weiXinAppMsgService.getNewsUseSourceConfig();
 
             //给每个群发送消息
-            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-            for (Group groupInfo : groupList) {
-                //检查功能开关
-                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "newstoday");
-                if (!reStringSwitch.isSuccess()) {
-                    continue;
-                }
-                groupInfo.sendMessage(messageChain);
-            }
+//            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
+//            for (Group groupInfo : groupList) {
+//                //检查功能开关
+//                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "newstoday");
+//                if (!reStringSwitch.isSuccess()) {
+//                    continue;
+//                }
+//                groupInfo.sendMessage(messageChain);
+//            }
+            rabbitBotService.sendGroupMessage(669863883L, messageChain);
+
         } catch (Exception ex) {
             //挂了就挂了吧
             logger.error("每日简报 消息发送异常" + ex.toString(), ex);
         }
-    }
-
-    //刷新微信公众平台cookie
-    private void refreshWeixinAppCookie() {
-        //微信公众平台那边，长时间没有操作，cookie就会失效，具体期限比较短，建议12小时内至少进行一次动作，保持cookie有效
-        //每小时刷新一次
-        weiXinAppMsgService.refreshCookie();
     }
 
     //代理检测是否可用
@@ -326,29 +294,6 @@ public class JobTimeRabbit {
         configService.refreshConfigFile();
 
         logger.info("全局随机数刷新,{}->{}", rabbitRandomNum, randomNum);
-    }
-
-    //新冠数据推送
-    private void virusPush() {
-        if (hour_now != 23) {
-            return;
-        }
-        try {
-            MessageChain msg = virusService.parseMsg(virusService.getVirusInfo());
-            //给每个群发送消息
-            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-            for (Group groupInfo : groupList) {
-                //检查功能开关
-                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "virus");
-                if (!reStringSwitch.isSuccess()) {
-                    continue;
-                }
-
-                groupInfo.sendMessage(msg);
-            }
-        } catch (Exception ex) {
-            logger.error("新冠数据定时推送异常", ex);
-        }
     }
 
 }

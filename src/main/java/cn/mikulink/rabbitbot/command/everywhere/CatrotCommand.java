@@ -1,6 +1,5 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantTarot;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.TarotInfo;
@@ -44,7 +43,7 @@ public class CatrotCommand extends BaseEveryWhereCommand {
 
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        String userNick = rabbitBotService.getUserName(subject,sender);
+        String userNick = rabbitBotService.getUserName(subject, sender);
         MessageChain result = MessageUtils.newChain();
         try {
             //抽牌

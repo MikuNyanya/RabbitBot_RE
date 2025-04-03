@@ -5,7 +5,8 @@ import cn.mikulink.rabbitbot.entity.apirequest.amap.InfoWeather;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -58,7 +59,7 @@ public class WeatherRequest extends BaseRequest {
             return null;
         }
         String livesStr = String.valueOf(rootMap.get("lives"));
-        List<InfoWeather> weatherList = JSONObject.parseArray(livesStr, InfoWeather.class);
+        List<InfoWeather> weatherList = JSON.parseArray(livesStr, InfoWeather.class);
         if (null == weatherList || weatherList.size() <= 0) {
             return null;
         }

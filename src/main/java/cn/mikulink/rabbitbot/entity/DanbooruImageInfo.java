@@ -1,7 +1,7 @@
 package cn.mikulink.rabbitbot.entity;
 
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

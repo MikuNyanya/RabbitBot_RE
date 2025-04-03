@@ -6,7 +6,7 @@ import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;

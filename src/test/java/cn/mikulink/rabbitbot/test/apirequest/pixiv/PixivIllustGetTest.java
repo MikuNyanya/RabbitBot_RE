@@ -14,7 +14,7 @@ public class PixivIllustGetTest {
     @Test
     public void test() {
         try {
-            PixivIllustGet request = new PixivIllustGet(103689041L);
+            PixivIllustGet request = new PixivIllustGet(128565958L);
 //            Map<String, String> header = new HashMap<>();
 //            header.put("cookie", "cookie111");
 //            request.setHeader(header);

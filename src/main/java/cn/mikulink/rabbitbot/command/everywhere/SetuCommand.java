@@ -1,20 +1,18 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.constant.ConstantCommon;
+import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.service.MirlKoiService;
 import cn.mikulink.rabbitbot.service.PixivService;
+import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.SetuService;
-import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
-import cn.mikulink.rabbitbot.utils.StringUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
@@ -24,8 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.FileNotFoundException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 
@@ -48,6 +44,8 @@ public class SetuCommand extends BaseEveryWhereCommand {
     private PixivService pixivService;
     @Autowired
     private MirlKoiService mirlKoiService;
+    @Autowired
+    private RabbitBotService rabbitBotService;
 
     @Override
     public CommandProperties properties() {
@@ -64,6 +62,10 @@ public class SetuCommand extends BaseEveryWhereCommand {
 
         Long userId = sender.getId();
         String userNick = sender.getNick();
+
+        if (!rabbitBotService.isMaster(userId)) {
+            return new PlainText(RandomUtil.rollStrFromList(ConstantConfig.COMMAND_MASTER_ONLY));
+        }
 
         //获取指令参数
         Integer setuCount = 1;
@@ -91,22 +93,8 @@ public class SetuCommand extends BaseEveryWhereCommand {
         ConstantPixiv.SETU_PID_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
 
         try {
-            String pixivSetu = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_SETU);
-            if (StringUtil.isNotEmpty(pixivSetu) && "1".equalsIgnoreCase(pixivSetu)) {
-                PixivImageInfo pixivImageInfo = setuService.getSetu();
-                pixivImageInfo.setSender(sender);
-                pixivImageInfo.setSubject(subject);
-                return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
-            } else {
-                mirlKoiService.sendRandomSetu(subject, setuCount);
-                return null;
-            }
-        } catch (FileNotFoundException fileNotFoundEx) {
-            logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
-            return new PlainText(ConstantPixiv.PIXIV_IMAGE_DELETE);
-        } catch (SocketTimeoutException stockTimeoutEx) {
-            logger.warn(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString(), stockTimeoutEx);
-            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT);
+            mirlKoiService.sendRandomSetu(subject, setuCount);
+            return null;
         } catch (Exception ex) {
             logger.error(ConstantPixiv.PIXIV_ID_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
             return new PlainText(ConstantPixiv.PIXIV_ID_GET_ERROR_GROUP_MESSAGE);

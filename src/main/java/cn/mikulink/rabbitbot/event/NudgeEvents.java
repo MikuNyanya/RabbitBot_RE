@@ -2,33 +2,18 @@ package cn.mikulink.rabbitbot.event;
 
 
 import cn.mikulink.rabbitbot.constant.ConstantBlackList;
-import cn.mikulink.rabbitbot.service.GroupNoticeService;
-import cn.mikulink.rabbitbot.service.ImageService;
 import cn.mikulink.rabbitbot.service.NudgeService;
-import cn.mikulink.rabbitbot.service.RabbitBotService;
-import cn.mikulink.rabbitbot.utils.RandomUtil;
-import cn.mikulink.rabbitbot.utils.StringUtil;
 import kotlin.coroutines.CoroutineContext;
-import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.contact.UserOrBot;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
-import net.mamoe.mirai.event.events.MemberJoinEvent;
-import net.mamoe.mirai.event.events.MemberLeaveEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @Description: 戳一戳事件

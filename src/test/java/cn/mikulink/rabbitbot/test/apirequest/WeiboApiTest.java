@@ -9,7 +9,7 @@ import cn.mikulink.rabbitbot.entity.apirequest.weibo.ImageUploadResponseInfo;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
 import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -29,7 +29,7 @@ public class WeiboApiTest {
         try {
 
             WeiboHomeTimelineGet request = new WeiboHomeTimelineGet();
-            request.setAccessToken("token");
+            request.setAccessToken("2.00V1mcpB9MoExC23fd96a2b0zPGUJE");
             request.setPage(1);
             //每次获取最近的5条
             request.setCount(5);

@@ -47,9 +47,9 @@ public class NeteaseCloudService {
         return new MusicShare(
                 MusicKind.NeteaseCloudMusic,
                 songInfo.getName(),
-                songInfo.getAr().get(0).getName(),
+                songInfo.getArtists().get(0).getName(),
                 "https://music.163.com/song?id=" + songInfo.getId(),
-                songInfo.getAl().getPicUrl(),
+                "https://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
                 "http://music.163.com/song/media/outer/url?id=" + songInfo.getId() + ".mp3",
                 "[震惊]兔子要吃小铃子");
     }

@@ -143,17 +143,22 @@ public class MessageEvents extends SimpleListenerHost {
         Member sender = event.getSender();
         String oriMsg = event.getMessage().contentToString();
 
-        logger.info("{接收到群消息} groupId:{},userNick:{},userId:{},msg:%{},groupName:{},userCard:{}",
-                event.getGroup().getId(), sender.getNick(), sender.getId(), event.getMessage().toString(), event.getGroup().getName(), event.getSender().getNameCard());
-
         //黑名单，用来防止和其他机器人死循环响应，或者屏蔽恶意人员
         if (ConstantBlackList.BLACK_LIST.contains(sender.getId())) {
             return ListeningStatus.LISTENING;
         }
+        if (event.getGroup().getId() != 669863883L && event.getGroup().getId() != 497173185L) {
+            return ListeningStatus.LISTENING;
+        }
+
+        logger.info("{接收到群消息} groupId:{},userNick:{},userId:{},msg:%{},groupName:{},userCard:{}",
+                event.getGroup().getId(), sender.getNick(), sender.getId(), event.getMessage().toString(), event.getGroup().getName(), event.getSender().getNameCard());
 
         //是否指令模式
         if (!commandConfig.isCommand(oriMsg)) {
             // 非指令处理其他业务
+            //AI响应
+
             //关键词响应
             keyWordService.keyWordMatchGroup(event);
             return ListeningStatus.LISTENING;

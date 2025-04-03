@@ -1,6 +1,5 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.command.GroupCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCapsuleToy;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.service.CapsuleToyService;
@@ -9,8 +8,6 @@ import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
