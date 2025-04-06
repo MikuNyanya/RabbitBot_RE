@@ -42,6 +42,7 @@ public class ConfigCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
+        //todo 整理
 //        if (null == args || args.size() < 1) {
 //            return new PlainText(ConstantConfig.ARGS_ERROR);
 //        }

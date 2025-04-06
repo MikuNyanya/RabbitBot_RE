@@ -2,10 +2,10 @@ package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.apirequest.neteaseCloudMusic.NeteaseCloudSearch;
 import cn.mikulink.rabbitbot.entity.apirequest.neteaseCloud.NeteaseCloudSearchResponse;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChainData;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.mamoe.mirai.message.data.MusicKind;
-import net.mamoe.mirai.message.data.MusicShare;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -36,22 +36,36 @@ public class NeteaseCloudService {
         return CollectionUtil.isEmpty(songs) ? null : songs.get(0);
     }
 
-    public MusicShare parseMessage(NeteaseCloudSearchResponse.ResultBean.SongsBean songInfo) {
+    public MessageChain parseMessage(NeteaseCloudSearchResponse.ResultBean.SongsBean songInfo) {
         if (null == songInfo) {
             return null;
         }
-
         //网易云歌曲外链 http://music.163.com/song/media/outer/url?id=1952191507.mp3";
         //网易云歌曲页面：https://music.163.com/song?id=1952191507
 
-        return new MusicShare(
-                MusicKind.NeteaseCloudMusic,
-                songInfo.getName(),
-                songInfo.getArtists().get(0).getName(),
-                "https://music.163.com/song?id=" + songInfo.getId(),
-                "https://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
-                "http://music.163.com/song/media/outer/url?id=" + songInfo.getId() + ".mp3",
-                "[震惊]兔子要吃小铃子");
+        //歌曲点击后跳转到的页面
+        String pageUrl = "https://music.163.com/song?id=" + songInfo.getId();
+        //歌曲封面
+        String musicImg = "https://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg";
+        //歌曲音频url
+        String musicUrl = "http://music.163.com/song/media/outer/url?id=" + songInfo.getId() + ".mp3";
+        //歌曲名称
+        String title = songInfo.getName();
+        //作者/演唱者
+        String author = songInfo.getArtists().get(0).getName();
+
+        MessageChainData data = new MessageChainData();
+        data.setUrl(pageUrl);
+        data.setAudio(musicUrl);
+        data.setImage(musicImg);
+        data.setTitle(title);
+        data.setContent(author);
+
+        MessageChain result = new MessageChain();
+        result.setType("custom");
+        result.setData(data);
+
+        return result;
     }
 
 }

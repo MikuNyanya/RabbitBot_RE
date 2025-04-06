@@ -43,6 +43,7 @@ public class ImageSearchCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
+        //todo 重新接入搜图
 //        if (null == args || args.size() == 0) {
 //            //搜图功能针对手机操作优化
 //            //首先触发搜图指令，然后同样的账号单独发一张图片，也可以触发搜图

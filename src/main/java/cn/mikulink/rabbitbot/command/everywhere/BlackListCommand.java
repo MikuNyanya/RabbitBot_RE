@@ -41,6 +41,7 @@ public class BlackListCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
+        //todo 整理
 //        //权限限制
 //        if (!rabbitBotService.isMaster(sender.getId())) {
 //            return new PlainText(RandomUtil.rollStrFromList(ConstantCommon.COMMAND_MASTER_ONLY));

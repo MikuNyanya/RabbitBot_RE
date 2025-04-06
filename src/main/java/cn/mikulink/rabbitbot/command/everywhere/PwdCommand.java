@@ -1,5 +1,6 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
@@ -8,13 +9,7 @@ import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.RegexUtil;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +30,7 @@ public class PwdCommand extends EverywhereCommand {
     private static final List<String> PWD_STRS = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
             "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-            "^", "@", ".", "_", "$", "!", "%", "&", "=", "+");
+            "^", "@", ".", "_", "$", "!", "%", "&", "+", "?");
     private static final String PWD_REGEX = "\\S*[@^._$!%&=\\+]{1,}\\S*[@^._$!%&=\\+]{1,}\\S*";
 
     //97-122 小写字母
@@ -50,22 +45,21 @@ public class PwdCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
-//        //参数可选，获取第一个作为长度，进行校验,最常不超过50位
-//        Integer pwdSize = 6;
-//        if (null != args && args.size() > 0) {
-//            String arg = args.get(0);
-//            if (!NumberUtil.isNumberOnly(arg)) {
-//                return new PlainText(ConstantCommon.GAME_PARAM_NUMBER_ONLY);
-//            }
-//            pwdSize = NumberUtil.toInt(arg);
-//            if (pwdSize > 50 || pwdSize <= 0) {
-//                return new PlainText(OVER_SIZE);
-//            }
-//        }
-//
-//        //生成随机密码
-//        return new PlainText(randPwd(pwdSize));
-        return null;
+        List<String> args = getArgs(messageInfo.getRawMessage());
+        //参数可选，获取第一个作为长度，进行校验,最常不超过50位
+        Integer pwdSize = 6;
+        if (null != args && args.size() > 0) {
+            String arg = args.get(0);
+            if (!NumberUtil.isNumberOnly(arg)) {
+                return RabbitBotMessageBuilder.createMessageText(ConstantCommon.GAME_PARAM_NUMBER_ONLY);
+            }
+            pwdSize = NumberUtil.toInt(arg);
+            if (pwdSize > 50 || pwdSize <= 0) {
+                return RabbitBotMessageBuilder.createMessageText(OVER_SIZE);
+            }
+        }
+        //生成随机密码
+        return RabbitBotMessageBuilder.createMessageText(randPwd(pwdSize));
     }
 
     /**

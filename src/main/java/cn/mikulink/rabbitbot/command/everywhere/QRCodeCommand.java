@@ -1,24 +1,20 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantQRCode;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.qrcodes.QRCodeUtil;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.internal.message.image.OnlineGroupImageImpl;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
-import net.mamoe.mirai.utils.ExternalResource;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -28,10 +24,9 @@ import java.util.ArrayList;
  * <p>
  * 二维码指令
  */
+@Slf4j
 @Command
 public class QRCodeCommand extends EverywhereCommand {
-    private static final Logger logger = LoggerFactory.getLogger(QRCodeCommand.class);
-
     @Override
     public CommandProperties properties() {
         return new CommandProperties("QRCode", "QR","二维码");
@@ -39,9 +34,12 @@ public class QRCodeCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
+        //todo 整理
+//        List<String> args = getArgs(messageInfo.getRawMessage());
 //        try {
+//
 //            if (null == args || args.size() == 0) {
-//                return new PlainText(ConstantQRCode.EXPLAIN);
+//                return RabbitBotMessageBuilder.createMessageText(ConstantQRCode.EXPLAIN);
 //            }
 //
 //            //解析参数 如果只有一个参数，则作为内容
@@ -63,7 +61,7 @@ public class QRCodeCommand extends EverywhereCommand {
 //                        offColor = new Color(Integer.parseInt(args.get(1).substring(1), 16));
 //                    } catch (Exception ex) {
 //                        logger.warn("二维码颜色参数转化错误", ex);
-//                        return new PlainText(ConstantQRCode.QRCODE_COLOR_ERROR);
+//                        return RabbitBotMessageBuilder.createMessageText((ConstantQRCode.QRCODE_COLOR_ERROR);
 //                    }
 //                }
 //            }
@@ -99,14 +97,14 @@ public class QRCodeCommand extends EverywhereCommand {
 //            }
 //
 //            if (qrContext.length() > ConstantQRCode.QRCODE_CONTEXT_MAX_LENGTH) {
-//                return new PlainText(ConstantQRCode.QRCODE_FAIL_OVER_LEN);
+//                return RabbitBotMessageBuilder.createMessageText(ConstantQRCode.QRCODE_FAIL_OVER_LEN);
 //            }
 //
 //            byte[] qrBytes = QRCodeUtil.createQRCodeByte(qrContext.toString(), onColor, offColor, logoUrl);
 //            return subject.uploadImage(ExternalResource.create(qrBytes).toAutoCloseable());
 //        } catch (Exception ex) {
-//            logger.error("二维码转化失败", ex);
-//            return new PlainText(ConstantQRCode.QRCODE_FAIL);
+//            log.error("二维码转化失败", ex);
+//            return RabbitBotMessageBuilder.createMessageText(ConstantQRCode.QRCODE_FAIL);
 //        }
         return null;
     }

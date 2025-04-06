@@ -9,9 +9,11 @@ import java.util.Map;
  * 摩尔斯电码相关
  */
 public class ConstantMorseCode extends ConstantCommon {
-    public static final String MORSE_CODE_TEXT = "摩尔斯电码加密解密，举个栗子：" +
-            "\n.摩尔斯 编码 rabbit" +
-            "\n.摩尔斯 解码 .-. .- -... -... .. -";
+    public static final String MORSE_CODE_TEXT = """
+            摩尔斯电码加密解密，举个栗子：
+            .摩尔斯 编码 rabbit
+            .摩尔斯 解码 .-. .- -... -... .. -
+            """;
 
     //摩尔斯电码对照表
     public static Map<String, String> morse_code_map = new HashMap<>();

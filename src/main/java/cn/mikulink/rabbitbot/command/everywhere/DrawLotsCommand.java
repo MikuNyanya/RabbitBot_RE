@@ -6,9 +6,7 @@ import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +22,9 @@ import java.util.ArrayList;
  * <p>
  * 抽签，自己做的图片
  */
+@Slf4j
 @Command
 public class DrawLotsCommand extends EverywhereCommand {
-    private static final Logger logger = LoggerFactory.getLogger(DrawLotsCommand.class);
     //签的图片存放路径
     public static final String IMAGE_DRAWLOTS_SAVE_PATH = "data/images/drawlots";
     //标记签的总数
@@ -42,8 +40,9 @@ public class DrawLotsCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
+        //todo 抽签接入api，或者重新构想一套抽签策略，以前的只是临时用
 
-//        String userNick = rabbitBotService.getUserName(subject,sender);
+//        String userNick = rabbitBotService.getUserName(messageInfo.getSender());
 //        MessageChain result = MessageUtils.newChain();
 //        try {
 //            //基于签的最大数量抽取一个数字作为索引

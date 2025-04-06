@@ -38,6 +38,7 @@ public class MiraiImageCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
+        //todo 改造为cq图片id查看
 //        if (null == args || args.size() == 0) {
 //            return new PlainText("请传入mirai图片id，比如{54718158-C227-5410-5235-FB49323E97B7}.jpg");
 //        }

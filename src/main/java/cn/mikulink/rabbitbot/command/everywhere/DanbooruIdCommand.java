@@ -42,6 +42,7 @@ public class DanbooruIdCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
+        //todo 整理
 //        if (null == args || args.size() == 0) {
 //            return new PlainText(ConstantImage.IMAGE_SEARCH_NO_IMAGE_ID_INPUT);
 //        }

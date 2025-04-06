@@ -1,17 +1,11 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
-
-import java.util.ArrayList;
 
 
 /**
@@ -32,13 +26,12 @@ public class CLSCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
-//        if (clsMessage == null) {
-//            clsMessage = "";
-//            for (int i = 0; i < 20; i++) clsMessage += "\n";
-//            clsMessage += "已清屏!";
-//        }
-//        return new PlainText(clsMessage);
-        return null;
+        if (clsMessage == null) {
+            clsMessage = "";
+            for (int i = 0; i < 20; i++) clsMessage += "\n";
+            clsMessage += "已清屏!";
+        }
+        return RabbitBotMessageBuilder.createMessageText(clsMessage);
     }
 
 }
