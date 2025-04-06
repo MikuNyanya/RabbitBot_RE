@@ -1,6 +1,8 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
  * 传入mirai的图片id，回复对应图片
  */
 @Command
-public class MiraiImageCommand extends BaseEveryWhereCommand {
+public class MiraiImageCommand extends EverywhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(MiraiImageCommand.class);
 
     @Override
@@ -35,11 +37,12 @@ public class MiraiImageCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        if (null == args || args.size() == 0) {
-            return new PlainText("请传入mirai图片id，比如{54718158-C227-5410-5235-FB49323E97B7}.jpg");
-        }
-
-        return Image.fromId(args.get(0));
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        if (null == args || args.size() == 0) {
+//            return new PlainText("请传入mirai图片id，比如{54718158-C227-5410-5235-FB49323E97B7}.jpg");
+//        }
+//
+//        return Image.fromId(args.get(0));
+        return null;
     }
 }

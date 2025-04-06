@@ -117,6 +117,24 @@ public class ImageService {
     }
 
     /**
+     * 根据q号获取头像网络url
+     * 大概100x100
+     * 使用的是腾讯自家链接
+     * http://q1.qlogo.cn/g?b=qq&s=100&nk=qq号
+     * http://users.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=qq号
+     *
+     * @param qq q号
+     * @return 头像的网络图片链接
+     */
+    public String getQLogoUrl(Long qq) {
+        if (null == qq) {
+            return null;
+        }
+        return String.format("http://q1.qlogo.cn/g?b=qq&s=100&nk=%s", qq);
+    }
+
+
+    /**
      * 压缩图片
      * 不是总是压缩，视配置和图片参数是否超标决定
      *

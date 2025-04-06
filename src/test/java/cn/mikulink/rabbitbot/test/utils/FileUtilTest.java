@@ -16,6 +16,9 @@ public class FileUtilTest {
     public void fileCheckTest() {
         try {
             FileUtil.fileCheck("src/main/resources/files/groups/123/switch");
+
+            String fullPath = FileUtil.getFileFullPath("data/images/tarot");
+            System.out.println("");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * <p>
  * 适用于临时会话，比如来源于群的非好友私聊
  */
-public interface TempMessageCommand extends Command {
+public abstract class TempMessageCommand extends Command {
 
     /**
      * 具体业务执行入口
@@ -23,5 +23,5 @@ public interface TempMessageCommand extends Command {
      * @param subject   消息主体
      * @return 回复的消息内容，返回null不做处理
      */
-    Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Member subject);
+    public abstract Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Member subject);
 }

@@ -1,8 +1,10 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantRP;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.rpg.CharacterStatsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
@@ -25,7 +27,7 @@ import java.util.ArrayList;
  * 每日人品
  */
 @Command
-public class RPCommand extends BaseEveryWhereCommand {
+public class RPCommand extends EverywhereCommand {
     @Autowired
     private RabbitBotService rabbitBotService;
     @Autowired
@@ -37,21 +39,22 @@ public class RPCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        //获取群员信息
-        String groupUserName = rabbitBotService.getUserName(subject, sender);
-
-        //rp 与人物属性的运气值对齐 问题就是可能不会出现0和100的运气了
-        int rp = characterStatsService.getPlayerLUCK(groupUserName);
-        //如果是99直接当做100吧，弥补下没有100封顶的遗憾
-        if (rp == 99) {
-            rp = 100;
-        }
-
-        //可以随机点装饰性语句
-        String msgEx = getMsgEx(rp);
-        String resultStr = String.format("【%s】今天的人品值：%s%s", groupUserName, rp, msgEx);
-        return new PlainText(resultStr);
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        //获取群员信息
+//        String groupUserName = rabbitBotService.getUserName(subject, sender);
+//
+//        //rp 与人物属性的运气值对齐 问题就是可能不会出现0和100的运气了
+//        int rp = characterStatsService.getPlayerLUCK(groupUserName);
+//        //如果是99直接当做100吧，弥补下没有100封顶的遗憾
+//        if (rp == 99) {
+//            rp = 100;
+//        }
+//
+//        //可以随机点装饰性语句
+//        String msgEx = getMsgEx(rp);
+//        String resultStr = String.format("【%s】今天的人品值：%s%s", groupUserName, rp, msgEx);
+//        return new PlainText(resultStr);
+        return null;
     }
 
     //获取附加短语，可以放一些彩蛋性质的东西，会附带在报时消息尾部

@@ -187,6 +187,24 @@ public class FileUtil {
     }
 
     /**
+     * 获取一个文件的绝对路径
+     * @param filePath 文件路径
+     * @return  文件绝对路径
+     */
+    public static String getFileFullPath(String filePath) {
+        if (StringUtil.isEmpty(filePath)) {
+            return "";
+        }
+        File file = new File(filePath);
+        if(!file.exists()){
+            return "";
+        }
+
+        //返回绝对路径
+        return file.getAbsolutePath();
+    }
+
+    /**
      * 读取指定目录下所有文件，文件夹以及文件夹下的子文件的列表
      *
      * @param path 指定目录

@@ -7,6 +7,7 @@ import cn.mikulink.rabbitbot.service.ImageService;
 import cn.mikulink.rabbitbot.service.KeyWordService;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import kotlin.coroutines.CoroutineContext;
+import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.User;
@@ -31,9 +32,9 @@ import java.util.ArrayList;
  * @author: MikuLink
  * @date: 2020/12/14 17:19
  **/
+@Slf4j
 @Component
 public class MessageEvents extends SimpleListenerHost {
-    private static final Logger logger = LoggerFactory.getLogger(MessageEvents.class);
 
     @Autowired
     private CommandConfig commandConfig;
@@ -45,7 +46,7 @@ public class MessageEvents extends SimpleListenerHost {
 
     @Override
     public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
-        logger.error("RecallEvent Error:{}", exception.getMessage());
+        log.error("RecallEvent Error:{}", exception.getMessage());
     }
 
 
@@ -62,7 +63,7 @@ public class MessageEvents extends SimpleListenerHost {
         User sender = event.getSender();
         String oriMsg = event.getMessage().contentToString();
 
-        logger.info("{接收到其他消息} userId:{},userNick:{},msg:{}", sender.getId(), sender.getNick(), event.getMessage().toString());
+        log.info("{接收到其他消息} userId:{},userNick:{},msg:{}", sender.getId(), sender.getNick(), event.getMessage().toString());
 
         //黑名单，用来防止和其他机器人死循环响应，或者屏蔽恶意人员
         if (ConstantBlackList.BLACK_LIST.contains(sender.getId())) {
@@ -81,7 +82,8 @@ public class MessageEvents extends SimpleListenerHost {
             return ListeningStatus.LISTENING;
         }
         //执行指令并回复结果
-        Message result = command.execute(sender, getArgs(oriMsg), event.getMessage(), event.getSubject());
+//        Message result = command.execute(sender, getArgs(oriMsg), event.getMessage(), event.getSubject());
+        Message result = null;
         if (result != null) {
             event.getSubject().sendMessage(result);
         }
@@ -103,7 +105,7 @@ public class MessageEvents extends SimpleListenerHost {
         Friend sender = event.getSender();
         String oriMsg = event.getMessage().contentToString();
 
-        logger.info("{接收到好友消息} userId:{},userNick:{},msg:{}", sender.getId(), sender.getNick(), event.getMessage().toString());
+        log.info("{接收到好友消息} userId:{},userNick:{},msg:{}", sender.getId(), sender.getNick(), event.getMessage().toString());
 
         //黑名单，用来防止和其他机器人死循环响应，或者屏蔽恶意人员
         if (ConstantBlackList.BLACK_LIST.contains(sender.getId())) {
@@ -151,7 +153,7 @@ public class MessageEvents extends SimpleListenerHost {
             return ListeningStatus.LISTENING;
         }
 
-        logger.info("{接收到群消息} groupId:{},userNick:{},userId:{},msg:%{},groupName:{},userCard:{}",
+        log.info("{接收到群消息} groupId:{},userNick:{},userId:{},msg:%{},groupName:{},userCard:{}",
                 event.getGroup().getId(), sender.getNick(), sender.getId(), event.getMessage().toString(), event.getGroup().getName(), event.getSender().getNameCard());
 
         //是否指令模式
@@ -172,16 +174,16 @@ public class MessageEvents extends SimpleListenerHost {
         ArrayList<String> args = getArgs(oriMsg);
 
         //判断权限
-        Message result = command.permissionCheck(sender, args, event.getMessage(), event.getSubject());
-        if (null != result) {
-            event.getSubject().sendMessage(result);
-        } else {
-            //执行指令并回复结果
-            result = command.execute(sender, args, event.getMessage(), event.getSubject());
-            if (result != null) {
-                event.getSubject().sendMessage(result);
-            }
-        }
+//        Message result = command.permissionCheck(sender, args, event.getMessage(), event.getSubject());
+//        if (null != result) {
+//            event.getSubject().sendMessage(result);
+//        } else {
+//            //执行指令并回复结果
+//            result = command.execute(sender, args, event.getMessage(), event.getSubject());
+//            if (result != null) {
+//                event.getSubject().sendMessage(result);
+//            }
+//        }
         //事件拦截 防止公共消息事件再次处理
         event.intercept();
 
@@ -202,7 +204,7 @@ public class MessageEvents extends SimpleListenerHost {
 
         String oriMsg = event.getMessage().contentToString();
 
-        logger.info("{接收到临时消息} userId:{},userNick:{},msg:{}", sender.getId(), sender.getNick(), event.getMessage().toString());
+        log.info("{接收到临时消息} userId:{},userNick:{},msg:{}", sender.getId(), sender.getNick(), event.getMessage().toString());
 
         //黑名单，用来防止和其他机器人死循环响应，或者屏蔽恶意人员
         if (ConstantBlackList.BLACK_LIST.contains(sender.getId())) {

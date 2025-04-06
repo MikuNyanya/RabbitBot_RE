@@ -1,8 +1,10 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantWeiXin;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.WeiXinAppMsgService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
  * 今日简报指令
  */
 @Command
-public class NewsTodayCommand extends BaseEveryWhereCommand {
+public class NewsTodayCommand extends EverywhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(NewsTodayCommand.class);
 
     @Autowired
@@ -39,12 +41,13 @@ public class NewsTodayCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        try {
-            return weiXinAppMsgService.getNewsUseSourceConfig();
-        } catch (Exception ex) {
-            logger.error("NewsTodayCommand error", ex);
-            return new PlainText("新闻简报，他挂了");
-        }
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        try {
+//            return weiXinAppMsgService.getNewsUseSourceConfig();
+//        } catch (Exception ex) {
+//            logger.error("NewsTodayCommand error", ex);
+//            return new PlainText("新闻简报，他挂了");
+//        }
+        return null;
     }
 }

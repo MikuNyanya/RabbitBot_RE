@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.apirequest.deepseek.ChatCompletionsRequest;
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.bot.RabbitBotSender;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
@@ -31,7 +32,7 @@ public class DeepSeekService {
             if (isAtBot) {
                 String tempMsg = groupMessageInfo.getSender().getCard() + ":";
                 for (MessageChain messageInfo : groupMessageInfo.getMessage()) {
-                    switch (messageInfo.getType()){
+                    switch (messageInfo.getType()) {
                         case "text":
                             tempMsg += messageInfo.getData().getText();
                             break;
@@ -43,7 +44,7 @@ public class DeepSeekService {
 
                 String chatRsp = ChatCompletionsRequest.test(tempMsg);
 
-                rabbitBotSender.sendGroupMessage(groupMessageInfo.getGroupId(), rabbitBotSender.parseMessageChainText("text", chatRsp));
+                rabbitBotSender.sendGroupMessage(RabbitBotMessageBuilder.createGroupMessageText(groupMessageInfo.getGroupId(), chatRsp));
             }
 
             //获取当前群聊向上一定数目的历史记录传给ai用作分析
@@ -52,7 +53,7 @@ public class DeepSeekService {
 
 
         } catch (Exception ex) {
-            log.error("AI请求异常,messageId:{}", groupMessageInfo.getMessageId(),ex);
+            log.error("AI请求异常,messageId:{}", groupMessageInfo.getMessageId(), ex);
         }
 
     }

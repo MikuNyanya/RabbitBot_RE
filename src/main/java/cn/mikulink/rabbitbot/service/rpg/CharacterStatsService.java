@@ -108,7 +108,7 @@ public class CharacterStatsService {
      */
     public String parseStatMsg(PlayerCharacterStats playerStats) {
         StringBuilder result = new StringBuilder();
-        result.append("======").append(playerStats.getName()).append("=======").append("\n")
+        result.append("\n======").append(playerStats.getName()).append("=======").append("\n")
                 .append("[力量] ")
                 .append(getStatsBar(playerStats.getStr())).append(" ")
                 .append(playerStats.getStr()).append("\n")

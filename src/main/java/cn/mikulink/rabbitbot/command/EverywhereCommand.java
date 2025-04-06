@@ -1,9 +1,6 @@
 package cn.mikulink.rabbitbot.command;
 
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 
 import java.util.ArrayList;
 
@@ -14,27 +11,8 @@ import java.util.ArrayList;
  * <p>
  * 适用于所有消息来源
  */
-public interface EverywhereCommand extends Command {
+public abstract class EverywhereCommand extends Command {
 
-    /**
-     * 权限验证
-     *
-     * @param sender       消息发送人
-     * @param args         指令追加参数
-     * @param messageChain 消息对象 第一个元素一定为 [MessageSource], 存储此消息的发送人, 发送时间, 收信人, 消息 id 等数据. 随后的元素为拥有顺序的真实消息内容.
-     * @param subject      消息主体
-     * @return 权限验证结果，返回null表示不做校验
-     */
-    Message permissionCheck(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject);
 
-    /**
-     * 具体业务执行入口
-     * @param sender    消息发送人
-     * @param args      指令追加参数
-     * @param messageChain  消息对象 第一个元素一定为 [MessageSource], 存储此消息的发送人, 发送时间, 收信人, 消息 id 等数据. 随后的元素为拥有顺序的真实消息内容.
-     * @param subject   消息主体
-     * @return 回复的消息内容，返回null不做处理
-     */
-    Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject);
 
 }

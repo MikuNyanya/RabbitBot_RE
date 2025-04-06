@@ -1,17 +1,15 @@
 package cn.mikulink.rabbitbot.command.everywhere.rpg;
 
-import cn.mikulink.rabbitbot.command.everywhere.BaseEveryWhereCommand;
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantRPG;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.SenderInfo;
 import cn.mikulink.rabbitbot.entity.rpg.PlayerCharacterStats;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.rpg.CharacterStatsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -25,11 +23,11 @@ import java.util.ArrayList;
  * roll点，与属性相关
  */
 @Command
-public class RollCommand extends BaseEveryWhereCommand {
-    @Autowired
-    private RabbitBotService rabbitBotService;
+public class RollCommand extends EverywhereCommand {
     @Autowired
     private CharacterStatsService characterStatsService;
+    @Autowired
+    private RabbitBotService rabbitBotService;
 
     @Override
     public CommandProperties properties() {
@@ -37,13 +35,16 @@ public class RollCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
+    public MessageInfo execute(MessageInfo messageInfo) {
+        ArrayList<String> args = super.getArgs(messageInfo.getRawMessage());
+        SenderInfo sender = messageInfo.getSender();
+
         //返回说明
         if (args.size() <= 0) {
-            return new PlainText(ConstantRPG.EXPLAIN);
+            return RabbitBotMessageBuilder.createMessageText(ConstantRPG.EXPLAIN);
         }
-        //群员名称
-        String userName = rabbitBotService.getUserName(subject, sender);
+        //发送人名称
+        String userName = rabbitBotService.getUserName(sender);
         //输入的指令
         String commandParam = args.get(0).toUpperCase();
         PlayerCharacterStats userStat = characterStatsService.parseCharacterStatsList(userName);
@@ -76,7 +77,7 @@ public class RollCommand extends BaseEveryWhereCommand {
                 luckValue = userStat.getLuck();
                 break;
             default:
-                return new PlainText(ConstantRPG.EXPLAIN);
+                return RabbitBotMessageBuilder.createMessageText(ConstantRPG.COMMON_PARAM_ERROR);
         }
         int roll = characterStatsService.rollD(statsValue, luckValue);
 
@@ -94,12 +95,12 @@ public class RollCommand extends BaseEveryWhereCommand {
         //【群员名称】附加文本 roll[属性(属性值 运气)]=roll结果
         String resultStr = String.format("[%s] %s roll %s(%s) = %s (%s)",
                 userName,
-                exText.toString(),
+                exText,
                 commandParam,
                 null == luckValue ? statsValue : statsValue + " " + luckValue,
                 roll,
                 parseSuccessText(roll));
-        return new PlainText(resultStr);
+        return RabbitBotMessageBuilder.createMessageText(resultStr);
     }
 
     //生成成功与否文本

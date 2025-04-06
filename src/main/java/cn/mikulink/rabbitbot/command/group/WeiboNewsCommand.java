@@ -6,6 +6,8 @@ import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMessageInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.WeiboNewsService;
@@ -34,7 +36,7 @@ import java.util.List;
  * 微博消息相关
  */
 @Command
-public class WeiboNewsCommand implements GroupCommand {
+public class WeiboNewsCommand extends GroupCommand {
     private static final Logger logger = LoggerFactory.getLogger(WeiboNewsCommand.class);
 
     @Autowired
@@ -50,66 +52,66 @@ public class WeiboNewsCommand implements GroupCommand {
     }
 
     @Override
-    public Message permissionCheck(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
+    public GroupMessageInfo permissionCheck(MessageInfo groupMessageInfo) {
         //权限限制
-        if (!rabbitBotService.isMaster(sender.getId())) {
-            return new PlainText(RandomUtil.rollStrFromList(ConstantCommon.COMMAND_MASTER_ONLY));
-        }
+//        if (!rabbitBotService.isMaster(sender.getId())) {
+//            return new PlainText(RandomUtil.rollStrFromList(ConstantCommon.COMMAND_MASTER_ONLY));
+//        }
         return null;
     }
 
     @Override
-    public Message execute(Member sender, ArrayList<String> args, MessageChain messageChain, Group subject) {
-        if (null == args || args.size() == 0) {
-            return new PlainText("[.wbn (on,off,lasttag,refreshSinceId,token,exec,pull,unpull)]");
-        }
-
-        Long groupId = subject.getId();
-
-        //二级指令
-        String arg = args.get(0);
-        switch (arg) {
-            case ConstantWeiboNews.SINCEID:
-                //从外部接受sinceId
-                if (args.size() < 2 || StringUtil.isEmpty(args.get(1))) {
-                    return new PlainText(ConstantWeiboNews.SINCEID_OVERRIDE_FAIL);
-                }
-                String sinceIdStr = args.get(1);
-                if (!NumberUtil.isNumberOnly(sinceIdStr)) {
-                    return new PlainText(ConstantWeiboNews.SINCEID_OVERRIDE_FAIL_NOW_NUMBER);
-                }
-                //覆写SINCEID配置
-                ConstantCommon.common_config.put("sinceId", sinceIdStr);
-                //更新配置文件
-                configService.refreshConfigFile();
-                return new PlainText(ConstantWeiboNews.SINCEID_OVERRIDE_SUCCESS);
-            case ConstantWeiboNews.SINCEID_REFRESH:
-                //刷新sinceId
-                weiboNewsService.refreshSinceId();
-                return new PlainText(ConstantWeiboNews.SINCEID_OVERRIDE_SUCCESS);
-            case ConstantWeiboNews.EXEC:
-                //立刻执行一次推送
-                doWeiboPush(subject);
-                break;
-            case ConstantWeiboNews.COMMAND_KEY_PULL:
-                //以群为单位订阅微博账号
-                if (args.size() < 2 || StringUtil.isEmpty(args.get(1))) {
-                    return new PlainText(ConstantWeiboNews.PULL_OR_UNPULL_WEIBO_USERID_EMPTY);
-                }
-                String weiboUserIds = args.get(1);
-
-                configService.pullWeibo(groupId, weiboUserIds);
-                return new PlainText(ConstantWeiboNews.PULL_SUCCESS);
-            case ConstantWeiboNews.COMMAND_KEY_UN_PULL:
-                //以群为单位取消订阅微博账号
-                if (args.size() < 2 || StringUtil.isEmpty(args.get(1))) {
-                    return new PlainText(ConstantWeiboNews.PULL_OR_UNPULL_WEIBO_USERID_EMPTY);
-                }
-                String unPushWeiboUserIds = args.get(1);
-
-                configService.unpullWeibo(groupId, unPushWeiboUserIds);
-                return new PlainText(ConstantWeiboNews.UNPULL_SUCCESS);
-        }
+    public GroupMessageInfo execute(MessageInfo groupMessageInfo) {
+//        if (null == args || args.size() == 0) {
+//            return new PlainText("[.wbn (on,off,lasttag,refreshSinceId,token,exec,pull,unpull)]");
+//        }
+//
+//        Long groupId = subject.getId();
+//
+//        //二级指令
+//        String arg = args.get(0);
+//        switch (arg) {
+//            case ConstantWeiboNews.SINCEID:
+//                //从外部接受sinceId
+//                if (args.size() < 2 || StringUtil.isEmpty(args.get(1))) {
+//                    return new PlainText(ConstantWeiboNews.SINCEID_OVERRIDE_FAIL);
+//                }
+//                String sinceIdStr = args.get(1);
+//                if (!NumberUtil.isNumberOnly(sinceIdStr)) {
+//                    return new PlainText(ConstantWeiboNews.SINCEID_OVERRIDE_FAIL_NOW_NUMBER);
+//                }
+//                //覆写SINCEID配置
+//                ConstantCommon.common_config.put("sinceId", sinceIdStr);
+//                //更新配置文件
+//                configService.refreshConfigFile();
+//                return new PlainText(ConstantWeiboNews.SINCEID_OVERRIDE_SUCCESS);
+//            case ConstantWeiboNews.SINCEID_REFRESH:
+//                //刷新sinceId
+//                weiboNewsService.refreshSinceId();
+//                return new PlainText(ConstantWeiboNews.SINCEID_OVERRIDE_SUCCESS);
+//            case ConstantWeiboNews.EXEC:
+//                //立刻执行一次推送
+//                doWeiboPush(subject);
+//                break;
+//            case ConstantWeiboNews.COMMAND_KEY_PULL:
+//                //以群为单位订阅微博账号
+//                if (args.size() < 2 || StringUtil.isEmpty(args.get(1))) {
+//                    return new PlainText(ConstantWeiboNews.PULL_OR_UNPULL_WEIBO_USERID_EMPTY);
+//                }
+//                String weiboUserIds = args.get(1);
+//
+//                configService.pullWeibo(groupId, weiboUserIds);
+//                return new PlainText(ConstantWeiboNews.PULL_SUCCESS);
+//            case ConstantWeiboNews.COMMAND_KEY_UN_PULL:
+//                //以群为单位取消订阅微博账号
+//                if (args.size() < 2 || StringUtil.isEmpty(args.get(1))) {
+//                    return new PlainText(ConstantWeiboNews.PULL_OR_UNPULL_WEIBO_USERID_EMPTY);
+//                }
+//                String unPushWeiboUserIds = args.get(1);
+//
+//                configService.unpullWeibo(groupId, unPushWeiboUserIds);
+//                return new PlainText(ConstantWeiboNews.UNPULL_SUCCESS);
+//        }
         return null;
     }
 

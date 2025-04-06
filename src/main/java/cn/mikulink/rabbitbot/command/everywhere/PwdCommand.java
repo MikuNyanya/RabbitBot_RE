@@ -1,7 +1,9 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
@@ -27,7 +29,7 @@ import java.util.List;
  * 密码组合至少包含2个特殊字符和两个字母
  */
 @Command
-public class PwdCommand extends BaseEveryWhereCommand {
+public class PwdCommand extends EverywhereCommand {
     private static final String OVER_SIZE = "密码长度必须在1-50之间";
     //密码字符列表 定死算了
     private static final List<String> PWD_STRS = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -47,22 +49,23 @@ public class PwdCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        //参数可选，获取第一个作为长度，进行校验,最常不超过50位
-        Integer pwdSize = 6;
-        if (null != args && args.size() > 0) {
-            String arg = args.get(0);
-            if (!NumberUtil.isNumberOnly(arg)) {
-                return new PlainText(ConstantCommon.GAME_PARAM_NUMBER_ONLY);
-            }
-            pwdSize = NumberUtil.toInt(arg);
-            if (pwdSize > 50 || pwdSize <= 0) {
-                return new PlainText(OVER_SIZE);
-            }
-        }
-
-        //生成随机密码
-        return new PlainText(randPwd(pwdSize));
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        //参数可选，获取第一个作为长度，进行校验,最常不超过50位
+//        Integer pwdSize = 6;
+//        if (null != args && args.size() > 0) {
+//            String arg = args.get(0);
+//            if (!NumberUtil.isNumberOnly(arg)) {
+//                return new PlainText(ConstantCommon.GAME_PARAM_NUMBER_ONLY);
+//            }
+//            pwdSize = NumberUtil.toInt(arg);
+//            if (pwdSize > 50 || pwdSize <= 0) {
+//                return new PlainText(OVER_SIZE);
+//            }
+//        }
+//
+//        //生成随机密码
+//        return new PlainText(randPwd(pwdSize));
+        return null;
     }
 
     /**

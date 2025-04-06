@@ -1,6 +1,8 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
  * roll数字
  */
 @Command
-public class RandomNumberCommand extends BaseEveryWhereCommand {
+public class RandomNumberCommand extends EverywhereCommand {
     @Autowired
     private RabbitBotService rabbitBotService;
 
@@ -32,25 +34,26 @@ public class RandomNumberCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        //随机数 0 - 100 包含0
-        int rollNum = RandomUtil.roll();
-        //实际不需要0，排除掉
-        if (0 == rollNum) {
-            rollNum = 1;
-        }
-
-        //群员名称
-        String userName = rabbitBotService.getUserName(subject, sender);
-        //附加指令
-        String commandParam = "";
-        if (null != args && args.size() > 0) {
-            commandParam = String.format("为[%s]", args.get(0));
-        }
-
-        //【群员名称】 装饰性语句 "roll="随机数
-        String resultStr = String.format("[%s]%s roll=%s", userName, commandParam, rollNum);
-        return new PlainText(resultStr);
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        //随机数 0 - 100 包含0
+//        int rollNum = RandomUtil.roll();
+//        //实际不需要0，排除掉
+//        if (0 == rollNum) {
+//            rollNum = 1;
+//        }
+//
+//        //群员名称
+//        String userName = rabbitBotService.getUserName(subject, sender);
+//        //附加指令
+//        String commandParam = "";
+//        if (null != args && args.size() > 0) {
+//            commandParam = String.format("为[%s]", args.get(0));
+//        }
+//
+//        //【群员名称】 装饰性语句 "roll="随机数
+//        String resultStr = String.format("[%s]%s roll=%s", userName, commandParam, rollNum);
+//        return new PlainText(resultStr);
+        return null;
     }
 
 }

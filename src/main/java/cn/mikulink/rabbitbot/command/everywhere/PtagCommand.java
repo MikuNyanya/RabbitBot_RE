@@ -1,8 +1,10 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
@@ -31,7 +33,7 @@ import java.util.Map;
  * 根据pixiv图片tag随机搜索图片
  */
 @Command
-public class PtagCommand extends BaseEveryWhereCommand {
+public class PtagCommand extends EverywhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(PtagCommand.class);
     //操作间隔 账号，操作时间戳
     public static Map<Long, Long> PIXIV_TAG_SPLIT_MAP = new HashMap<>();
@@ -50,45 +52,46 @@ public class PtagCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        //操作间隔判断
-        String timeCheck = rabbitBotService.commandTimeSplitCheck(PIXIV_TAG_SPLIT_MAP, sender.getId(), sender.getNick(), PIXIV_TAG_SPLIT_TIME, PIXIV_TAG_SPLIT_ERROR);
-        if (StringUtil.isNotEmpty(timeCheck)) {
-            return new PlainText(timeCheck);
-        }
-        //刷新操作间隔
-        PIXIV_TAG_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
-
-        if (null == args || args.size() == 0) {
-            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TAG_IS_EMPTY);
-        }
-        //基本输入校验
-        StringBuilder tagSB = new StringBuilder();
-        for (String param : args) {
-            tagSB.append(" ");
-            tagSB.append(param);
-        }
-        String tag = StringUtil.trim(tagSB.toString());
-        if (StringUtil.isEmpty(tag)) {
-            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TAG_IS_EMPTY);
-        }
-
-        try {
-            //根据tag获取接口返回信息
-            PixivImageInfo pixivImageInfo = pixivService.getPixivIllustByTag(tag);
-            pixivImageInfo.setSender(sender);
-            pixivImageInfo.setSubject(subject);
-            return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
-        } catch (RabbitException rabEx) {
-            return new PlainText(rabEx.getMessage());
-        } catch (SocketTimeoutException stockTimeoutEx) {
-            logger.warn(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
-            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT);
-        } catch (Exception ex) {
-            logger.error(ConstantPixiv.PIXIV_TAG_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
-            //异常后清除间隔允许再次操作
-            PIXIV_TAG_SPLIT_MAP.remove(sender.getId());
-            return new PlainText(ConstantPixiv.PIXIV_TAG_GET_ERROR_GROUP_MESSAGE);
-        }
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        //操作间隔判断
+//        String timeCheck = rabbitBotService.commandTimeSplitCheck(PIXIV_TAG_SPLIT_MAP, sender.getId(), sender.getNick(), PIXIV_TAG_SPLIT_TIME, PIXIV_TAG_SPLIT_ERROR);
+//        if (StringUtil.isNotEmpty(timeCheck)) {
+//            return new PlainText(timeCheck);
+//        }
+//        //刷新操作间隔
+//        PIXIV_TAG_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
+//
+//        if (null == args || args.size() == 0) {
+//            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TAG_IS_EMPTY);
+//        }
+//        //基本输入校验
+//        StringBuilder tagSB = new StringBuilder();
+//        for (String param : args) {
+//            tagSB.append(" ");
+//            tagSB.append(param);
+//        }
+//        String tag = StringUtil.trim(tagSB.toString());
+//        if (StringUtil.isEmpty(tag)) {
+//            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TAG_IS_EMPTY);
+//        }
+//
+//        try {
+//            //根据tag获取接口返回信息
+//            PixivImageInfo pixivImageInfo = pixivService.getPixivIllustByTag(tag);
+//            pixivImageInfo.setSender(sender);
+//            pixivImageInfo.setSubject(subject);
+//            return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
+//        } catch (RabbitException rabEx) {
+//            return new PlainText(rabEx.getMessage());
+//        } catch (SocketTimeoutException stockTimeoutEx) {
+//            logger.warn(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
+//            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT);
+//        } catch (Exception ex) {
+//            logger.error(ConstantPixiv.PIXIV_TAG_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
+//            //异常后清除间隔允许再次操作
+//            PIXIV_TAG_SPLIT_MAP.remove(sender.getId());
+//            return new PlainText(ConstantPixiv.PIXIV_TAG_GET_ERROR_GROUP_MESSAGE);
+//        }
+        return null;
     }
 }

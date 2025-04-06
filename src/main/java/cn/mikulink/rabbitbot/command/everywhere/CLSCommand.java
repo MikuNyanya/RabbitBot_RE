@@ -1,7 +1,9 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
  * 清屏
  */
 @Command
-public class CLSCommand extends BaseEveryWhereCommand {
+public class CLSCommand extends EverywhereCommand {
     private static String clsMessage = null;
 
     @Override
@@ -29,13 +31,14 @@ public class CLSCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        if (clsMessage == null) {
-            clsMessage = "";
-            for (int i = 0; i < 20; i++) clsMessage += "\n";
-            clsMessage += "已清屏!";
-        }
-        return new PlainText(clsMessage);
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        if (clsMessage == null) {
+//            clsMessage = "";
+//            for (int i = 0; i < 20; i++) clsMessage += "\n";
+//            clsMessage += "已清屏!";
+//        }
+//        return new PlainText(clsMessage);
+        return null;
     }
 
 }

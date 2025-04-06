@@ -73,6 +73,9 @@ public class RabbitBot implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 //        this.startBot();
+        //注册指令
+        commandConfig.registerCommandHeads();
+        commandConfig.registerCommands(annotateScanner.getCommandList());
 
         System.out.println("项目启动");
     }
@@ -100,9 +103,7 @@ public class RabbitBot implements ApplicationRunner {
         bot = BotFactory.INSTANCE.newBot(botAccount, new BotAuthorizationImpl(botPwd, isQrLogin), botConfiguration);
         bot.login();
 
-        //注册指令
-        commandConfig.registerCommandHeads();
-        commandConfig.registerCommands(annotateScanner.getCommandList());
+
 
         //注册事件
         List<ListenerHost> events = Arrays.asList(

@@ -6,16 +6,18 @@ package cn.mikulink.rabbitbot.constant;
  * rpg相关静态
  */
 public class ConstantRPG extends ConstantCommon {
-    public static final String EXPLAIN = "[.roll]指令是根据人物对应属性roll点"
-            + "人物属性可使用[.人物属性]指令查看\n"
-            + "指令后面添加roll的基础属性，不区分大小写，属性列表如下:\n"
-            + "STR(力量)，DEX（敏捷），INTE（智力）\n"
-            + "如果需要加入运气进行修正则使用下列属性:\n"
-            + "LSTR(力量)，LDEX（敏捷），LINTE（智力）\n"
-            + "举个栗子，以力量为基础掷点:\n"
-            + ".roll str\n"
-            + "以敏捷为基础附带运气修正掷点:\n"
-            + ".roll ldex\n";
+    public static final String EXPLAIN = """
+            [.roll]指令是根据人物对应属性roll点
+            人物属性可使用[.人物属性]指令查看
+            指令后面添加roll的基础属性，不区分大小写，属性列表如下:
+            STR(力量)，DEX（敏捷），INTE（智力）
+            如果需要加入运气进行修正则使用下列属性:
+            LSTR(力量)，LDEX（敏捷），LINTE（智力）
+            举个栗子，以力量为基础掷点:
+            .roll str
+            以敏捷为基础附带运气修正掷点:
+            .roll ldex
+            """;
 
     //属性英文缩写，也会用于各种数值运算
     public static final String STR = "STR";     //力量

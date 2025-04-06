@@ -14,7 +14,7 @@ import lombok.Setter;
 public class SenderInfo {
     //qq号
     @JsonProperty("user_id")
-    private Integer userId;
+    private Long userId;
     //昵称
     private String nickname;
     //群备注

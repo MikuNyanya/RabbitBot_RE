@@ -1,9 +1,11 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantFreeTime;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ReString;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.FreeTimeService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
@@ -25,7 +27,7 @@ import java.util.ArrayList;
  * 说些日常句子
  */
 @Command
-public class SayCommand extends BaseEveryWhereCommand {
+public class SayCommand extends EverywhereCommand {
 
     @Autowired
     private SwitchService switchService;
@@ -38,20 +40,21 @@ public class SayCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        //检查功能开关
-        ReString reStringSwitch = switchService.switchCheck(sender, subject, "say");
-        if (!reStringSwitch.isSuccess()) {
-            return new PlainText(reStringSwitch.getMessage());
-        }
-//
-//        if (ConstantFreeTime.MSG_TYPE_FREE_TIME.size() <= 0) {
-//            return new PlainText(ConstantFreeTime.MSG_TYPE_FREE_TIME_EMPTY);
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        //检查功能开关
+//        ReString reStringSwitch = switchService.switchCheck(sender, subject, "say");
+//        if (!reStringSwitch.isSuccess()) {
+//            return new PlainText(reStringSwitch.getMessage());
 //        }
-
-        //随机一条日常语句
-        String msg = freeTimeService.randomMsg();
-        return new PlainText(msg);
+////
+////        if (ConstantFreeTime.MSG_TYPE_FREE_TIME.size() <= 0) {
+////            return new PlainText(ConstantFreeTime.MSG_TYPE_FREE_TIME_EMPTY);
+////        }
+//
+//        //随机一条日常语句
+//        String msg = freeTimeService.randomMsg();
+//        return new PlainText(msg);
+        return null;
     }
 
 }

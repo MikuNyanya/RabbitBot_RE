@@ -1,13 +1,12 @@
 package cn.mikulink.rabbitbot.service;
 
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.constant.ConstantTarot;
 import cn.mikulink.rabbitbot.entity.TarotInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChainData;
 import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +14,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * create by MikuLink on 2020/12/22 15:18
@@ -23,9 +24,6 @@ import java.io.IOException;
  */
 @Service
 public class TarotService {
-    @Autowired
-    private RabbitBotService rabbitBotService;
-
     @Value("${file.path.data:}")
     private String dataPath;
 
@@ -54,26 +52,25 @@ public class TarotService {
      *
      * @return 消息链
      */
-    public MessageChain parseTarotMessage(TarotInfo tarotInfo) {
-        MessageChain result = MessageUtils.newChain();
-
-        if (null == tarotInfo) {
-            return result;
-        }
-
+    public List<MessageChain> parseTarotMessage(TarotInfo tarotInfo) {
+        //图片最好用绝对路径
         String imagesPath = ConstantTarot.IMAGE_TAROT_SAVE_PATH;
         if (tarotInfo.isCat()) {
             imagesPath = ConstantTarot.IMAGE_CATROT_SAVE_PATH;
         }
+        String imagePath = imagesPath + File.separator + tarotInfo.getImgName();
+        String imageFullPath = FileUtil.getFileFullPath(imagePath);
 
-        //图片处理
-        Image miraiImage = rabbitBotService.uploadMiraiImage(imagesPath + File.separator + tarotInfo.getImgName());
-        result = rabbitBotService.parseMsgChainByImg(miraiImage);
+        //构建返回信息
+        MessageChain imageChain = RabbitBotMessageBuilder.parseMessageChainImage(imageFullPath);
+
+        List<MessageChain> result = new ArrayList<>();
+        result.add(imageChain);
 
         StringBuilder resultStr = new StringBuilder();
-        resultStr.append("[").append(tarotInfo.getName()).append(" ").append(tarotInfo.isStatus() ? "正位" : "逆位").append("]");
+        resultStr.append("\n[").append(tarotInfo.getName()).append(" ").append(tarotInfo.isStatus() ? "正位" : "逆位").append("]");
         resultStr.append("\n").append(tarotInfo.isStatus() ? tarotInfo.getNormalDes() : tarotInfo.getSeDlamron());
-        result = result.plus(resultStr.toString());
+        result.add(new MessageChain("text", new MessageChainData(resultStr.toString())));
         return result;
     }
 

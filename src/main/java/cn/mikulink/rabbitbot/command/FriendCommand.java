@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * <p>
  * 适用于好友私聊消息
  */
-public interface FriendCommand extends Command {
+public abstract class FriendCommand extends Command {
 
     /**
      * 具体业务执行入口
@@ -24,6 +24,6 @@ public interface FriendCommand extends Command {
      * @param subject      消息主体
      * @return 回复的消息内容，返回null不做处理
      */
-    Message execute(Friend sender, ArrayList<String> args, MessageChain messageChain, Friend subject);
+    public abstract Message execute(Friend sender, ArrayList<String> args, MessageChain messageChain, Friend subject);
 
 }

@@ -15,6 +15,12 @@ public class MessageChainData {
     public MessageChainData(){}
     public MessageChainData(String text){this.text = text;}
 
+    public static MessageChainData createImageMessageData(String urlOrPath){
+        MessageChainData info = new MessageChainData();
+        info.setFile(urlOrPath);
+        return info;
+    }
+
     //文本内容
     private String text;
 

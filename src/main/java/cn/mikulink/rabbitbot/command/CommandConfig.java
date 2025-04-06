@@ -33,9 +33,7 @@ public class CommandConfig {
      */
     public void registerCommandHeads() {
         String[] heads = initCommandHeads();
-        for (String head : heads) {
-            commandHeads.add(head);
-        }
+        commandHeads.addAll(Arrays.asList(heads));
     }
 
     /**
@@ -46,8 +44,8 @@ public class CommandConfig {
             return;
         }
         //idea提示我可以换成this::什么鬼，这是什么神奇的语法
-//        commandList.forEach(this::registerCommand);
-        commandList.forEach(command -> registerCommand(command));
+        commandList.forEach(this::registerCommand);
+//        commandList.forEach(command -> registerCommand(command));
     }
 
     /**

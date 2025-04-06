@@ -1,8 +1,10 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantTarot;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.TarotInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.TarotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
@@ -28,7 +30,7 @@ import java.util.ArrayList;
  * https://www.23luke.com/daaerkanapai/1059.html
  */
 @Command
-public class TarotCommand extends BaseEveryWhereCommand {
+public class TarotCommand extends EverywhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(TarotCommand.class);
 
     @Autowired
@@ -42,24 +44,25 @@ public class TarotCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        String userNick = rabbitBotService.getUserName(subject, sender);
-        MessageChain result = MessageUtils.newChain();
-        try {
-            //抽牌
-            TarotInfo tarotInfo = tarotService.getTarot();
-            //正常塔罗牌
-            tarotInfo.setCat(false);
-            //拼装信息
-            MessageChain tarotMsg = tarotService.parseTarotMessage(tarotInfo);
-            //请求人昵称
-            result = result.plus("[" + userNick + "]\n");
-            //拼接所有信息
-            result = result.plus(tarotMsg);
-            return result;
-        } catch (Exception ex) {
-            logger.error(ConstantTarot.TAROT_ERROR_GROUP_MESSAGE + ex.toString(), ex);
-            return new PlainText(ConstantTarot.TAROT_ERROR_GROUP_MESSAGE);
-        }
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        String userNick = rabbitBotService.getUserName(subject, sender);
+//        MessageChain result = MessageUtils.newChain();
+//        try {
+//            //抽牌
+//            TarotInfo tarotInfo = tarotService.getTarot();
+//            //正常塔罗牌
+//            tarotInfo.setCat(false);
+//            //拼装信息
+//            MessageChain tarotMsg = tarotService.parseTarotMessage(tarotInfo);
+//            //请求人昵称
+//            result = result.plus("[" + userNick + "]\n");
+//            //拼接所有信息
+//            result = result.plus(tarotMsg);
+//            return result;
+//        } catch (Exception ex) {
+//            logger.error(ConstantTarot.TAROT_ERROR_GROUP_MESSAGE + ex.toString(), ex);
+//            return new PlainText(ConstantTarot.TAROT_ERROR_GROUP_MESSAGE);
+//        }
+        return null;
     }
 }

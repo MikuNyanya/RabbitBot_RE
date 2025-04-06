@@ -1,9 +1,11 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.entity.pixiv.PixivUserInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
 import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
@@ -35,7 +37,7 @@ import java.util.Map;
  * 根据pixiv用户随机展示图片
  */
 @Command
-public class PUserIllustCommand extends BaseEveryWhereCommand {
+public class PUserIllustCommand extends EverywhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(PUserIllustCommand.class);
     //操作间隔 账号，操作时间戳
     private static Map<Long, Long> PIXIV_USER_SPLIT_MAP = new HashMap<>();
@@ -54,63 +56,64 @@ public class PUserIllustCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        //操作间隔判断
-        String timeCheck = rabbitBotService.commandTimeSplitCheck(PIXIV_USER_SPLIT_MAP, sender.getId(), sender.getNick(), PIXIV_USER_SPLIT_TIME, PIXIV_USER_SPLIT_ERROR);
-        if (StringUtil.isNotEmpty(timeCheck)) {
-            return new PlainText(timeCheck);
-        }
-        //刷新操作间隔
-        PIXIV_USER_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
-
-        if (null == args || args.size() == 0) {
-            return new PlainText(ConstantPixiv.PIXIV_MEMBER_IS_EMPTY);
-        }
-        //基本输入校验
-        String memberName = "";
-        for (String argStr : args) {
-            memberName = memberName + argStr + " ";
-        }
-        memberName = StringUtil.trim(memberName);
-        if (StringUtil.isEmpty(memberName)) {
-            return new PlainText(ConstantPixiv.PIXIV_MEMBER_IS_EMPTY);
-        }
-
-        try {
-            //1.定位用户
-            List<PixivUserInfo> pixivUserInfos = pixivService.pixivUserSearch(memberName);
-            //如果没有结果，或者多个结果，均需要返回对应信息
-            if (CollectionUtil.isEmpty(pixivUserInfos)) {
-                return new PlainText(String.format("没有找到叫这个的用户[%s]", memberName));
-            }
-            if (pixivUserInfos.size() > 1) {
-                return parseResultMsg(pixivUserInfos);
-            }
-
-            List<PixivImageInfo> pixivImageInfoList = pixivService.getPixivIllustByUserId(pixivUserInfos.get(0).getId());
-            if (CollectionUtil.isEmpty(pixivImageInfoList)) {
-                return new PlainText(ConstantPixiv.PIXIV_MEMBER_NO_ILLUST);
-            }
-            //拼装一条发送一条
-            for (PixivImageInfo pixivImageInfo : pixivImageInfoList) {
-                pixivImageInfo.setSender(sender);
-                pixivImageInfo.setSubject(subject);
-                MessageChain tempMsg = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
-                subject.sendMessage(tempMsg);
-            }
-            return null;
-        } catch (RabbitApiException rabbitEx) {
-            logger.info("PUserIllustCommand " + ConstantPixiv.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE + rabbitEx.toString());
-            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + ":" + rabbitEx.toString());
-        } catch (SocketTimeoutException stockTimeoutEx) {
-            logger.error("PUserIllustCommand " + ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
-            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT);
-        } catch (Exception ex) {
-            logger.error("PUserIllustCommand " + ConstantPixiv.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
-            //异常后清除间隔允许再次操作
-            PIXIV_USER_SPLIT_MAP.remove(sender.getId());
-            return new PlainText(ConstantPixiv.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE);
-        }
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        //操作间隔判断
+//        String timeCheck = rabbitBotService.commandTimeSplitCheck(PIXIV_USER_SPLIT_MAP, sender.getId(), sender.getNick(), PIXIV_USER_SPLIT_TIME, PIXIV_USER_SPLIT_ERROR);
+//        if (StringUtil.isNotEmpty(timeCheck)) {
+//            return new PlainText(timeCheck);
+//        }
+//        //刷新操作间隔
+//        PIXIV_USER_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
+//
+//        if (null == args || args.size() == 0) {
+//            return new PlainText(ConstantPixiv.PIXIV_MEMBER_IS_EMPTY);
+//        }
+//        //基本输入校验
+//        String memberName = "";
+//        for (String argStr : args) {
+//            memberName = memberName + argStr + " ";
+//        }
+//        memberName = StringUtil.trim(memberName);
+//        if (StringUtil.isEmpty(memberName)) {
+//            return new PlainText(ConstantPixiv.PIXIV_MEMBER_IS_EMPTY);
+//        }
+//
+//        try {
+//            //1.定位用户
+//            List<PixivUserInfo> pixivUserInfos = pixivService.pixivUserSearch(memberName);
+//            //如果没有结果，或者多个结果，均需要返回对应信息
+//            if (CollectionUtil.isEmpty(pixivUserInfos)) {
+//                return new PlainText(String.format("没有找到叫这个的用户[%s]", memberName));
+//            }
+//            if (pixivUserInfos.size() > 1) {
+//                return parseResultMsg(pixivUserInfos);
+//            }
+//
+//            List<PixivImageInfo> pixivImageInfoList = pixivService.getPixivIllustByUserId(pixivUserInfos.get(0).getId());
+//            if (CollectionUtil.isEmpty(pixivImageInfoList)) {
+//                return new PlainText(ConstantPixiv.PIXIV_MEMBER_NO_ILLUST);
+//            }
+//            //拼装一条发送一条
+//            for (PixivImageInfo pixivImageInfo : pixivImageInfoList) {
+//                pixivImageInfo.setSender(sender);
+//                pixivImageInfo.setSubject(subject);
+//                MessageChain tempMsg = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo);
+//                subject.sendMessage(tempMsg);
+//            }
+//            return null;
+//        } catch (RabbitApiException rabbitEx) {
+//            logger.info("PUserIllustCommand " + ConstantPixiv.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE + rabbitEx.toString());
+//            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT + ":" + rabbitEx.toString());
+//        } catch (SocketTimeoutException stockTimeoutEx) {
+//            logger.error("PUserIllustCommand " + ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString());
+//            return new PlainText(ConstantPixiv.PIXIV_IMAGE_TIMEOUT);
+//        } catch (Exception ex) {
+//            logger.error("PUserIllustCommand " + ConstantPixiv.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE + ex.toString(), ex);
+//            //异常后清除间隔允许再次操作
+//            PIXIV_USER_SPLIT_MAP.remove(sender.getId());
+//            return new PlainText(ConstantPixiv.PIXIV_MEMBER_GET_ERROR_GROUP_MESSAGE);
+//        }
+        return null;
     }
 
     //多个结果提示信息

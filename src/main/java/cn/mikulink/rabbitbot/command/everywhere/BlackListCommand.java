@@ -1,19 +1,15 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantBlackList;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.sys.BlackListService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
-import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +26,7 @@ import java.util.List;
  * 兔叽配置
  */
 @Command
-public class BlackListCommand extends BaseEveryWhereCommand {
+public class BlackListCommand extends EverywhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(BlackListCommand.class);
 
     @Autowired
@@ -44,33 +40,33 @@ public class BlackListCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        //权限限制
-        if (!rabbitBotService.isMaster(sender.getId())) {
-            return new PlainText(RandomUtil.rollStrFromList(ConstantCommon.COMMAND_MASTER_ONLY));
-        }
-
-        if (null == args || args.size() == 0) {
-            return new PlainText("[.blacklist (add,remove)]");
-        }
-
-        if (args.size() < 2 || StringUtil.isEmpty(args.get(1))) {
-            return new PlainText(ConstantBlackList.ADD_OR_REMOVE_BLACK_ID_USERID_EMPTY);
-        }
-
-        //二级指令
-        String arg = args.get(0);
-        String userIds = args.get(1);
-        switch (arg) {
-            case ConstantCommon.ADD:
-                //添加黑名单
-                blackListAdd(userIds, ConstantBlackList.ADD);
-                return new PlainText(ConstantBlackList.ADD_SUCCESS);
-            case ConstantCommon.REMOVE:
-                //移除黑名单
-                blackListAdd(userIds, ConstantBlackList.REMOVE);
-                return new PlainText(ConstantBlackList.REMOVE_SUCCESS);
-        }
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        //权限限制
+//        if (!rabbitBotService.isMaster(sender.getId())) {
+//            return new PlainText(RandomUtil.rollStrFromList(ConstantCommon.COMMAND_MASTER_ONLY));
+//        }
+//
+//        if (null == args || args.size() == 0) {
+//            return new PlainText("[.blacklist (add,remove)]");
+//        }
+//
+//        if (args.size() < 2 || StringUtil.isEmpty(args.get(1))) {
+//            return new PlainText(ConstantBlackList.ADD_OR_REMOVE_BLACK_ID_USERID_EMPTY);
+//        }
+//
+//        //二级指令
+//        String arg = args.get(0);
+//        String userIds = args.get(1);
+//        switch (arg) {
+//            case ConstantCommon.ADD:
+//                //添加黑名单
+//                blackListAdd(userIds, ConstantBlackList.ADD);
+//                return new PlainText(ConstantBlackList.ADD_SUCCESS);
+//            case ConstantCommon.REMOVE:
+//                //移除黑名单
+//                blackListAdd(userIds, ConstantBlackList.REMOVE);
+//                return new PlainText(ConstantBlackList.REMOVE_SUCCESS);
+//        }
         return null;
     }
 

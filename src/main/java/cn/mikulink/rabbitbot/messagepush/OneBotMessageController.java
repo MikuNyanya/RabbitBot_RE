@@ -1,6 +1,5 @@
 package cn.mikulink.rabbitbot.messagepush;
 
-import cn.hutool.http.*;
 import cn.mikulink.rabbitbot.entity.db.QQMessagePushInfo;
 import cn.mikulink.rabbitbot.service.db.QQMessagePushService;
 import com.alibaba.fastjson2.JSONObject;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 /**
  * MikuLink created in 2025/4/1 10:35
@@ -39,35 +37,38 @@ public class OneBotMessageController {
     @RequestMapping(value = "push", method = RequestMethod.POST)
     @ResponseBody
     public void push(HttpServletRequest request) {
-        //解析消息信息
-        String body = readBody(request);
+        try {
+            //解析消息信息
+            String body = readBody(request);
 
-        QQMessagePushInfo qqMessagePushInfo = new QQMessagePushInfo(body);
-        //todo 异步落库
+            QQMessagePushInfo qqMessagePushInfo = new QQMessagePushInfo(body);
+            //todo 异步落库
 //        qqMessagePushService.create(qqMessagePushInfo);
 
-        //解析，区分消息类型，进行对应处理
-        JSONObject bodyJsonObj = JSONObject.parseObject(body);
+            //解析，区分消息类型，进行对应处理
+            JSONObject bodyJsonObj = JSONObject.parseObject(body);
 
-        //todo 黑名单消息过滤
-        String senderUserId = String.valueOf(bodyJsonObj.get("user_id"));
+            //todo 黑名单消息过滤
+            String senderUserId = String.valueOf(bodyJsonObj.get("user_id"));
 
-        String postType = String.valueOf(bodyJsonObj.get("post_type"));
-        if (null == postType) {
-            log.error("接收到未知类型的消息上报,报文id:{}",qqMessagePushInfo.getId());
-            return;
+            String postType = String.valueOf(bodyJsonObj.get("post_type"));
+            if (null == postType) {
+                log.error("接收到未知类型的消息上报,报文id:{}", qqMessagePushInfo.getId());
+                return;
+            }
+            //todo 异步分发任务
+            switch (postType) {
+                case "message":
+                    //消息
+                    messageHandle.messageHandle(body);
+                    break;
+            }
+        } catch (Exception ex) {
+            log.error("消息推送业务异常！", ex);
         }
-        //todo 异步分发任务
-        switch (postType){
-            case "message":
-                //消息
-                messageHandle.messageHandle(body);
-                break;
-        }
-
     }
 
-    private String readBody(HttpServletRequest request){
+    private String readBody(HttpServletRequest request) {
         String body = null;
         try {
             BufferedReader streamReader = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
@@ -78,12 +79,11 @@ public class OneBotMessageController {
                 sb.append(line);
             }
             body = sb.toString();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             log.warn("QQNT消息上报异常");
         }
         return body;
     }
-
 
 
     @RequestMapping(value = "pushtest", method = RequestMethod.POST)

@@ -1,22 +1,21 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantTarot;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.TarotInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.TarotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageUtils;
-import net.mamoe.mirai.message.data.PlainText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -28,7 +27,7 @@ import java.util.ArrayList;
  * 塔罗牌的变异品种(并不
  */
 @Command
-public class CatrotCommand extends BaseEveryWhereCommand {
+public class CatrotCommand extends EverywhereCommand {
     private static final Logger logger = LoggerFactory.getLogger(CatrotCommand.class);
 
     @Autowired
@@ -42,24 +41,27 @@ public class CatrotCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        String userNick = rabbitBotService.getUserName(subject, sender);
-        MessageChain result = MessageUtils.newChain();
+    public MessageInfo execute(MessageInfo messageInfo) {
+        String userNick = rabbitBotService.getUserName(messageInfo.getSender());
+
         try {
             //抽牌
             TarotInfo tarotInfo = tarotService.getTarot();
             //标记为猫罗牌
             tarotInfo.setCat(true);
             //拼装信息
-            MessageChain tarotMsg = tarotService.parseTarotMessage(tarotInfo);
+            List<MessageChain> tarotMsgChain = tarotService.parseTarotMessage(tarotInfo);
             //请求人昵称
-            result = result.plus("[" + userNick + "]\n");
+            MessageChain userNameMsgChain = RabbitBotMessageBuilder.parseMessageChainText("[" + userNick + "]\n");
             //拼接所有信息
-            result = result.plus(tarotMsg);
-            return result;
+            List<MessageChain> messageChainList = new ArrayList<>();
+            messageChainList.add(userNameMsgChain);
+            messageChainList.addAll(tarotMsgChain);
+
+            return new MessageInfo(messageChainList);
         } catch (Exception ex) {
-            logger.error(ConstantTarot.CATROT_ERROR_GROUP_MESSAGE + ex.toString(), ex);
-            return new PlainText(ConstantTarot.CATROT_ERROR_GROUP_MESSAGE);
+            logger.error(ConstantTarot.CATROT_ERROR_GROUP_MESSAGE, ex);
+            return RabbitBotMessageBuilder.createMessageText(ConstantTarot.CATROT_ERROR_GROUP_MESSAGE);
         }
     }
 }

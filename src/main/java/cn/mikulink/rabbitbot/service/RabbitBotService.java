@@ -2,6 +2,7 @@ package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.SenderInfo;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
@@ -170,17 +171,13 @@ public class RabbitBotService {
     /**
      * 获取用户名，优先获取群昵称
      *
-     * @param subject 上下文
-     * @param sender  用户信息
+     * @param sender  消息发送人信息
      * @return 用户名称
      */
-    public String getUserName(Contact subject, User sender) {
-        String userName = null;
-        if (subject instanceof Group) {
-            userName = ((Member) sender).getNameCard();
-        }
+    public String getUserName(SenderInfo sender) {
+        String userName = sender.getCard();
         if (StringUtil.isEmpty(userName)) {
-            userName = sender.getNick();
+            userName = sender.getNickname();
         }
         return userName;
     }

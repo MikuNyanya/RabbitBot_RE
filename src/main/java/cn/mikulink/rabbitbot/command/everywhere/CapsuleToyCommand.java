@@ -1,17 +1,16 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCapsuleToy;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.SenderInfo;
 import cn.mikulink.rabbitbot.service.CapsuleToyService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
  */
 @Command
 @Slf4j
-public class CapsuleToyCommand extends BaseEveryWhereCommand {
+public class CapsuleToyCommand extends EverywhereCommand {
 
     @Autowired
     private RabbitBotService rabbitBotService;
@@ -39,40 +38,42 @@ public class CapsuleToyCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        Long userId = sender.getId();
-        String userNick = rabbitBotService.getUserName(subject, sender);
+    public MessageInfo execute(MessageInfo messageInfo) {
+        SenderInfo sender = messageInfo.getSender();
+
+        Long userId = sender.getUserId();
+        String userNick = rabbitBotService.getUserName(sender);
+        ArrayList<String> args = getArgs(messageInfo.getRawMessage());
 
         if (null == args || args.size() <= 0) {
             //操作间隔判断
             String timeCheck = rabbitBotService.commandTimeSplitCheck(ConstantCapsuleToy.CAPSULE_TOY_SPLIT_MAP, userId, userNick,
                     ConstantCapsuleToy.CAPSULE_TOY_SPLIT_TIME, ConstantCapsuleToy.CAPSULE_TOY_SPLIT_ERROR);
             if (StringUtil.isNotEmpty(timeCheck)) {
-                return new PlainText(timeCheck);
+                return RabbitBotMessageBuilder.createMessageText(timeCheck);
             }
             //进行扭蛋
             String capsuleToy = capsuleToyService.capsuleToySelect();
             if (StringUtil.isEmpty(capsuleToy)) {
-                return new PlainText(ConstantCapsuleToy.CAPSULE_TOY_HAS_NOTHING);
+                return RabbitBotMessageBuilder.createMessageText(ConstantCapsuleToy.CAPSULE_TOY_HAS_NOTHING);
             }
             //如果扭到了扭蛋，就不用拦截操作了，可以直接再扭一次
             if (!"扭蛋".equalsIgnoreCase(capsuleToy)) {
                 //刷新操作间隔
                 ConstantCapsuleToy.CAPSULE_TOY_SPLIT_MAP.put(userId, System.currentTimeMillis());
             }
-
-            return new PlainText(String.format(ConstantCapsuleToy.MSG_CAPSULE_TOY_RESULT, userNick, capsuleToy));
+            return RabbitBotMessageBuilder.createMessageText(String.format(ConstantCapsuleToy.MSG_CAPSULE_TOY_RESULT, userNick, capsuleToy));
         }
 
         //添加扭蛋部分
         //判断副指令
         String commandSecond = args.get(0);
         if (!ConstantCapsuleToy.ADD.equalsIgnoreCase(commandSecond)) {
-            return new PlainText(ConstantCapsuleToy.COMMAND_SECOND_ERROR);
+            return RabbitBotMessageBuilder.createMessageText(ConstantCapsuleToy.COMMAND_SECOND_ERROR);
         }
         //判断有没有添加的信息
         if (args.size() < 2) {
-            return new PlainText(ConstantCapsuleToy.EXPLAIN_ADD);
+            return RabbitBotMessageBuilder.createMessageText(ConstantCapsuleToy.EXPLAIN_ADD);
         }
         //兼容空格，后面的信息都作为扭蛋存下来
         boolean isFirst = true;
@@ -85,9 +86,8 @@ public class CapsuleToyCommand extends BaseEveryWhereCommand {
             }
             sb.append(" " + capsuleToyStr);
         }
-
         //添加扭蛋
-        return new PlainText(capsuleToyAdd(StringUtil.trim(sb.toString())));
+        return RabbitBotMessageBuilder.createMessageText(capsuleToyAdd(StringUtil.trim(sb.toString())));
     }
 
 

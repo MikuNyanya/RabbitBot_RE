@@ -1,8 +1,10 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ReString;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
@@ -26,7 +28,7 @@ import java.util.ArrayList;
  * 兔叽配置
  */
 @Command
-public class ConfigCommand extends BaseEveryWhereCommand {
+public class ConfigCommand extends EverywhereCommand {
 
     @Autowired
     private RabbitBotService rabbitBotService;
@@ -39,39 +41,40 @@ public class ConfigCommand extends BaseEveryWhereCommand {
     }
 
     @Override
-    public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
-        if (null == args || args.size() < 1) {
-            return new PlainText(ConstantConfig.ARGS_ERROR);
-        }
-        //解析副指令
-        String action = args.get(0);
-        //解析配置key
-        String configName = null;
-        if (args.size() >= 2) {
-            configName = args.get(1);
-        }
-        //解析配置值
-        String configValue = null;
-        if (args.size() >= 3) {
-            configValue = args.get(2);
-        }
-
-        ReString reString = accessCheck(sender.getId(), configName);
-        if (!reString.isSuccess()) {
-            return new PlainText(reString.getMessage());
-        }
-
-        String resultMsg = "";
-        switch (action) {
-            case ConstantConfig.SET:
-                resultMsg = setConfig(configName, configValue);
-                break;
-            case ConstantConfig.DELETE:
-            case ConstantConfig.DEL:
-                resultMsg = delConfig(configName);
-                break;
-        }
-        return new PlainText(resultMsg);
+    public MessageInfo execute(MessageInfo messageInfo) {
+//        if (null == args || args.size() < 1) {
+//            return new PlainText(ConstantConfig.ARGS_ERROR);
+//        }
+//        //解析副指令
+//        String action = args.get(0);
+//        //解析配置key
+//        String configName = null;
+//        if (args.size() >= 2) {
+//            configName = args.get(1);
+//        }
+//        //解析配置值
+//        String configValue = null;
+//        if (args.size() >= 3) {
+//            configValue = args.get(2);
+//        }
+//
+//        ReString reString = accessCheck(sender.getId(), configName);
+//        if (!reString.isSuccess()) {
+//            return new PlainText(reString.getMessage());
+//        }
+//
+//        String resultMsg = "";
+//        switch (action) {
+//            case ConstantConfig.SET:
+//                resultMsg = setConfig(configName, configValue);
+//                break;
+//            case ConstantConfig.DELETE:
+//            case ConstantConfig.DEL:
+//                resultMsg = delConfig(configName);
+//                break;
+//        }
+//        return new PlainText(resultMsg);
+        return null;
     }
 
     /**
