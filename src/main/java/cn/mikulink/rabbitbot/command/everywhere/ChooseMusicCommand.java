@@ -57,8 +57,11 @@ public class ChooseMusicCommand extends EverywhereCommand {
             StringBuilder keyWords = new StringBuilder();
             args.forEach(str -> keyWords.append(str).append(" "));
 
-            NeteaseCloudSearchResponse.ResultBean.SongsBean songInfo = neteaseCloudService.searchByKeywords(keyWords.toString().trim());
-            MessageChain messageChain = neteaseCloudService.parseMessage(songInfo);
+            //自建api
+//            NeteaseCloudSearchResponse.ResultBean.SongsBean songInfo = neteaseCloudService.searchByKeywords(keyWords.toString().trim());
+//            MessageChain messageChain = neteaseCloudService.parseMessage(songInfo);
+            //oiapi
+            MessageChain messageChain = neteaseCloudService.searchKeywordsByOiapi(keyWords.toString().trim());
             return new MessageInfo(List.of(messageChain));
         } catch (Exception ex) {
             log.error("点歌异常", ex);

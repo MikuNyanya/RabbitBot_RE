@@ -47,12 +47,13 @@ public class MorseCodeCommand extends EverywhereCommand {
         for (int i = 1; i < args.size(); i++) {
             inputStr.append(args.get(i)).append(ConstantMorseCode.DEFAULT_SPLIT);
         }
+        String param = inputStr.substring(0,inputStr.length()-1);
 
         String result = switch (action) {
             case ConstantMorseCode.ENCODE, ConstantMorseCode.CN_ENCODE ->
-                    morseCodeService.encode(inputStr.toString(), null);
+                    morseCodeService.encode(param, null);
             case ConstantMorseCode.DECODE, ConstantMorseCode.CN_DECODE ->
-                    morseCodeService.decode(inputStr.toString(), null);
+                    morseCodeService.decode(param, null);
             default -> ConstantMorseCode.ACTION_ERROR;
         };
         //最终结果转为小写

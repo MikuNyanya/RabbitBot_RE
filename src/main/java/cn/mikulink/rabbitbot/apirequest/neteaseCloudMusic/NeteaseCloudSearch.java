@@ -59,7 +59,6 @@ public class NeteaseCloudSearch extends BaseRequest {
         requestUrl = requestUrl + HttpUtil.parseUrlEncode(param);
         //获取请求结果
         body = HttpUtil.get(requestUrl);
-        log.warn("网易云api请求结果："+body);
     }
 
     /**

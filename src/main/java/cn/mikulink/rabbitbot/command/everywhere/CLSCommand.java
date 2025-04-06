@@ -28,7 +28,7 @@ public class CLSCommand extends EverywhereCommand {
     public MessageInfo execute(MessageInfo messageInfo) {
         if (clsMessage == null) {
             clsMessage = "";
-            for (int i = 0; i < 20; i++) clsMessage += "\n";
+            for (int i = 0; i < 30; i++) clsMessage += "\n";
             clsMessage += "已清屏!";
         }
         return RabbitBotMessageBuilder.createMessageText(clsMessage);

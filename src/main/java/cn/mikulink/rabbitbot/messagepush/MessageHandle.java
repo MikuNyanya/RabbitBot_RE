@@ -88,7 +88,7 @@ public class MessageHandle {
 
 
         /**进入AI响应模式*/
-//        deepSeekService.aiModeGroup(groupMessageInfo);
+        deepSeekService.aiModeGroup(groupMessageInfo);
 
         /**匹配关键词 (常规状态下，不是每一句都会触发AI响应的)*/
 

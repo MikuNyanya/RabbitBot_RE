@@ -73,6 +73,10 @@ public class RabbitBot implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 //        this.startBot();
+
+        //加载资源文件
+        configService.dataFileInit();
+
         //注册指令
         commandConfig.registerCommandHeads();
         commandConfig.registerCommands(annotateScanner.getCommandList());
@@ -89,8 +93,7 @@ public class RabbitBot implements ApplicationRunner {
             logger.warn("*****未配置兔叽的账号或密码*****");
         }
 
-        //加载资源文件
-        configService.dataFileInit();
+
 
         BotConfiguration botConfiguration = new BotConfiguration() {
             {
