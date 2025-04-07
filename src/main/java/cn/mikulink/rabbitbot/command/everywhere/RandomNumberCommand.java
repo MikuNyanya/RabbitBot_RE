@@ -4,7 +4,7 @@ import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
-import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;

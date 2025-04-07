@@ -3,7 +3,7 @@ package cn.mikulink.rabbitbot.event;
 
 import cn.mikulink.rabbitbot.service.GroupNoticeService;
 import cn.mikulink.rabbitbot.service.ImageService;
-import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import kotlin.coroutines.CoroutineContext;

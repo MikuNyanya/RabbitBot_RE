@@ -24,5 +24,7 @@ public class MessageInfo implements Serializable {
     private String content;
 
     private String role;
+    //可以选填的参与者的名称，为模型提供信息以区分相同角色的参与者。
+    private String name;
 
 }

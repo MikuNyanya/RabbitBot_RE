@@ -1,5 +1,6 @@
 package cn.mikulink.rabbitbot.service;
 
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
@@ -25,9 +26,7 @@ public class NudgeService {
 
     public static Map<Long, Long> NUDGE_SPLIT_MAP = new HashMap<>();
 
-    //兔叽账号
-    @Value("${bot.account}")
-    private Long botAccount;
+
     @Value("${nudge.split.time:10000}")
     private Long NUDGE_SPLIT_TIME = 10000L;
     @Autowired
@@ -40,7 +39,6 @@ public class NudgeService {
      */
     public void onNudge(NudgeEvent event) {
         Long targetId = event.getTarget().getId();
-        if (botAccount.equals(targetId)) {
             //操作间隔判断
             String timeCheck = rabbitBotService.commandTimeSplitCheck(NUDGE_SPLIT_MAP, event.getFrom().getId(), event.getFrom().getNick(),
                     NUDGE_SPLIT_TIME, RandomUtil.rollStrFromList(ConstantPixiv.SETU_SPLIT_ERROR_LIST));
@@ -52,6 +50,6 @@ public class NudgeService {
             event.getSubject().sendMessage(freeTimeMsg);
             //刷新操作间隔
             NUDGE_SPLIT_MAP.put(event.getFrom().getId(), System.currentTimeMillis());
-        }
+
     }
 }

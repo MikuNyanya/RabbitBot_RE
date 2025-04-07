@@ -7,7 +7,7 @@ import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.SenderInfo;
 import cn.mikulink.rabbitbot.entity.rpg.PlayerCharacterStats;
-import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.rpg.CharacterStatsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import org.springframework.beans.factory.annotation.Autowired;

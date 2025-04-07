@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.service;
 
 
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.ImageUtil;

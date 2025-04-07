@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.entity.rabbitbotmessage;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,8 +10,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class GroupMessageInfo extends MessageInfo{
+public class GroupMessageInfo extends MessageInfo {
     //群号
-    @JsonProperty("group_id")
+    @JSONField(name = "group_id")
     private Long groupId;
 }

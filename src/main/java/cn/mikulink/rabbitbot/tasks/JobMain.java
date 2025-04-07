@@ -5,7 +5,7 @@ import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.service.BilibiliService;
 import cn.mikulink.rabbitbot.service.FreeTimeService;
-import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.WeiboNewsService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;

@@ -5,19 +5,12 @@ import cn.mikulink.rabbitbot.constant.ConstantConfig;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
-import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
 
 
 /**

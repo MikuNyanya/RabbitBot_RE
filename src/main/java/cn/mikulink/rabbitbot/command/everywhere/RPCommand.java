@@ -1,22 +1,16 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantRP;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
-import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.rpg.CharacterStatsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
 
 
 /**
@@ -40,21 +34,20 @@ public class RPCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
-//        //获取群员信息
-//        String groupUserName = rabbitBotService.getUserName(subject, sender);
-//
-//        //rp 与人物属性的运气值对齐 问题就是可能不会出现0和100的运气了
-//        int rp = characterStatsService.getPlayerLUCK(groupUserName);
-//        //如果是99直接当做100吧，弥补下没有100封顶的遗憾
-//        if (rp == 99) {
-//            rp = 100;
-//        }
-//
-//        //可以随机点装饰性语句
-//        String msgEx = getMsgEx(rp);
-//        String resultStr = String.format("【%s】今天的人品值：%s%s", groupUserName, rp, msgEx);
-//        return new PlainText(resultStr);
-        return null;
+        //获取群员信息
+        String groupUserName = rabbitBotService.getUserName(messageInfo.getSender());
+
+        //rp 与人物属性的运气值对齐 问题就是可能不会出现0和100的运气了
+        int rp = characterStatsService.getPlayerLUCK(groupUserName);
+        //如果是99直接当做100吧，弥补下没有100封顶的遗憾
+        if (rp == 99) {
+            rp = 100;
+        }
+
+        //可以随机点装饰性语句
+        String msgEx = getMsgEx(rp);
+        String resultStr = String.format("【%s】今天的人品值：%s%s", groupUserName, rp, msgEx);
+        return RabbitBotMessageBuilder.createMessageText(resultStr);
     }
 
     //获取附加短语，可以放一些彩蛋性质的东西，会附带在报时消息尾部

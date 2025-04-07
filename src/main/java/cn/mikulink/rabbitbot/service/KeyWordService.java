@@ -1,5 +1,6 @@
 package cn.mikulink.rabbitbot.service;
 
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantFreeTime;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantKeyWord;

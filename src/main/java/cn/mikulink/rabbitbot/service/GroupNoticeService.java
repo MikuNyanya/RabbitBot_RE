@@ -1,5 +1,6 @@
 package cn.mikulink.rabbitbot.service;
 
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantGroupNotice;
 import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;

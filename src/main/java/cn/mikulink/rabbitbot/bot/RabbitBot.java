@@ -43,13 +43,7 @@ public class RabbitBot implements ApplicationRunner {
     //指令相关
     @Autowired
     private CommandConfig commandConfig;
-    //监听事件 再多一点就要跟指令一样写个自定义注解了
-    @Autowired
-    private MessageEvents messageEvents;
-    @Autowired
-    private GroupEvents groupEvents;
-    @Autowired
-    private NudgeEvents nudgeEvents;
+
     @Autowired
     private ConfigService configService;
 
@@ -108,15 +102,15 @@ public class RabbitBot implements ApplicationRunner {
 
 
 
-        //注册事件
-        List<ListenerHost> events = Arrays.asList(
-                messageEvents,
-                groupEvents,
-                nudgeEvents
-        );
-        for (ListenerHost event : events) {
-            GlobalEventChannel.INSTANCE.registerListenerHost(event);
-        }
+//        //注册事件
+//        List<ListenerHost> events = Arrays.asList(
+//                messageEvents,
+//                groupEvents,
+//                nudgeEvents
+//        );
+//        for (ListenerHost event : events) {
+//            GlobalEventChannel.INSTANCE.registerListenerHost(event);
+//        }
 
         //设置https协议，已解决SSL peer shut down incorrectly的异常
         System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2,SSLv3");

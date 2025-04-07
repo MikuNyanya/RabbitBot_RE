@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.entity.rabbitbotmessage;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,10 +12,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessageChainData {
-    public MessageChainData(){}
-    public MessageChainData(String text){this.text = text;}
+    public MessageChainData() {
+    }
 
-    public static MessageChainData createImageMessageData(String urlOrPath){
+    public MessageChainData(String text) {
+        this.text = text;
+    }
+
+    public static MessageChainData createImageMessageData(String urlOrPath) {
         MessageChainData info = new MessageChainData();
         info.setFile(urlOrPath);
         return info;
@@ -25,9 +29,9 @@ public class MessageChainData {
     private String text;
     private String file;
     private String url;
-    @JsonProperty("file_size")
+    @JSONField(name = "file_size")
     private String fileSize;
-    @JsonProperty("sub_type")
+    @JSONField(name = "sub_type")
     private Integer subType;
 
     //当MessageChain的type为music时，下列字段才会有用

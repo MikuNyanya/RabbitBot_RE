@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.entity.rabbitbotmessage;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,19 +25,19 @@ public class MessageInfo extends MessagePushBase {
     }
 
     //发送者 QQ 号
-    @JsonProperty("user_id")
+    @JSONField(name = "user_id")
     private Long userId;
     //消息 ID
-    @JsonProperty("message_id")
+    @JSONField(name = "message_id")
     private Long messageId;
     //表示消息的子类型 正常消息是 normal, 匿名消息是 anonymous, 系统提示 ( 如「管理员已禁止群内匿名聊天」 ) 是 notice
-    @JsonProperty("sub_type")
+    @JSONField(name = "sub_type")
     private String subType;
     //消息类型，group代表群消息 private私聊消息
-    @JsonProperty("message_type")
+    @JSONField(name = "message_type")
     private String messageType;
     //CQ 码格式的消息
-    @JsonProperty("raw_message")
+    @JSONField(name = "raw_message")
     private String rawMessage;
     //字的大小
     private Integer font;
@@ -52,7 +52,7 @@ public class MessageInfo extends MessagePushBase {
     }
 
     //是否为私聊信息
-    public boolean isPrivateMessage(){
+    public boolean isPrivateMessage() {
         return messageType.equals("private");
     }
 

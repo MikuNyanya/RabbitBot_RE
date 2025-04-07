@@ -20,11 +20,11 @@ import org.springframework.stereotype.Component;
  * @author: MikuLink
  * @date: 2021/11/4 1:42
  **/
-@Component
+
 public class NudgeEvents extends SimpleListenerHost {
     private static final Logger logger = LoggerFactory.getLogger(NudgeEvents.class);
 
-    @Autowired
+
     private NudgeService nudgeService;
 
     @Override

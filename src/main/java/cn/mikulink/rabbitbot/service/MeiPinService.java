@@ -1,5 +1,6 @@
 package cn.mikulink.rabbitbot.service;
 
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.entity.MeiPinInfo;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import lombok.extern.slf4j.Slf4j;

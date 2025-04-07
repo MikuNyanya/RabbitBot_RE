@@ -1,30 +1,17 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
-import cn.mikulink.rabbitbot.constant.ConstantConfig;
-import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
-import cn.mikulink.rabbitbot.entity.ReString;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.MirlKoiService;
 import cn.mikulink.rabbitbot.service.PixivService;
-import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.SetuService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import cn.mikulink.rabbitbot.utils.CollectionUtil;
-import cn.mikulink.rabbitbot.utils.NumberUtil;
-import cn.mikulink.rabbitbot.utils.RandomUtil;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
 
 
 /**

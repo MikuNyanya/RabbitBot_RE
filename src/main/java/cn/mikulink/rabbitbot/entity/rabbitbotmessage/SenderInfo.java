@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.entity.rabbitbotmessage;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class SenderInfo {
     //qq号
-    @JsonProperty("user_id")
+    @JSONField(name = "user_id")
     private Long userId;
     //昵称
     private String nickname;

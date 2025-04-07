@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.entity.onebot;
+package cn.mikulink.rabbitbot.bot.penguincenter.entity;
 
 import lombok.Data;
 /**

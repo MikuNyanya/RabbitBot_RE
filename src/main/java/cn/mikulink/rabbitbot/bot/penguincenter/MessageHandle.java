@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.messagepush;
+package cn.mikulink.rabbitbot.bot.penguincenter;
 
 import cn.mikulink.rabbitbot.bot.RabbitBotSender;
 import cn.mikulink.rabbitbot.command.Command;
@@ -79,13 +79,17 @@ public class MessageHandle {
                 if (result != null) {
                     rabbitBotSender.sendGroupMessage(groupId, result.getMessage());
                     //todo 记录兔叽的回复日志，群消息的记录通过上报自身发言在消息入口记录
+
                 }
                 return;
             }
         }
 
+        /**优先处理at自己的业务*/
+
         /**进入复读机响应*/
 
+        /**at相关业务*/
 
         /**进入AI响应模式*/
         deepSeekService.aiModeGroup(groupMessageInfo);

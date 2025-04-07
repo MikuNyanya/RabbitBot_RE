@@ -1,7 +1,7 @@
-package cn.mikulink.rabbitbot.service;
+package cn.mikulink.rabbitbot.bot;
 
-import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
+import cn.mikulink.rabbitbot.bot.penguincenter.entity.BaseRsp;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.SenderInfo;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
@@ -32,11 +32,22 @@ public class RabbitBotService {
     @Value("${bot.master:}")
     private String account_master;
     private List<Long> accountMasterList = new ArrayList<>();
-    @Value("${bot.admin:}")
-    private String account_admin;
-    private List<Long> accountAdminList = new ArrayList<>();
 
-    //上传图片用 不清楚这样有什么影响，但每次代码里为了上传图片，必须取消息来源的Contact太说不过去了
+    //群列表，缓存并单例下来供给其他业务使用
+    private static List<BaseRsp> groupList = null;
+
+    public List<BaseRsp> getGroupList(){
+        //null表示没有初始化，长度为0则说明没加入任何群聊
+        if(null != groupList){
+            return groupList;
+        }
+
+        //获取群信息
+        return null;
+    }
+
+
+
     private Group group;
 
     /**
@@ -83,25 +94,6 @@ public class RabbitBotService {
             accountStrCheck(account_master, accountMasterList);
         }
         return accountMasterList.contains(userId);
-    }
-
-    /**
-     * 是否为管理员权限
-     *
-     * @param userId qq号
-     * @return 是否为管理员权限
-     */
-    public boolean isRabbitAdmin(Long userId) {
-        if (null == userId) {
-            return false;
-        }
-        if (isMaster((userId))) {
-            return true;
-        }
-        if (CollectionUtils.isEmpty(accountAdminList)) {
-            accountStrCheck(account_admin, accountAdminList);
-        }
-        return accountAdminList.contains(userId);
     }
 
     private void accountStrCheck(String account_strs, List<Long> accountList) {
@@ -171,7 +163,7 @@ public class RabbitBotService {
     /**
      * 获取用户名，优先获取群昵称
      *
-     * @param sender  消息发送人信息
+     * @param sender 消息发送人信息
      * @return 用户名称
      */
     public String getUserName(SenderInfo sender) {
@@ -300,7 +292,7 @@ public class RabbitBotService {
     /**
      * 发送群消息
      *
-     * @param groupId       群号
+     * @param groupId      群号
      * @param messageChain 消息链
      */
     public void sendGroupMessage(Long groupId, MessageChain messageChain) {

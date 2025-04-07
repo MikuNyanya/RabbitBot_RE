@@ -1,25 +1,38 @@
 package cn.mikulink.rabbitbot.bot;
 
-import cn.hutool.http.*;
+import cn.mikulink.rabbitbot.bot.penguincenter.NapCatApi;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * create by MikuLink on 2025/4/2 13:00
  * for the Reisen
  * 兔叽消息发送组件
+ * 中间可以处理些额外业务
+ * 最终还是去NapCatApi里进行实际请求动作
  */
 @Slf4j
 @Component
 public class RabbitBotSender {
+
+    @Autowired
+    private NapCatApi napCatApi;
+
+    /**
+     * 发送CQ私聊消息
+     *
+     * @param message 准备发送的CQ消息
+     */
+    public void sendPrivateMessageCQ(Long userId, String message) {
+        napCatApi.sendPrivateMessageCQ(userId, message);
+    }
 
     /**
      * 发送私聊消息
@@ -52,12 +65,17 @@ public class RabbitBotSender {
             return;
         }
 
-        Map<String, Object> param = new HashMap<>();
-        param.put("user_id", userId);
-        param.put("message", messageChains);
-        this.sendMessageToQQNT("http://localhost:31011//send_private_msg", JSON.toJSONString(param));
+        napCatApi.sendPrivateMessage(userId, messageChains);
     }
 
+    /**
+     * 发送CQ群消息
+     *
+     * @param message 准备发送的CQ消息
+     */
+    public void sendGroupMessageCQ(Long groupId, String message) {
+        napCatApi.sendGroupMessageCQ(groupId, message);
+    }
 
     /**
      * 发送群消息
@@ -89,11 +107,7 @@ public class RabbitBotSender {
             log.warn("发送群消息，但群号为空!message:{}", JSON.toJSONString(messageChains));
             return;
         }
-
-        Map<String, Object> param = new HashMap<>();
-        param.put("group_id", groupId);
-        param.put("message", messageChains);
-        this.sendMessageToQQNT("http://localhost:31011/send_group_msg", JSON.toJSONString(param));
+        napCatApi.sendGroupMessage(groupId, messageChains);
     }
 
     /**
@@ -117,20 +131,5 @@ public class RabbitBotSender {
             default:
                 log.error("sendSimpleText没有找到回复目标,msg:{}", JSON.toJSONString(messageInfo));
         }
-    }
-
-    private void sendMessageToQQNT(String url, String jsonBody) {
-        //todo try-catch
-
-        //发送到qq
-        HttpRequest httpRequest = HttpUtil.createPost(url);
-        httpRequest.contentType(ContentType.JSON.getValue());
-
-        //todo 发送记录落库
-        HttpResponse response = httpRequest.timeout(HttpGlobalConfig.getTimeout()).body(jsonBody).execute();
-        String responseBody = response.body();
-
-        //todo 发送回执落库
-        System.out.println("发送消息回执：" + responseBody);
     }
 }

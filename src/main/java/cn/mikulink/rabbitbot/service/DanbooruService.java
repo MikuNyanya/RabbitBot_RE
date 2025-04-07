@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.apirequest.danbooru.DanbooruImageGet;
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.entity.DanbooruImageInfo;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;

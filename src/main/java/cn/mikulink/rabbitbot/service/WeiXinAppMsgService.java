@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.apirequest.other.ZaobGet;
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantWeiXin;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;

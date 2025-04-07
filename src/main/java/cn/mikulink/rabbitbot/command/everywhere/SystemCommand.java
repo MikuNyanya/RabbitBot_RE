@@ -1,17 +1,11 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.beans.factory.annotation.Value;
-
-import java.util.ArrayList;
 
 
 /**
@@ -40,17 +34,16 @@ public class SystemCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
-//        StringBuilder msg = new StringBuilder();
-//        msg.append("==========\n");
-//        msg.append(String.format("[Name] %s(%s)\n", rabbit_bot_name, rabbit_bot_name_en));
-//        msg.append("[Birthday] 2019-12-3\n");
-//        msg.append("[Version] ").append(version).append("\n");
-//        msg.append("System Online\n");
-//        msg.append("兔叽增员中...\n");
-//        msg.append("==========");
-//
-//        return new PlainText(msg.toString());
-        return null;
+        StringBuilder msg = new StringBuilder();
+        msg.append("==========\n");
+        msg.append(String.format("[Name] %s(%s)\n", rabbit_bot_name, rabbit_bot_name_en));
+        msg.append("[Birthday] 2019-12-3\n");
+        msg.append("[Version] ").append(version).append("\n");
+        msg.append("System Online\n");
+        msg.append("兔叽增员中...\n");
+        msg.append("==========");
+
+        return RabbitBotMessageBuilder.createMessageText(msg.toString());
     }
 
 }

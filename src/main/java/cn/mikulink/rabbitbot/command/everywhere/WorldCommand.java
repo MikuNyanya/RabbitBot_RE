@@ -1,27 +1,12 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
-import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
-import cn.mikulink.rabbitbot.constant.ConstantWorld;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
-import cn.mikulink.rabbitbot.service.RabbitBotService;
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import cn.mikulink.rabbitbot.utils.CollectionUtil;
-import cn.mikulink.rabbitbot.utils.RandomUtil;
-import cn.mikulink.rabbitbot.utils.StringUtil;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.ContactList;
-import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageUtils;
-import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
 
 
 /**
@@ -45,6 +30,7 @@ public class WorldCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
+        //todo 也许应该有一个可以外部连接的ui来干这种事情
 //        //权限检查
 //        if (!rabbitBotService.isMaster(sender.getId())) {
 //            return new PlainText(RandomUtil.rollStrFromList(ConstantWorld.COMMAND_MASTER_ONLY));

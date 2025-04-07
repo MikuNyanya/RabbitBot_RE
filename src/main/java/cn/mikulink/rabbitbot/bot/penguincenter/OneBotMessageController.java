@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.messagepush;
+package cn.mikulink.rabbitbot.bot.penguincenter;
 
 import cn.mikulink.rabbitbot.entity.db.QQMessagePushInfo;
 import cn.mikulink.rabbitbot.service.db.QQMessagePushService;
@@ -27,6 +27,8 @@ public class OneBotMessageController {
     private QQMessagePushService qqMessagePushService;
     @Autowired
     private MessageHandle messageHandle;
+    @Autowired
+    private NoticeHandle noticeHandle;
 
 
     /**
@@ -37,10 +39,10 @@ public class OneBotMessageController {
     @RequestMapping(value = "push", method = RequestMethod.POST)
     @ResponseBody
     public void push(HttpServletRequest request) {
+        //解析消息信息
+        String body = readBody(request);
+        System.out.println(body);
         try {
-            //解析消息信息
-            String body = readBody(request);
-
             QQMessagePushInfo qqMessagePushInfo = new QQMessagePushInfo(body);
             //todo 异步落库
 //        qqMessagePushService.create(qqMessagePushInfo);
@@ -61,6 +63,10 @@ public class OneBotMessageController {
                 case "message":
                     //消息
                     messageHandle.messageHandle(body);
+                    break;
+                case "notice":
+                    //戳一戳
+                    noticeHandle.noticeHandle(body);
                     break;
             }
         } catch (Exception ex) {
@@ -84,32 +90,4 @@ public class OneBotMessageController {
         }
         return body;
     }
-
-
-    @RequestMapping(value = "pushtest", method = RequestMethod.POST)
-    @ResponseBody
-    public void getSetting(HttpServletRequest request) {
-//
-//        PostGroupMessage rspGroupMsg = new PostGroupMessage();
-//        rspGroupMsg.setGroup_id(669863883L);
-//        MessageInfo temp = new MessageInfo();
-//        temp.setType("music");
-//        MessageDataInfo messageDataInfo = new MessageDataInfo();
-//        messageDataInfo.setType("custom");
-//        messageDataInfo.setUrl("https://music.163.com/#/song?id=2673305131");
-//        messageDataInfo.setAudio("http://music.163.com/song/media/outer/url?id=2673305131.mp3");
-//        messageDataInfo.setImage("https://p2.music.126.net/1rnT9pQUxZGALlaM3MpaAA==/109951170465881791.jpg");
-//        messageDataInfo.setTitle("优雅失败指南");
-//        temp.setData(messageDataInfo);
-//        rspGroupMsg.setMessage(Arrays.asList(temp));
-//
-//        //发送到qq
-//        HttpRequest httpRequest = HttpUtil.createPost("http://localhost:31201/send_group_msg");
-//        httpRequest.contentType(ContentType.JSON.getValue());
-//
-//        HttpResponse response = httpRequest.timeout(HttpGlobalConfig.getTimeout()).body(JSONObject.toJSONString(rspGroupMsg)).execute();
-//        String responseBody = response.body();
-//        System.out.println("发送消息回执：" + responseBody);
-    }
-
 }
