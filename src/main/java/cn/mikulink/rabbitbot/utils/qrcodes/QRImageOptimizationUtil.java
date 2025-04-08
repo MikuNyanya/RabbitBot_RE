@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.qrcodes;
+package cn.mikulink.rabbitbot.utils.qrcodes;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

@@ -1,5 +1,6 @@
 package cn.mikulink.rabbitbot.entity.rabbitbotmessage;
 
+import cn.mikulink.rabbitbot.utils.NumberUtil;
 import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,25 +27,25 @@ public class MessageInfo extends MessagePushBase {
 
     //发送者 QQ 号
     @JSONField(name = "user_id")
-    private Long userId;
+    protected Long userId;
     //消息 ID
     @JSONField(name = "message_id")
-    private Long messageId;
+    protected Long messageId;
     //表示消息的子类型 正常消息是 normal, 匿名消息是 anonymous, 系统提示 ( 如「管理员已禁止群内匿名聊天」 ) 是 notice
     @JSONField(name = "sub_type")
-    private String subType;
+    protected String subType;
     //消息类型，group代表群消息 private私聊消息
     @JSONField(name = "message_type")
-    private String messageType;
+    protected String messageType;
     //CQ 码格式的消息
     @JSONField(name = "raw_message")
-    private String rawMessage;
+    protected String rawMessage;
     //字的大小
-    private Integer font;
+    protected Integer font;
     //发送者信息
-    private SenderInfo sender;
+    protected SenderInfo sender;
     //消息链
-    private List<MessageChain> message;
+    protected List<MessageChain> message;
 
     //是否为群消息
     public boolean isGroupMessage() {
@@ -56,4 +57,15 @@ public class MessageInfo extends MessagePushBase {
         return messageType.equals("private");
     }
 
+    //是否at了机器人
+    public boolean isAtBot() {
+        for (MessageChain messageChain : message) {
+            if (messageChain.getType().equalsIgnoreCase("at")) {
+                if (selfId.equals(NumberUtil.toLong(messageChain.getData().getQq()))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

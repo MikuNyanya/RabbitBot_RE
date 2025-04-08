@@ -26,7 +26,7 @@ public class CommandConfig {
     public static Map<String, Command> everywhereCommands = new HashMap<>();
     public static Map<String, Command> friendCommands = new HashMap<>();
     public static Map<String, Command> groupCommands = new HashMap<>();
-    public static Map<String, Command> tempMsgCommands = new HashMap<>();
+    public static Map<String, Command> privateMsgCommands = new HashMap<>();
 
     /**
      * 注册指令头，一般用.其他的!#都可以
@@ -64,8 +64,8 @@ public class CommandConfig {
             friendCommands.putAll(tempCommans);
         } else if (command instanceof GroupCommand) {
             groupCommands.putAll(tempCommans);
-        } else if (command instanceof TempMessageCommand) {
-            tempMsgCommands.putAll(tempCommans);
+        } else if (command instanceof PrivateMessageCommand) {
+            privateMsgCommands.putAll(tempCommans);
         } else if (command instanceof EverywhereCommand) {
             everywhereCommands.putAll(tempCommans);
         } else {

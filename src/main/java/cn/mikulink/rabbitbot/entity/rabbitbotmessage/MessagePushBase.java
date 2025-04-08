@@ -17,12 +17,12 @@ import java.io.Serializable;
 public class MessagePushBase implements Serializable {
     //事件发生的unix时间戳
     @JSONField(name = "time")
-    private Long time;
+    protected Long time;
     //收到事件的机器人的 QQ 号
     @JSONField(name = "self_id")
-    private Long selfId;
+    protected Long selfId;
     //表示该上报的类型, message=消息, 消息发送, 请求, 通知, 或元事件
     @JSONField(name = "post_type")
-    private String postType;
+    protected String postType;
 
 }

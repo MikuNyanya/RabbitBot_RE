@@ -40,11 +40,19 @@ public class NoticeHandle {
     public void noticeHandle(String messageBody) {
         NotcieInfo notcieInfo = JSON.parseObject(messageBody, NotcieInfo.class);
 
-        switch (notcieInfo.getSubType()) {
-            case "poke":
-                //戳一戳
-                doPokeBiz(notcieInfo);
-                break;
+        if(notcieInfo.getNoticeType().equals("notify")){
+            switch (notcieInfo.getSubType()) {
+                case "poke":
+                    //戳一戳
+                    doPokeBiz(notcieInfo);
+                    break;
+        }
+
+        if(notcieInfo.getNoticeType().equals("group_recall")){
+            //群消息撤回
+        }
+
+
         }
     }
 

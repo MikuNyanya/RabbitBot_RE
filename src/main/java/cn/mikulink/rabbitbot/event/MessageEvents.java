@@ -20,8 +20,6 @@ import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.event.events.TempMessageEvent;
 import net.mamoe.mirai.message.data.Message;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -216,12 +214,12 @@ public class MessageEvents extends SimpleListenerHost {
             return ListeningStatus.LISTENING;
         }
 
-        TempMessageCommand command = (TempMessageCommand) commandConfig.getCommand(oriMsg, commandConfig.tempMsgCommands);
+        PrivateMessageCommand command = (PrivateMessageCommand) commandConfig.getCommand(oriMsg, commandConfig.privateMsgCommands);
         if (command == null) {
             return ListeningStatus.LISTENING;
         }
         //执行指令并回复结果
-        Message result = command.execute(sender, getArgs(oriMsg), event.getMessage(), sender);
+        Message result = null;
         if (result != null) {
             event.getSubject().sendMessage(result);
         }

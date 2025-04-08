@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.qrcodes;
+package cn.mikulink.rabbitbot.utils.qrcodes;
 
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import com.google.zxing.*;

@@ -46,11 +46,15 @@ public class NapCatApi {
             httpRequest.contentType(ContentType.JSON.getValue());
 
             //todo 发送记录落库
+            System.out.println("=====兔叽发送信息=====");
+            System.out.println(jsonBody);
 
             HttpResponse response = httpRequest.timeout(HttpGlobalConfig.getTimeout()).body(jsonBody).execute();
             String responseBody = response.body();
 
             //todo 返回消息落库
+            System.out.println("=====消息回执=====");
+            System.out.println(responseBody);
 
             return responseBody;
         } catch (Exception ex) {

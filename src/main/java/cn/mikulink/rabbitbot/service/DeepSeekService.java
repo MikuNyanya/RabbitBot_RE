@@ -6,7 +6,7 @@ import cn.mikulink.rabbitbot.bot.RabbitBotSender;
 import cn.mikulink.rabbitbot.entity.apirequest.deepseek.MessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
-import cn.mikulink.rabbitbot.utils.NumberUtil;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.PrivateMessageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,8 +57,7 @@ public class DeepSeekService {
     public void aiModeGroup(GroupMessageInfo groupMessageInfo) {
         try {
             //at了兔叽的必定回复 不然使用时间+概率响应的模式
-            boolean isAtBot = isAtBot(groupMessageInfo.getSelfId(), groupMessageInfo.getMessage());
-            if (isAtBot) {
+            if (groupMessageInfo.isAtBot()) {
                 String tempMsg = groupMessageInfo.getSender().getCard() + ":";
                 for (MessageChain messageInfo : groupMessageInfo.getMessage()) {
                     switch (messageInfo.getType()) {
@@ -81,20 +80,38 @@ public class DeepSeekService {
             //拼接群聊信息
 
         } catch (Exception ex) {
-            log.error("AI请求异常,messageId:{}", groupMessageInfo.getMessageId(), ex);
+            log.error("aiModeGroup AI请求异常,messageId:{}", groupMessageInfo.getMessageId(), ex);
         }
 
     }
 
-    //是否at了机器人
-    public boolean isAtBot(Long botSelfId, List<MessageChain> messageChains) {
-        for (MessageChain messageChain : messageChains) {
-            if (messageChain.getType().equalsIgnoreCase("at")) {
-                if (botSelfId.equals(NumberUtil.toLong(messageChain.getData().getQq()))) {
-                    return true;
+    public void aiModePrivate(PrivateMessageInfo privateMessageInfo) {
+        try {
+            //获取当前私聊向上一定数目的历史记录传给ai用作分析
+
+            //拼接私聊信息
+
+            String tempMsg = "";
+            for (MessageChain messageInfo : privateMessageInfo.getMessage()) {
+                switch (messageInfo.getType()) {
+                    case "text":
+                        tempMsg += messageInfo.getData().getText();
+                        break;
+                    case "image":
+                        tempMsg += "[图片]";
+                        break;
                 }
             }
+
+            String chatRsp = requestAIResult(tempMsg);
+
+            rabbitBotSender.sendPrivateMessage(privateMessageInfo.getUserId(), RabbitBotMessageBuilder.parseMessageChainText(chatRsp));
+
+        } catch (Exception ex) {
+            log.error("aiModePrivate AI请求异常,messageId:{}", privateMessageInfo.getMessageId(), ex);
         }
-        return false;
+
     }
+
+
 }

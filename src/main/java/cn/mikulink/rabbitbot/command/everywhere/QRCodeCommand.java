@@ -1,20 +1,11 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 
-import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
-import cn.mikulink.rabbitbot.constant.ConstantQRCode;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import cn.mikulink.rabbitbot.qrcodes.QRCodeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
