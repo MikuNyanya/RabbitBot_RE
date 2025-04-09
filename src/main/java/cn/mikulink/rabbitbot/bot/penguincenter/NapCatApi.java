@@ -32,7 +32,7 @@ import java.util.Map;
 @Component
 public class NapCatApi {
     //接口地址
-    @Value("${bot.napcat.apiurl:}")
+    @Value("${bot.messageSend.apiurl:}")
     private String url;
 
     @Autowired

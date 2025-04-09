@@ -23,4 +23,10 @@
                 #{subType}, #{messageFormat}, #{recall});
     </insert>
 
+    <select id="getHistoryByGroupId" resultMap="BaseResultMap">
+        SELECT * FROM rabbitbot_group_message
+        where group_id = #{groupId} and recall = 0
+        order by create_time desc
+        limit 0,#{historyCount}
+    </select>
 </mapper>

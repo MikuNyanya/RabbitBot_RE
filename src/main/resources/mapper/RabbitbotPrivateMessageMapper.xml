@@ -22,6 +22,7 @@
         VALUES
             (#{userId}, #{targetId}, #{messageId}, #{senderJson}, #{rawMessage}, #{messageJson}, #{messageType},#{subType}, #{messageFormat}, #{recall});
     </insert>
+
     <select id="getHistoryByTargetId" resultMap="BaseResultMap">
         SELECT * FROM rabbitbot_private_message
         where target_id = #{targetId} and recall = 0

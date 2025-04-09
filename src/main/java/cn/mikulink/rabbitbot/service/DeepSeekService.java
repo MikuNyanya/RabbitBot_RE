@@ -4,11 +4,15 @@ import cn.mikulink.rabbitbot.apirequest.deepseek.ChatCompletionsRequest;
 import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.bot.RabbitBotSender;
 import cn.mikulink.rabbitbot.entity.apirequest.deepseek.MessageInfo;
+import cn.mikulink.rabbitbot.entity.db.RabbitbotGroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.db.RabbitbotPrivateMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.PrivateMessageInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.SenderInfo;
+import cn.mikulink.rabbitbot.service.db.RabbitbotGroupMessageService;
 import cn.mikulink.rabbitbot.service.db.RabbitbotPrivateMessageService;
+import cn.mikulink.rabbitbot.utils.StringUtil;
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +31,9 @@ import java.util.List;
 @Service
 public class DeepSeekService {
     //给予ai用作参考的群聊历史数目 因为基本是一问一答，所以设置100相当于用户输入了50条信息，兔叽回答了50条信息
-    public int groupHistoryNum = 500;
+    public int groupHistoryNum = 50;
+    //私聊历史条目，可以设置的稍微多一些
+    public int privateHistoryNum = 500;
 
     @Value("${deepseek.token:}")
     private String token;
@@ -36,6 +42,8 @@ public class DeepSeekService {
     private RabbitBotSender rabbitBotSender;
     @Autowired
     private RabbitbotPrivateMessageService rabbitbotPrivateMessageService;
+    @Autowired
+    private RabbitbotGroupMessageService rabbitbotGroupMessageService;
 
     private String requestAIResult(String message) throws IOException {
         ChatCompletionsRequest request = new ChatCompletionsRequest();
@@ -65,42 +73,66 @@ public class DeepSeekService {
         return requestAIResult(text);
     }
 
-
-    public void aiModeGroup(GroupMessageInfo groupMessageInfo) {
+    public boolean aiModeGroup(GroupMessageInfo groupMessageInfo) {
+        Long groupId = groupMessageInfo.getGroupId();
         try {
-            //at了兔叽的必定回复 不然使用时间+概率响应的模式
-            if (groupMessageInfo.isAtBot()) {
-                String tempMsg = groupMessageInfo.getSender().getCard() + ":";
-                for (MessageChain messageInfo : groupMessageInfo.getMessage()) {
-                    switch (messageInfo.getType()) {
-                        case "text":
-                            tempMsg += messageInfo.getData().getText();
-                            break;
-                        case "image":
-                            tempMsg += "[图片]";
-                            break;
-                    }
-                }
+            boolean doRequestAIResult = false;
+            //at了兔叽和文本中提到兔叽的必定回复
+            if (groupMessageInfo.isAtBot() || groupMessageInfo.isMentionBot()) {
+                doRequestAIResult = true;
+            } else {
+                //日常状态 包含响应间隔，以及响应概率
 
-                String chatRsp = requestAIResult(tempMsg);
-
-                rabbitBotSender.sendGroupMessage(RabbitBotMessageBuilder.createGroupMessageText(groupMessageInfo.getGroupId(), chatRsp));
             }
 
-            //获取当前群聊向上一定数目的历史记录传给ai用作分析
+            if (!doRequestAIResult) {
+                //表示没有执行ai响应
+                return false;
+            }
 
-            //拼接群聊信息
+            //获取当前私聊向上一定数目的历史记录传给ai用作分析
+            List<RabbitbotGroupMessageInfo> privateMessageInfoList = rabbitbotGroupMessageService.getHistoryByTargetId(groupId, groupHistoryNum);
 
+            //拼接私聊信息
+            List<MessageInfo> paramMessageList = new ArrayList<>();
+            for (RabbitbotGroupMessageInfo rabbitbotGroupMessageInfo : privateMessageInfoList) {
+
+                //获取用户名
+                SenderInfo senderInfo = JSON.parseObject(rabbitbotGroupMessageInfo.getSenderJson(), SenderInfo.class);
+                String userNick = senderInfo.getCard();
+                if (StringUtil.isEmpty(userNick)) {
+                    userNick = senderInfo.getNickname();
+                }
+
+                //把消息转化为给ds的格式
+                List<MessageChain> tempList = JSON.parseArray(rabbitbotGroupMessageInfo.getMessageJson(), MessageChain.class);
+                String tempStr = parseMessageToDeepSeek(tempList);
+
+                if (rabbitbotGroupMessageInfo.getUserId().equals(groupMessageInfo.getSelfId())) {
+                    //兔叽消息
+                    paramMessageList.add(new MessageInfo("assistant", tempStr));
+                } else {
+                    tempStr = String.format("[%s]:%s",userNick,tempStr);
+                    //用户消息
+                    paramMessageList.add(new MessageInfo("user", userNick, tempStr));
+                }
+            }
+
+            String chatRsp = requestAIResult(paramMessageList);
+
+            rabbitBotSender.sendGroupMessage(groupId, RabbitBotMessageBuilder.parseMessageChainText(chatRsp));
+
+            return true;
         } catch (Exception ex) {
             log.error("aiModeGroup AI请求异常,messageId:{}", groupMessageInfo.getMessageId(), ex);
+            return false;
         }
-
     }
 
-    public void aiModePrivate(PrivateMessageInfo privateMessageInfo) {
+    public boolean aiModePrivate(PrivateMessageInfo privateMessageInfo) {
         try {
             //获取当前私聊向上一定数目的历史记录传给ai用作分析
-            List<RabbitbotPrivateMessageInfo> privateMessageInfoList = rabbitbotPrivateMessageService.getHistoryByTargetId(privateMessageInfo.getTargetId(), groupHistoryNum);
+            List<RabbitbotPrivateMessageInfo> privateMessageInfoList = rabbitbotPrivateMessageService.getHistoryByTargetId(privateMessageInfo.getTargetId(), privateHistoryNum);
 
             //拼接私聊信息
             List<MessageInfo> paramMessageList = new ArrayList<>();
@@ -122,17 +154,18 @@ public class DeepSeekService {
 
             rabbitBotSender.sendPrivateMessage(privateMessageInfo.getUserId(), RabbitBotMessageBuilder.parseMessageChainText(chatRsp));
 
+            return true;
         } catch (Exception ex) {
             log.error("aiModePrivate AI请求异常,messageId:{}", privateMessageInfo.getMessageId(), ex);
+            return false;
         }
-
     }
 
     /**
      * 把消息转化为传给ds的消息格式
      *
-     * @param messageChainList  消息链
-     * @return  可以直接传给ds的消息
+     * @param messageChainList 消息链
+     * @return 可以直接传给ds的消息
      */
     private String parseMessageToDeepSeek(List<MessageChain> messageChainList) {
         StringBuilder stringBuilder = new StringBuilder();

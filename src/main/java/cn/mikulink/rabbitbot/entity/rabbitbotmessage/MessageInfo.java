@@ -70,4 +70,10 @@ public class MessageInfo extends MessagePushBase {
         }
         return false;
     }
+
+    //是否提到了机器人
+    public boolean isMentionBot() {
+        //todo 写到某个服务中，机器人名称使用配置文件的值
+        return this.rawMessage.contains("兔叽");
+    }
 }

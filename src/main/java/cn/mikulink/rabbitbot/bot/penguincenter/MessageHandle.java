@@ -99,7 +99,10 @@ public class MessageHandle {
         /**at相关业务*/
 
         /**进入AI响应模式*/
-        deepSeekService.aiModeGroup(groupMessageInfo);
+        boolean isResponded = deepSeekService.aiModeGroup(groupMessageInfo);
+        if (isResponded) {
+            return;
+        }
 
         /**匹配关键词 (常规状态下，不是每一句都会触发AI响应的)*/
 
@@ -140,10 +143,13 @@ public class MessageHandle {
             }
         }
 
-        /**进入AI响应模式*/
-        deepSeekService.aiModePrivate(privateMessageInfo);
+        /**进入AI响应模式 (常规状态下，不是每一句都会触发AI响应的)*/
+        boolean isResponded = deepSeekService.aiModePrivate(privateMessageInfo);
+        if (isResponded) {
+            return;
+        }
 
-        /**匹配关键词 (常规状态下，不是每一句都会触发AI响应的)*/
+        /**匹配关键词*/
 
 
     }

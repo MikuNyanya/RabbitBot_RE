@@ -8,9 +8,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:21001/rabbitbot?characterEncoding=utf-8
     username: root
-    password:
+    password: test
 server:
-  port: 31210
+  port: 31001
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -26,15 +26,11 @@ bot:
     #名称 英文
     en: RabbitBot
   #兔叽版本
-  version: AI_NT_0.3
-  #配置admin权限的qq号,多个以,隔开 用于远程进行敏感操作
+  version: AI_NT_1.0
+  #配置admin权限的账号
   master: 114514
-  #登录协议 ANDROID_PHONE / ANDROID_PAD / ANDROID_WATCH / IPAD / MACOS
-  protocol: ANDROID_WATCH
-  #是否二维码登录
-  isQrLogin: true
   #NapCat
-  napcat:
+  messageSend:
     apiurl: http://localhost:31011
 
 ############# 文件相关 ######################
@@ -50,7 +46,7 @@ file:
 
 ############# AI ######################
 deepseek:
-  token: sk-test
+  token: sk-3xxxxxxxx
 
 ############# 代理相关 ######################
 #地址
