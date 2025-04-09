@@ -1,19 +1,15 @@
 package cn.mikulink.rabbitbot.tasks;
 
-import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
-import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivRankImageInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivRankImageInfo;
 import cn.mikulink.rabbitbot.service.*;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.sys.ProxyService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
-import net.mamoe.mirai.contact.ContactList;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,16 +102,16 @@ public class JobTimeRabbit {
         //群报时，时间间隔交给定时器，这里返回值取当前时间即可
         String msg = String.format("这里是%s报时：%s%s", rabbit_bot_name, DateUtil.toString(new Date()), msgEx);
         try {
-            //给每个群发送报时
-            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-            for (Group groupInfo : groupList) {
-                //检查功能开关
-                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "sj");
-                if (!reStringSwitch.isSuccess()) {
-                    continue;
-                }
-                groupInfo.sendMessage(msg);
-            }
+//            //给每个群发送报时
+//            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
+//            for (Group groupInfo : groupList) {
+//                //检查功能开关
+//                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "sj");
+//                if (!reStringSwitch.isSuccess()) {
+//                    continue;
+//                }
+//                groupInfo.sendMessage(msg);
+//            }
         } catch (Exception ex) {
             logger.error("报时兔子 消息发送异常" + ex.toString(), ex);
         }
@@ -161,10 +157,10 @@ public class JobTimeRabbit {
             String msg = weatherService.getWeatherByCityName("宿州市");
 
             //给每个群发送天气
-            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-            for (Group groupInfo : groupList) {
-                groupInfo.sendMessage(msg);
-            }
+//            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
+//            for (Group groupInfo : groupList) {
+//                groupInfo.sendMessage(msg);
+//            }
         } catch (Exception ioEx) {
             logger.error("天气兔子发生异常:" + ioEx.toString(), ioEx);
         }
@@ -243,18 +239,18 @@ public class JobTimeRabbit {
                 MessageChain resultChain = pixivService.parsePixivImgInfoByApiInfo(imageInfo);
 
                 //给每个群发送消息
-                ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-                for (Group groupInfo : groupList) {
-                    //检查功能开关
-                    ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "pixivRank");
-                    if (!reStringSwitch.isSuccess()) {
-                        continue;
-                    }
-                    groupInfo.sendMessage(resultChain);
-
-                    //每个群之间间隔半秒意思下
-                    Thread.sleep(500);
-                }
+//                ContactList<Group> groupList = RabbitBot.getBot().getGroups();
+//                for (Group groupInfo : groupList) {
+//                    //检查功能开关
+//                    ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "pixivRank");
+//                    if (!reStringSwitch.isSuccess()) {
+//                        continue;
+//                    }
+//                    groupInfo.sendMessage(resultChain);
+//
+//                    //每个群之间间隔半秒意思下
+//                    Thread.sleep(500);
+//                }
 
                 //每张图片之间间隔5秒
                 Thread.sleep(1000L * 2);

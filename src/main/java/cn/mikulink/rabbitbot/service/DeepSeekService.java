@@ -4,15 +4,19 @@ import cn.mikulink.rabbitbot.apirequest.deepseek.ChatCompletionsRequest;
 import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.bot.RabbitBotSender;
 import cn.mikulink.rabbitbot.entity.apirequest.deepseek.MessageInfo;
+import cn.mikulink.rabbitbot.entity.db.RabbitbotPrivateMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.PrivateMessageInfo;
+import cn.mikulink.rabbitbot.service.db.RabbitbotPrivateMessageService;
+import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,20 +26,28 @@ import java.util.List;
 @Slf4j
 @Service
 public class DeepSeekService {
-    //给予ai用作参考的群聊历史数目
-    public int groupHistoryNum = 20;
+    //给予ai用作参考的群聊历史数目 因为基本是一问一答，所以设置100相当于用户输入了50条信息，兔叽回答了50条信息
+    public int groupHistoryNum = 500;
 
     @Value("${deepseek.token:}")
     private String token;
 
-
     @Autowired
     private RabbitBotSender rabbitBotSender;
+    @Autowired
+    private RabbitbotPrivateMessageService rabbitbotPrivateMessageService;
 
     private String requestAIResult(String message) throws IOException {
         ChatCompletionsRequest request = new ChatCompletionsRequest();
         request.setAccessToken(token);
         request.setMessagList(List.of(new MessageInfo("user", message)));
+        return request.doRequest();
+    }
+
+    private String requestAIResult(List<MessageInfo> messageList) throws IOException {
+        ChatCompletionsRequest request = new ChatCompletionsRequest();
+        request.setAccessToken(token);
+        request.setMessagList(messageList);
         return request.doRequest();
     }
 
@@ -88,22 +100,25 @@ public class DeepSeekService {
     public void aiModePrivate(PrivateMessageInfo privateMessageInfo) {
         try {
             //获取当前私聊向上一定数目的历史记录传给ai用作分析
+            List<RabbitbotPrivateMessageInfo> privateMessageInfoList = rabbitbotPrivateMessageService.getHistoryByTargetId(privateMessageInfo.getTargetId(), groupHistoryNum);
 
             //拼接私聊信息
+            List<MessageInfo> paramMessageList = new ArrayList<>();
+            for (RabbitbotPrivateMessageInfo rabbitbotPrivateMessageInfo : privateMessageInfoList) {
+                //把消息转化为给ds的格式
+                List<MessageChain> tempList = JSON.parseArray(rabbitbotPrivateMessageInfo.getMessageJson(), MessageChain.class);
+                String tempStr = parseMessageToDeepSeek(tempList);
 
-            String tempMsg = "";
-            for (MessageChain messageInfo : privateMessageInfo.getMessage()) {
-                switch (messageInfo.getType()) {
-                    case "text":
-                        tempMsg += messageInfo.getData().getText();
-                        break;
-                    case "image":
-                        tempMsg += "[图片]";
-                        break;
+                if (rabbitbotPrivateMessageInfo.getUserId().equals(rabbitbotPrivateMessageInfo.getTargetId())) {
+                    //用户消息
+                    paramMessageList.add(new MessageInfo("user", tempStr));
+                } else {
+                    //兔叽消息
+                    paramMessageList.add(new MessageInfo("assistant", tempStr));
                 }
             }
 
-            String chatRsp = requestAIResult(tempMsg);
+            String chatRsp = requestAIResult(paramMessageList);
 
             rabbitBotSender.sendPrivateMessage(privateMessageInfo.getUserId(), RabbitBotMessageBuilder.parseMessageChainText(chatRsp));
 
@@ -113,5 +128,25 @@ public class DeepSeekService {
 
     }
 
+    /**
+     * 把消息转化为传给ds的消息格式
+     *
+     * @param messageChainList  消息链
+     * @return  可以直接传给ds的消息
+     */
+    private String parseMessageToDeepSeek(List<MessageChain> messageChainList) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (MessageChain messageChain : messageChainList) {
+            switch (messageChain.getType()) {
+                case "text" ->
+                    //text可直接拼接
+                        stringBuilder.append(messageChain.getData().getText());
+                case "image" ->
+                    //ds无法识别图片，所以直接表明这是个图片
+                        stringBuilder.append("[图片]");
+            }
+        }
+        return stringBuilder.toString();
+    }
 
 }

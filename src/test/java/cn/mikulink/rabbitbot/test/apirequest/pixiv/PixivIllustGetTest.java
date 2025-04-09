@@ -1,13 +1,11 @@
 package cn.mikulink.rabbitbot.test.apirequest.pixiv;
 
 import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustGet;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageInfo;
 import org.junit.Test;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 
 public class PixivIllustGetTest {
 

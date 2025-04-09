@@ -7,10 +7,12 @@ import cn.mikulink.rabbitbot.bot.penguincenter.entity.GetGroupMemberInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMemberInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
+import cn.mikulink.rabbitbot.service.db.RabbitbotSendRecordService;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +35,9 @@ public class NapCatApi {
     @Value("${bot.napcat.apiurl:}")
     private String url;
 
+    @Autowired
+    private RabbitbotSendRecordService rabbitbotSendRecordService;
+
     /**
      * 调用接口
      *
@@ -45,16 +50,14 @@ public class NapCatApi {
             HttpRequest httpRequest = HttpUtil.createPost(url);
             httpRequest.contentType(ContentType.JSON.getValue());
 
-            //todo 发送记录落库
-            System.out.println("=====兔叽发送信息=====");
-            System.out.println(jsonBody);
+            //发送记录落库
+            Long recordId = rabbitbotSendRecordService.create(url, jsonBody);
 
             HttpResponse response = httpRequest.timeout(HttpGlobalConfig.getTimeout()).body(jsonBody).execute();
             String responseBody = response.body();
 
-            //todo 返回消息落库
-            System.out.println("=====消息回执=====");
-            System.out.println(responseBody);
+            //返回消息落库
+            rabbitbotSendRecordService.updateResponseBody(recordId, responseBody);
 
             return responseBody;
         } catch (Exception ex) {

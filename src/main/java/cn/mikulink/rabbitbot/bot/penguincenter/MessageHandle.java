@@ -7,6 +7,8 @@ import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.PrivateMessageInfo;
 import cn.mikulink.rabbitbot.service.DeepSeekService;
+import cn.mikulink.rabbitbot.service.db.RabbitbotGroupMessageService;
+import cn.mikulink.rabbitbot.service.db.RabbitbotPrivateMessageService;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +29,10 @@ public class MessageHandle {
     private DeepSeekService deepSeekService;
     @Autowired
     private RabbitBotSender rabbitBotSender;
+    @Autowired
+    private RabbitbotGroupMessageService rabbitbotGroupMessageService;
+    @Autowired
+    private RabbitbotPrivateMessageService rabbitbotPrivateMessageService;
 
     public void messageHandle(String messageBody) {
         JSONObject bodyJsonObj = JSONObject.parseObject(messageBody);
@@ -52,6 +58,8 @@ public class MessageHandle {
      * @param groupMessageInfo 群消息
      */
     public void doMessageBiz(@NotNull GroupMessageInfo groupMessageInfo) {
+        rabbitbotGroupMessageService.create(groupMessageInfo);
+
         Long groupId = groupMessageInfo.getGroupId();
         //todo 群黑名单过滤
 
@@ -79,8 +87,6 @@ public class MessageHandle {
                 result = command.execute(groupMessageInfo);
                 if (result != null) {
                     rabbitBotSender.sendGroupMessage(groupId, result.getMessage());
-                    //todo 记录兔叽的回复日志，群消息的记录通过上报自身发言在消息入口记录
-
                 }
                 return;
             }
@@ -102,6 +108,8 @@ public class MessageHandle {
 
 
     public void doMessageBiz(@NotNull PrivateMessageInfo privateMessageInfo) {
+        rabbitbotPrivateMessageService.create(privateMessageInfo);
+
         Long senderUserId = privateMessageInfo.getUserId();
         String rawMessageStr = privateMessageInfo.getRawMessage();
         /**匹配指令模式*/
@@ -127,8 +135,6 @@ public class MessageHandle {
                 result = command.execute(privateMessageInfo);
                 if (result != null) {
                     rabbitBotSender.sendPrivateMessage(senderUserId, result.getMessage());
-                    //todo 记录兔叽的回复日志，群消息的记录通过上报自身发言在消息入口记录
-
                 }
                 return;
             }
@@ -140,6 +146,24 @@ public class MessageHandle {
         /**匹配关键词 (常规状态下，不是每一句都会触发AI响应的)*/
 
 
+    }
+
+    public void selfMessageHandle(String body) {
+        JSONObject bodyJsonObj = JSONObject.parseObject(body);
+
+        String messageType = String.valueOf(bodyJsonObj.get("message_type"));
+        switch (messageType) {
+            case "group" -> {
+                //群消息
+                GroupMessageInfo groupMessageInfo = JSON.parseObject(body, GroupMessageInfo.class);
+                rabbitbotGroupMessageService.create(groupMessageInfo);
+            }
+            case "private" -> {
+                //私聊消息
+                PrivateMessageInfo messageInfo = JSON.parseObject(body, PrivateMessageInfo.class);
+                rabbitbotPrivateMessageService.create(messageInfo);
+            }
+        }
     }
 
 

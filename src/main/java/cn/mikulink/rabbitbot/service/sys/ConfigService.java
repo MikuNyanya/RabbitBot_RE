@@ -74,7 +74,7 @@ public class ConfigService {
             //黑名单
             blackListService.loadFile();
             //养成系统信息
-            petService.loadPetInfo();
+//            petService.loadPetInfo();
             //加载高的城市信息文件
             weatherService.loadFile();
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 /**
  * MikuLink created in 2025/4/1 20:08
  * For the Reisen
- *
+ *  消息推送
  */
 @Service
 public class QQMessagePushService {

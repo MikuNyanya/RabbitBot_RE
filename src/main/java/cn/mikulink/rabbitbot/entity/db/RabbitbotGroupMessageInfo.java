@@ -32,7 +32,7 @@ public class RabbitbotGroupMessageInfo {
     //消息类型 group代表群消息 private私聊消息
     private String messageType;
     //表示消息的子类型 正常消息是 normal, 匿名消息是 anonymous,
-    private String sub_type;
+    private String subType;
     private String messageFormat;
     //消息状态 0.正常 1.已撤回
     private Integer recall;

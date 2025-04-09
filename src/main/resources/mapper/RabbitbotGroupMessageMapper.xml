@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mikulink.rabbitbot.mapper.RabbitbotGroupMessageMapper">
+    <resultMap id="BaseResultMap" type="cn.mikulink.rabbitbot.entity.db.RabbitbotGroupMessageInfo">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime"/>
+        <result column="group_id" property="groupId"/>
+        <result column="user_id" property="userId"/>
+        <result column="message_id" property="messageId"/>
+        <result column="sender_json" property="senderJson"/>
+        <result column="raw_message" property="rawMessage"/>
+        <result column="message_json" property="messageJson"/>
+        <result column="message_type" property="messageType"/>
+        <result column="sub_type" property="subType"/>
+        <result column="message_format" property="messageFormat"/>
+        <result column="recall" property="recall"/>
+    </resultMap>
+
+    <insert id="create" parameterType="cn.mikulink.rabbitbot.entity.db.RabbitbotGroupMessageInfo" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO rabbitbot_group_message
+        (group_id, user_id, message_id, sender_json, raw_message, message_json, message_type, sub_type, message_format, recall)
+        VALUES (#{groupId}, #{userId}, #{messageId}, #{senderJson}, #{rawMessage}, #{messageJson}, #{messageType},
+                #{subType}, #{messageFormat}, #{recall});
+    </insert>
+
+</mapper>

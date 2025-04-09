@@ -1,7 +1,7 @@
 package cn.mikulink.rabbitbot.test.apirequest.pixiv;
 
 import cn.mikulink.rabbitbot.apirequest.pixiv.PixivUserSearch;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivUserInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivUserInfo;
 import org.junit.Test;
 
 import java.util.List;

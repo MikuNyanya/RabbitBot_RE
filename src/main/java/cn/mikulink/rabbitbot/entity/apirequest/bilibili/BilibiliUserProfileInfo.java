@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.entity.bilibili;
+package cn.mikulink.rabbitbot.entity.apirequest.bilibili;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;

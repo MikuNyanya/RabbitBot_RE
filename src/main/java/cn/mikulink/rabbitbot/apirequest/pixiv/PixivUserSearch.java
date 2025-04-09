@@ -1,9 +1,8 @@
 package cn.mikulink.rabbitbot.apirequest.pixiv;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivUserInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivUserInfo;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;
-import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import lombok.Getter;

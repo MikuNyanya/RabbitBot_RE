@@ -41,33 +41,39 @@ public class OneBotMessageController {
     public void push(HttpServletRequest request) {
         //解析消息信息
         String body = readBody(request);
-        System.out.println(body);
-        try {
-            QQMessagePushInfo qqMessagePushInfo = new QQMessagePushInfo(body);
-            //todo 异步落库
-//        qqMessagePushService.create(qqMessagePushInfo);
+//        System.out.println("====接受报文====");
+//        System.out.println(body);
 
+        try {
             //解析，区分消息类型，进行对应处理
             JSONObject bodyJsonObj = JSONObject.parseObject(body);
+
+            //推送原报文落库
+            //输入状态报文不落库
+            if (!(null != bodyJsonObj.get("sub_type") && bodyJsonObj.get("sub_type").toString().equals("input_status"))) {
+                QQMessagePushInfo qqMessagePushInfo = new QQMessagePushInfo(body);
+                qqMessagePushService.create(qqMessagePushInfo);
+            }
 
             //todo 黑名单消息过滤
             String senderUserId = String.valueOf(bodyJsonObj.get("user_id"));
 
             String postType = String.valueOf(bodyJsonObj.get("post_type"));
             if (null == postType) {
-                log.error("接收到未知类型的消息上报,报文id:{}", qqMessagePushInfo.getId());
+                log.error("接收到未知类型的消息上报,bodyJsonObj:{}", body);
                 return;
             }
-            //todo 异步分发任务
+            //按照类型分发任务
             switch (postType) {
-                case "message":
+                case "message" ->
                     //消息
-                    messageHandle.messageHandle(body);
-                    break;
-                case "notice":
-                    //戳一戳
-                    noticeHandle.noticeHandle(body);
-                    break;
+                        messageHandle.messageHandle(body);
+                case "message_sent" ->
+                    //自己的消息
+                        messageHandle.selfMessageHandle(body);
+                case "notice" ->
+                    //notice事件
+                        noticeHandle.noticeHandle(body);
             }
         } catch (Exception ex) {
             log.error("消息推送业务异常！", ex);

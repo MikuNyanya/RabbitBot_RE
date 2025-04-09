@@ -40,6 +40,8 @@ public class MessageInfo extends MessagePushBase {
     //CQ 码格式的消息
     @JSONField(name = "raw_message")
     protected String rawMessage;
+    @JSONField(name = "message_format")
+    protected String messageFormat;
     //字的大小
     protected Integer font;
     //发送者信息

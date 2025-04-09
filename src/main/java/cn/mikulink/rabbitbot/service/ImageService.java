@@ -9,7 +9,7 @@ import cn.mikulink.rabbitbot.entity.ImageInfo;
 import cn.mikulink.rabbitbot.entity.ImageSearchMemberInfo;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchResult;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.service.sys.ProxyService;
 import cn.mikulink.rabbitbot.utils.*;

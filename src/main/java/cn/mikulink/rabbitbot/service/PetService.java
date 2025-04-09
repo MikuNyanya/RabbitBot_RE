@@ -169,19 +169,19 @@ public class PetService {
      */
     private void sendMessageGroupAll(MessageChain message) {
         //给每个群发送消息
-        ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-        for (Group groupInfo : groupList) {
-            //检查功能开关
-            ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "pet");
-            if (!reStringSwitch.isSuccess()) {
-                continue;
-            }
-            try {
-                groupInfo.sendMessage(message);
-            } catch (Exception ex) {
-                logger.error("养成系统群通知异常", ex);
-            }
-        }
+//        ContactList<Group> groupList = RabbitBot.getBot().getGroups();
+//        for (Group groupInfo : groupList) {
+//            //检查功能开关
+//            ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "pet");
+//            if (!reStringSwitch.isSuccess()) {
+//                continue;
+//            }
+//            try {
+//                groupInfo.sendMessage(message);
+//            } catch (Exception ex) {
+//                logger.error("养成系统群通知异常", ex);
+//            }
+//        }
     }
 
 

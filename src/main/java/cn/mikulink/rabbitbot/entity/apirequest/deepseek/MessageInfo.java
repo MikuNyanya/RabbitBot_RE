@@ -13,10 +13,17 @@ import java.io.Serializable;
 @Setter
 public class MessageInfo implements Serializable {
 
-    public MessageInfo(){}
+    public MessageInfo() {
+    }
 
-    public MessageInfo(String role,String content){
+    public MessageInfo(String role, String content) {
         this.role = role;
+        this.content = content;
+    }
+
+    public MessageInfo(String role, String name, String content) {
+        this.role = role;
+        this.name = name;
         this.content = content;
     }
 

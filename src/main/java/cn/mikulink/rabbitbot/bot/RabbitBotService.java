@@ -182,13 +182,6 @@ public class RabbitBotService {
      * @return mirai图片id
      */
     public Image uploadMiraiImage(String localImagesPath) {
-        if (null == group) {
-            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-            for (Group grouptemp : groupList) {
-                group = grouptemp;
-                break;
-            }
-        }
         //上传
         return group.uploadImage(ExternalResource.create(new File(localImagesPath)).toAutoCloseable());
     }
@@ -282,11 +275,11 @@ public class RabbitBotService {
      * @param messageChain 消息链
      */
     public void sendFriendMessage(Long qq, MessageChain messageChain) {
-        Friend friend = RabbitBot.getBot().getFriend(qq);
-        if (null == friend) {
-            return;
-        }
-        friend.sendMessage(messageChain);
+//        Friend friend = RabbitBot.getBot().getFriend(qq);
+//        if (null == friend) {
+//            return;
+//        }
+//        friend.sendMessage(messageChain);
     }
 
     /**
@@ -296,10 +289,10 @@ public class RabbitBotService {
      * @param messageChain 消息链
      */
     public void sendGroupMessage(Long groupId, MessageChain messageChain) {
-        Group group = RabbitBot.getBot().getGroup(groupId);
-        if (null == group) {
-            return;
-        }
-        group.sendMessage(messageChain);
+//        Group group = RabbitBot.getBot().getGroup(groupId);
+//        if (null == group) {
+//            return;
+//        }
+//        group.sendMessage(messageChain);
     }
 }

@@ -1,7 +1,7 @@
 package cn.mikulink.rabbitbot.test.apirequest.pixiv;
 
 import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustPagesGet;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivImageUrlInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageUrlInfo;
 import org.junit.Test;
 
 import java.util.List;

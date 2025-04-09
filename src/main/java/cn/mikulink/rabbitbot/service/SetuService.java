@@ -3,7 +3,7 @@ package cn.mikulink.rabbitbot.service;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.utils.*;
 import com.alibaba.fastjson2.JSONObject;
 import org.slf4j.Logger;

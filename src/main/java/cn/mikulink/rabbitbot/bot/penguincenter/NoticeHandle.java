@@ -40,17 +40,19 @@ public class NoticeHandle {
     public void noticeHandle(String messageBody) {
         NotcieInfo notcieInfo = JSON.parseObject(messageBody, NotcieInfo.class);
 
-        if(notcieInfo.getNoticeType().equals("notify")){
+        if (notcieInfo.getNoticeType().equals("notify")) {
             switch (notcieInfo.getSubType()) {
                 case "poke":
                     //戳一戳
                     doPokeBiz(notcieInfo);
                     break;
-        }
+            }
 
-        if(notcieInfo.getNoticeType().equals("group_recall")){
-            //群消息撤回
-        }
+            if (notcieInfo.getNoticeType().equals("group_recall")) {
+                //todo 群消息撤回
+                //标记对应消息为已撤回
+                //概率对撤回消息做出回应
+            }
 
 
         }
@@ -70,6 +72,11 @@ public class NoticeHandle {
         Long groupId = notcieInfo.getGroupId();
         //而我踏马是谁
         Long selfId = notcieInfo.getSelfId();
+
+        //兔叽戳别人的，不做任何响应
+        if (pokerId.equals(selfId)) {
+            return;
+        }
 
         //戳的兔叽
         if (targetId.equals(selfId)) {

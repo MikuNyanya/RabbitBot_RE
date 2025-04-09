@@ -1,8 +1,7 @@
 package cn.mikulink.rabbitbot.apirequest.pixiv;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
-import cn.mikulink.rabbitbot.utils.HttpUtil;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.Getter;
@@ -11,7 +10,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
-import java.net.Proxy;
 
 /**
  * create by MikuLink on 2020/12/17 22:10

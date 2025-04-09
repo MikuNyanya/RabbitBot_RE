@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Data
 @NoArgsConstructor
-public class rabbitbotSendRecordInfo {
+public class RabbitbotSendRecordInfo {
     //主键id
     private Long id;
     //数据创建时间
@@ -23,8 +23,10 @@ public class rabbitbotSendRecordInfo {
     private Long userId;
     //消息id 消息发送后返回报文中带有id
     private Long messageId;
+    //请求的链接
+    private String url;
     //发送的信息报文
-    private String request_json;
+    private String requestJson;
     //消息发送后返回的报文
-    private String response_json;
+    private String responseJson;
 }

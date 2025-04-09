@@ -1,10 +1,9 @@
 package cn.mikulink.rabbitbot.apirequest.pixiv;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivImageUrlInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageUrlInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
-import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -12,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
-import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

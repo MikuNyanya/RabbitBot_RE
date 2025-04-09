@@ -2,7 +2,7 @@ package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
-import cn.mikulink.rabbitbot.entity.pixiv.PixivUserInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivUserInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;

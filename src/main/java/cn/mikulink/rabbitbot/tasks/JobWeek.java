@@ -33,19 +33,19 @@ public class JobWeek {
         //没品网站文章更新推送
         //计划每周一上午10点进行推送
         try {
-            MessageChain msgChain = meiPinService.lastMeiPinMsgChain();
-            //给每个群推送消息
-            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-            for (Group groupInfo : groupList) {
-                try {
-                    groupInfo.sendMessage(msgChain);
-                } catch (kotlinx.coroutines.TimeoutCancellationException ex) {
-                    logger.warn("没品文章mirai发送超时");
-                }
-
-                //每个群之间间隔半秒意思一下
-                Thread.sleep(500);
-            }
+//            MessageChain msgChain = meiPinService.lastMeiPinMsgChain();
+//            //给每个群推送消息
+//            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
+//            for (Group groupInfo : groupList) {
+//                try {
+//                    groupInfo.sendMessage(msgChain);
+//                } catch (kotlinx.coroutines.TimeoutCancellationException ex) {
+//                    logger.warn("没品文章mirai发送超时");
+//                }
+//
+//                //每个群之间间隔半秒意思一下
+//                Thread.sleep(500);
+//            }
         } catch (Exception ex) {
             log.warn("没品文章推送异常", ex);
         }

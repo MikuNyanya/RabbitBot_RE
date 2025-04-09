@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.test.service;
 
-import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageInfo;
 import cn.mikulink.rabbitbot.service.PixivService;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;

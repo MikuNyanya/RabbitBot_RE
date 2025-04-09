@@ -1,8 +1,8 @@
 package cn.mikulink.rabbitbot.test.apirequest.bilibili;
 
 import cn.mikulink.rabbitbot.apirequest.bilibili.BilibiliDynamicSvrGet;
-import cn.mikulink.rabbitbot.entity.bilibili.BilibiliDynamicSvrCardInfo;
-import cn.mikulink.rabbitbot.entity.bilibili.BilibiliDynamicSvrResponseInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.bilibili.BilibiliDynamicSvrCardInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.bilibili.BilibiliDynamicSvrResponseInfo;
 import com.alibaba.fastjson2.JSONObject;
 import org.junit.Test;
 

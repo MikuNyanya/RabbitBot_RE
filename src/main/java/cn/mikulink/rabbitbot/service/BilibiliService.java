@@ -4,7 +4,7 @@ import cn.mikulink.rabbitbot.apirequest.bilibili.BilibiliDynamicSvrGet;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
-import cn.mikulink.rabbitbot.entity.bilibili.*;
+import cn.mikulink.rabbitbot.entity.apirequest.bilibili.*;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.tasks.JobMain;
