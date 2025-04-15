@@ -1,24 +1,19 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.apirequest.weibo.WeiboHomeTimelineGet;
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoPicUrl;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
-import cn.mikulink.rabbitbot.service.sys.SwitchService;
-import cn.mikulink.rabbitbot.tasks.JobMain;
 import cn.mikulink.rabbitbot.utils.DateUtil;
-import cn.mikulink.rabbitbot.utils.ImageUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +22,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,8 +40,6 @@ public class WeiboNewsService {
     private String weiboToken;
     @Autowired
     private RabbitBotService rabbitBotService;
-    @Autowired
-    private SwitchService switchService;
     @Autowired
     private ConfigService configService;
 
@@ -70,58 +63,13 @@ public class WeiboNewsService {
         WeiboHomeTimelineGet request = new WeiboHomeTimelineGet();
         request.setAccessToken(weiboToken);
         request.setPage(1);
-        //每次获取最近的5条
+        //每次获取最新的指定数目
         request.setCount(pageSize);
         request.setSince_id(NumberUtil.toLong(ConstantCommon.common_config.get("sinceId")));
 
         //发送请求
         request.doRequest();
         return request.getEntity();
-    }
-
-    /**
-     * 给给每个群推送微博
-     *
-     * @param statuses 从微博API获取的推文列表
-     */
-    public void sendWeiboNewsToEveryGroup(List<InfoStatuses> statuses) throws InterruptedException, IOException {
-        if (null == statuses || statuses.size() == 0) {
-            return;
-        }
-
-        //发送微博
-        for (InfoStatuses info : statuses) {
-            Long userId = info.getUser().getId();
-
-            //解析微博报文
-            MessageChain msgChain = parseWeiboBody(info);
-            if (null != info.getRetweeted_status()) {
-                //追加被转发的微博消息
-                msgChain = msgChain.plus(parseWeiboBody(info.getRetweeted_status(), true));
-            }
-
-            JobMain.msgList.add(msgChain);
-            logger.info("一条微博消息 已加入肯德基豪华午餐 " + info.getUser().getName());
-
-        }
-
-    }
-
-    /**
-     * 执行一次微博群消息推送
-     */
-    public void doPushWeiboNews() throws IOException, InterruptedException, RabbitException {
-        InfoWeiboHomeTimeline weiboNews = getWeiboNews(10);
-        Long sinceId = weiboNews.getSince_id();
-        //刷新最后推文标识，但如果一次请求中没有获取到新数据，since_id会为0
-        if (0 != sinceId) {
-            logger.info(String.format("微博sinceId刷新：[%s]->[%s]", ConstantCommon.common_config.get("sinceId"), sinceId));
-            //刷新sinceId配置
-            ConstantCommon.common_config.put("sinceId", String.valueOf(sinceId));
-            //更新配置文件
-            configService.refreshConfigFile();
-        }
-        sendWeiboNewsToEveryGroup(weiboNews.getStatuses());
     }
 
     /**
@@ -162,7 +110,7 @@ public class WeiboNewsService {
      * @return 转化好的信息对象，包含图片信息
      * @throws IOException 处理异常
      */
-    public MessageChain parseWeiboBody(InfoStatuses info) throws IOException {
+    public List<MessageChain> parseWeiboBody(InfoStatuses info) throws IOException {
         return parseWeiboBody(info, false);
     }
 
@@ -174,37 +122,35 @@ public class WeiboNewsService {
      * @return 转化好的信息对象，包含图片信息
      * @throws IOException 处理异常
      */
-    public MessageChain parseWeiboBody(InfoStatuses info, boolean retweetedStatus) throws IOException {
-        MessageChain result = MessageUtils.newChain();
+    public List<MessageChain> parseWeiboBody(InfoStatuses info, boolean retweetedStatus) throws IOException {
+        List<MessageChain> result = new ArrayList<>();
 
         Long userId = info.getUser().getId();
 
         //如果是转发微博
         if (retweetedStatus) {
-            result = result.plus("\n-----------↓转发微博↓----------\n");
+            result.add(RabbitBotMessageBuilder.parseMessageChainText("\n-----------↓转发微博↓----------\n"));
         }
 
         //头像
-        if (1312997677 != userId) {
-            //解析推主头像
-            Image userImgInfo = getMiraiImageByWeiboImgUrl(info.getUser().getProfile_image_url());
-            if (null != userImgInfo) {
-                result = result.plus("").plus(userImgInfo);
-            } else {
-                result = result.plus("[头像下载失败]");
-            }
+        if (1312997677 == userId) {
+            result.add(RabbitBotMessageBuilder.parseMessageChainText(ConstantWeiboNews.WHAT_ASSHOLE + "\n"));
         } else {
-            result = result.plus(ConstantWeiboNews.WHAT_ASSHOLE).plus("\n");
+            //解析推主头像
+            String userLogoUrl = getUserLogoUrl(info.getUser().getProfile_image_url());
+            if (null != userLogoUrl) {
+                result.add(RabbitBotMessageBuilder.parseMessageChainText(userLogoUrl));
+            }
         }
         //推主名
-        result = result.plus("[" + info.getUser().getName() + "]\n");
+        result.add(RabbitBotMessageBuilder.parseMessageChainText("[" + info.getUser().getName() + "]\n"));
         //uid
-        result = result.plus("[" + info.getUser().getId() + "]\n");
+        result.add(RabbitBotMessageBuilder.parseMessageChainText("[" + info.getUser().getId() + "]\n"));
         //推文时间
-        result = result.plus("[" + parseWeiboDate(info.getCreated_at()) + "]\n");
-        result = result.plus("========================\n");
+        result.add(RabbitBotMessageBuilder.parseMessageChainText("[" + parseWeiboDate(info.getCreated_at()) + "]\n"));
+        result.add(RabbitBotMessageBuilder.parseMessageChainText("========================\n"));
         //正文
-        result = result.plus(info.getText());
+        result.add(RabbitBotMessageBuilder.parseMessageChainText(info.getText()));
 
         //拼接推文图片
         List<InfoPicUrl> picList = info.getPic_urls();
@@ -218,9 +164,9 @@ public class WeiboNewsService {
             //获取原图地址
             String largeImageUrl = getImgLarge(picUrl.getThumbnail_pic());
             //上传图片并获取图片id
-            Image largeImagInfo = getMiraiImageByWeiboImgUrl(largeImageUrl);
-            if (null != largeImagInfo) {
-                result = result.plus("\n").plus("").plus(largeImagInfo);
+            String userLogoUrl = getUserLogoUrl(largeImageUrl);
+            if (null != userLogoUrl) {
+                result.add(RabbitBotMessageBuilder.parseMessageChainText("\n" + userLogoUrl));
             }
         }
         return result;
@@ -240,8 +186,8 @@ public class WeiboNewsService {
         return imageUrl.replace("thumbnail", "large");
     }
 
-    //解析微博图片为miraiImage对象
-    private Image getMiraiImageByWeiboImgUrl(String imageUrl) throws IOException {
+    //处理头像图片链接问题
+    private String getUserLogoUrl(String imageUrl) {
         if (StringUtil.isEmpty(imageUrl)) {
             return null;
         }
@@ -249,17 +195,7 @@ public class WeiboNewsService {
         if (imageUrl.contains("?")) {
             imageUrl = imageUrl.substring(0, imageUrl.lastIndexOf("?"));
         }
-        String imageName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-
-        //先把图片下载下来
-        HashMap<String, String> header = new HashMap<>();
-        header.put("referer", "https://weibo.com/");
-        String localImageUrl = ImageUtil.downloadImage(header, imageUrl, ConstantImage.IMAGE_WEIBO_SAVE_PATH, null);
-        if (StringUtil.isEmpty(localImageUrl)) {
-            return null;
-        }
-        //然后上传到服务器，获取imageId
-        return rabbitBotService.uploadMiraiImage(localImageUrl);
+        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
     }
 
     //转化微博接口的时间字段

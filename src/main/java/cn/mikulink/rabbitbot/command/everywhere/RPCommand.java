@@ -6,7 +6,6 @@ import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantRP;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
-import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.rpg.CharacterStatsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
@@ -23,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Command
 public class RPCommand extends EverywhereCommand {
     @Autowired
-    private RabbitBotService rabbitBotService;
-    @Autowired
     private CharacterStatsService characterStatsService;
 
     @Override
@@ -35,7 +32,7 @@ public class RPCommand extends EverywhereCommand {
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
         //获取群员信息
-        String groupUserName = rabbitBotService.getUserName(messageInfo.getSender());
+        String groupUserName = messageInfo.getSender().getGroupCardOrUserNick();
 
         //rp 与人物属性的运气值对齐 问题就是可能不会出现0和100的运气了
         int rp = characterStatsService.getPlayerLUCK(groupUserName);

@@ -81,5 +81,4 @@ public class RabbitBotMessageBuilder {
         groupMessageInfo.setGroupId(groupId);
         return groupMessageInfo;
     }
-
 }

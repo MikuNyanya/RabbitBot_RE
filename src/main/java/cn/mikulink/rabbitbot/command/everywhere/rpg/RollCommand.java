@@ -7,7 +7,6 @@ import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.SenderInfo;
 import cn.mikulink.rabbitbot.entity.rpg.PlayerCharacterStats;
-import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.rpg.CharacterStatsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,6 @@ import java.util.ArrayList;
 public class RollCommand extends EverywhereCommand {
     @Autowired
     private CharacterStatsService characterStatsService;
-    @Autowired
-    private RabbitBotService rabbitBotService;
 
     @Override
     public CommandProperties properties() {
@@ -44,7 +41,7 @@ public class RollCommand extends EverywhereCommand {
             return RabbitBotMessageBuilder.createMessageText(ConstantRPG.EXPLAIN);
         }
         //发送人名称
-        String userName = rabbitBotService.getUserName(sender);
+        String userName = sender.getGroupCardOrUserNick();
         //输入的指令
         String commandParam = args.get(0).toUpperCase();
         PlayerCharacterStats userStat = characterStatsService.parseCharacterStatsList(userName);

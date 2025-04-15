@@ -53,6 +53,10 @@ public class RabbitBotSender {
         sendPrivateMessage(userId, List.of(message));
     }
 
+    public void sendPrivateMessage(Long userId, MessageInfo message) {
+        sendPrivateMessage(userId, message.getMessage());
+    }
+
     /**
      * 发送私聊消息
      *
@@ -94,6 +98,10 @@ public class RabbitBotSender {
      */
     public void sendGroupMessage(Long groupId, MessageChain message) {
         sendGroupMessage(groupId, List.of(message));
+    }
+
+    public void sendGroupMessage(Long groupId, MessageInfo message) {
+        sendGroupMessage(groupId, message.getMessage());
     }
 
     /**

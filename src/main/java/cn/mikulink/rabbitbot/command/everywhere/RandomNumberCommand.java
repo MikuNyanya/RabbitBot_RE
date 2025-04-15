@@ -4,10 +4,8 @@ import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
-import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -21,9 +19,6 @@ import java.util.List;
  */
 @Command
 public class RandomNumberCommand extends EverywhereCommand {
-    @Autowired
-    private RabbitBotService rabbitBotService;
-
     @Override
     public CommandProperties properties() {
         return new CommandProperties("random", "r");
@@ -41,7 +36,7 @@ public class RandomNumberCommand extends EverywhereCommand {
         }
 
         //群员名称
-        String userName = rabbitBotService.getUserName(messageInfo.getSender());
+        String userName = messageInfo.getSender().getGroupCardOrUserNick();
         //附加指令
         String commandParam = "";
         if (null != args && args.size() > 0) {

@@ -112,7 +112,7 @@ public class DanbooruService {
                     null,
                     proxyService.getProxy());
         }
-        MessageChain result = rabbitBotService.parseMsgChainByLocalImgs(localUrl);
+//        MessageChain result = rabbitBotService.parseMsgChainByLocalImgs(localUrl);
         SaucenaoSearchInfoResult saucenaoSearchInfoResult = danbooruImageInfo.getSaucenaoSearchInfoResult();
 
         StringBuilder resultStr = new StringBuilder();
@@ -133,7 +133,8 @@ public class DanbooruService {
         resultStr.append("\n[来源] ").append(source);
         resultStr.append("\n[主要TAG] ").append(danbooruImageInfo.getTagStringCharacter()).append(" ").append(danbooruImageInfo.getTagStringCopyright());
         resultStr.append("\n[上传时间] ").append(createdAt);
-        result = result.plus(resultStr.toString());
-        return result;
+//        result = result.plus(resultStr.toString());
+//        return result;
+        return null;
     }
 }

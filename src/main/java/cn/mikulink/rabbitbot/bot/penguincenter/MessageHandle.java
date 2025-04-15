@@ -7,6 +7,7 @@ import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.PrivateMessageInfo;
 import cn.mikulink.rabbitbot.service.DeepSeekService;
+import cn.mikulink.rabbitbot.service.KeyWordService;
 import cn.mikulink.rabbitbot.service.db.RabbitbotGroupMessageService;
 import cn.mikulink.rabbitbot.service.db.RabbitbotPrivateMessageService;
 import com.alibaba.fastjson2.JSON;
@@ -33,6 +34,8 @@ public class MessageHandle {
     private RabbitbotGroupMessageService rabbitbotGroupMessageService;
     @Autowired
     private RabbitbotPrivateMessageService rabbitbotPrivateMessageService;
+    @Autowired
+    private KeyWordService keyWordService;
 
     public void messageHandle(String messageBody) {
         JSONObject bodyJsonObj = JSONObject.parseObject(messageBody);
@@ -94,9 +97,7 @@ public class MessageHandle {
 
         /**优先处理at自己的业务*/
 
-        /**进入复读机响应*/
-
-        /**at相关业务*/
+        /**at自己的其他相关业务*/
 
         /**进入AI响应模式*/
         boolean isResponded = deepSeekService.aiModeGroup(groupMessageInfo);
@@ -104,13 +105,16 @@ public class MessageHandle {
             return;
         }
 
-        /**匹配关键词 (常规状态下，不是每一句都会触发AI响应的)*/
-
-
+        /**匹配关键词 (因为常规状态下，不是每一句都会触发AI响应的，所以会到这里)*/
+        MessageInfo result = keyWordService.keyWordMatchGroup(groupMessageInfo);
+        if (result != null) {
+            rabbitBotSender.sendGroupMessage(groupId, result.getMessage());
+        }
     }
 
 
     public void doMessageBiz(@NotNull PrivateMessageInfo privateMessageInfo) {
+        //消息落库
         rabbitbotPrivateMessageService.create(privateMessageInfo);
 
         Long senderUserId = privateMessageInfo.getUserId();
@@ -150,8 +154,10 @@ public class MessageHandle {
         }
 
         /**匹配关键词*/
-
-
+        MessageInfo result = keyWordService.keyWordMatchGroup(privateMessageInfo);
+        if (result != null) {
+            rabbitBotSender.sendPrivateMessage(senderUserId, result.getMessage());
+        }
     }
 
     public void selfMessageHandle(String body) {

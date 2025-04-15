@@ -160,7 +160,7 @@ public class MessageEvents extends SimpleListenerHost {
             //AI响应
 
             //关键词响应
-            keyWordService.keyWordMatchGroup(event);
+//            keyWordService.keyWordMatchGroup(event);
             return ListeningStatus.LISTENING;
         }
         GroupCommand command = (GroupCommand) commandConfig.getCommand(oriMsg, commandConfig.groupCommands);

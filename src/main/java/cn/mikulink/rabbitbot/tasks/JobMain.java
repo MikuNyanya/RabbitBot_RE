@@ -1,26 +1,29 @@
 package cn.mikulink.rabbitbot.tasks;
 
 
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
+import cn.mikulink.rabbitbot.bot.RabbitBotSender;
+import cn.mikulink.rabbitbot.bot.RabbitBotService;
+import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantWeiboNews;
+import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
+import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.BilibiliService;
 import cn.mikulink.rabbitbot.service.FreeTimeService;
-import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.WeiboNewsService;
-import cn.mikulink.rabbitbot.service.sys.SwitchService;
-import cn.mikulink.rabbitbot.utils.CollectionUtil;
+import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,10 +32,10 @@ import java.util.List;
  * <p>
  * 1分钟执行一次的定时器
  */
+@Slf4j
 @Component
 @EnableScheduling
 public class JobMain {
-    private static final Logger logger = LoggerFactory.getLogger(JobMain.class);
 
     //正常间隔(毫秒) 目前为2小时
     private static final Long SPLIT_NORMAL = 1000L * 60 * 60 * 2;
@@ -47,15 +50,18 @@ public class JobMain {
     @Autowired
     private WeiboNewsService weiboNewsService;
     @Autowired
-    private SwitchService switchService;
-    @Autowired
     private BilibiliService bilibiliService;
     @Autowired
     private FreeTimeService freeTimeService;
     @Autowired
     private RabbitBotService rabbitBotService;
+    @Autowired
+    private RabbitBotSender rabbitBotSender;
+    @Autowired
+    private ConfigService configService;
 
-//    @Scheduled(cron = "0 * * * * ?")
+
+    @Scheduled(cron = "0 * * * * ?")
     public void execute() {
         //日常语句
         freeTimeRabbit();
@@ -70,23 +76,6 @@ public class JobMain {
         weiboNews();
     }
 
-
-    public static List<MessageChain> msgList = new ArrayList<>();
-
-    @Scheduled(cron = "0 0/10 * * * ?")
-    public void execin10min() {
-        //十分钟执行一次，发送队列信息
-        if (CollectionUtil.isEmpty(msgList)) {
-            return;
-        }
-
-        logger.info("发送群消息/10min");
-        rabbitBotService.sendGroupMessage(669863883L, msgList.get(0));
-
-        msgList.remove(0);
-    }
-
-
     //日常兔子
     private void freeTimeRabbit() {
         //检测发送间隔 加上随机间隔时间
@@ -99,15 +88,18 @@ public class JobMain {
         if (hour < 8) {
             return;
         }
-
-        String msg = freeTimeService.randomMsg();
-
-        //给每个群发送消息
         try {
-            MessageChain result = MessageUtils.newChain().plus(msg);
-            rabbitBotService.sendGroupMessage(669863883L, result);
+            String msg = freeTimeService.randomMsg();
+
+            //给每个群发送消息
+            MessageInfo messageInfo = RabbitBotMessageBuilder.createMessageImage(msg);
+            List<GroupInfo> groupList = rabbitBotService.getGroupList();
+            for (GroupInfo groupInfo : groupList) {
+                rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
+            }
+
         } catch (Exception ex) {
-            logger.error("日常语句推送执行异常:" + ex.toString(), ex);
+            log.error("日常语句推送执行异常:" + ex.getMessage(), ex);
         }
 
         //刷新最后发送时间
@@ -129,7 +121,7 @@ public class JobMain {
 
             ConstantImage.IMAGE_SEARCH_WITE_LIST.removeIf(item -> System.currentTimeMillis() >= item.getExpireIn().getTime());
         } catch (Exception ex) {
-            logger.error("清理已过期的搜图指令时发生异常", ex);
+            log.error("清理已过期的搜图指令时发生异常", ex);
         }
     }
 
@@ -144,7 +136,7 @@ public class JobMain {
             //执行一次消息推送
             bilibiliService.doDynamicSvrPush();
         } catch (Exception ex) {
-            logger.error("B站视频动态推送执行异常:" + ex.toString(), ex);
+            log.error("B站视频动态推送执行异常:" + ex.toString(), ex);
         }
 
         //刷新最后发送时间
@@ -159,10 +151,48 @@ public class JobMain {
         }
 
         try {
-            //执行一次微博消息推送
-            weiboNewsService.doPushWeiboNews();
+            //执行微博消息推送
+            //获取接口返回
+            InfoWeiboHomeTimeline weiboNews = weiboNewsService.getWeiboNews(10);
+
+            //刷新最后推文标识，但如果一次请求中没有获取到新数据，since_id会为0
+            Long sinceId = weiboNews.getSince_id();
+            if (0 != sinceId) {
+                log.info(String.format("微博sinceId刷新：[%s]->[%s]", ConstantCommon.common_config.get("sinceId"), sinceId));
+                //刷新sinceId配置
+                ConstantCommon.common_config.put("sinceId", String.valueOf(sinceId));
+                //更新配置文件
+                configService.refreshConfigFile();
+            }
+
+            //获取微博内容
+            List<InfoStatuses> statuses = weiboNews.getStatuses();
+
+            if (null == statuses || statuses.size() == 0) {
+                return;
+            }
+
+            //发送微博
+            for (InfoStatuses info : statuses) {
+                //解析微博报文
+                List<MessageChain> msgChain = weiboNewsService.parseWeiboBody(info);
+                if (null != info.getRetweeted_status()) {
+                    //追加被转发的微博消息
+                    msgChain.addAll(weiboNewsService.parseWeiboBody(info.getRetweeted_status(), true));
+                }
+
+                //每个群发送微博推送
+                MessageInfo messageInfo = new MessageInfo(msgChain);
+//                List<GroupInfo> groupList = rabbitBotService.getGroupList();
+//                for (GroupInfo groupInfo : groupList) {
+//                    rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
+//                }
+                rabbitBotSender.sendPrivateMessage(455806936L,messageInfo);
+            }
+
+
         } catch (Exception ex) {
-            logger.error("微博消息推送执行异常:" + ex.toString(), ex);
+            log.error("微博消息推送执行异常:" + ex.getMessage(), ex);
         }
 
         //刷新最后发送时间

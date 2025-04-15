@@ -71,6 +71,24 @@ public class MessageInfo extends MessagePushBase {
         return false;
     }
 
+    //获取简易消息，该消息将尽量精简文本，比如图片会被标记为[图片]
+    public String getSimpleMessage() {
+        String strTemp = "";
+        for (MessageChain messageChain : message) {
+            if (messageChain.getType().equalsIgnoreCase("text")) {
+                strTemp += messageChain.getData().getText();
+            }
+            if (messageChain.getType().equalsIgnoreCase("image")) {
+                strTemp += "[图片]";
+            }
+
+            if (messageChain.getType().equalsIgnoreCase("at")) {
+                strTemp += "[at]";
+            }
+        }
+        return strTemp;
+    }
+
     //是否提到了机器人
     public boolean isMentionBot() {
         //todo 写到某个服务中，机器人名称使用配置文件的值

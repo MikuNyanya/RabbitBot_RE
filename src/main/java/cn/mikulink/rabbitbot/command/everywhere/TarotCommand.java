@@ -7,7 +7,6 @@ import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.TarotInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
-import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.TarotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +30,6 @@ public class TarotCommand extends EverywhereCommand {
 
     @Autowired
     private TarotService tarotService;
-    @Autowired
-    private RabbitBotService rabbitBotService;
 
     @Override
     public CommandProperties properties() {
@@ -41,7 +38,7 @@ public class TarotCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
-        String userNick = rabbitBotService.getUserName(messageInfo.getSender());
+        String userNick = messageInfo.getSender().getGroupCardOrUserNick();
 
         try {
             //抽牌

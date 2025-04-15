@@ -1,23 +1,15 @@
 package cn.mikulink.rabbitbot.service;
 
 
-import cn.mikulink.rabbitbot.bot.RabbitBotService;
+import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
-import cn.mikulink.rabbitbot.utils.ImageUtil;
-import cn.mikulink.rabbitbot.utils.StringUtil;
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.message.data.MessageChain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,23 +20,18 @@ import java.util.Map;
  * @date 2022/9/25 0:17
  * for the Reisen
  */
+@Slf4j
 @Service
 public class MirlKoiService {
-    private static final Logger logger = LoggerFactory.getLogger(MirlKoiService.class);
 
     @Value("${mirlkoi.setu.url:}")
     private String mirlkoiSetuUrl;
 
-    @Autowired
-    private RabbitBotService rabbitBotService;
-
     /**
-     * 获取一张随机色图
-     *
-     * @return 下载后的本地路径
-     * @throws IOException 异常
+     * 获取指定数量的随机色图
+     * 微博图片可直接给NT，不用防盗链
      */
-    public List<String> downloadASetu(Integer count) throws IOException {
+    public List<String> getSetus(Integer count) throws IOException {
         String body = null;
         String url = mirlkoiSetuUrl + "&num=" + count;
         if (mirlkoiSetuUrl.startsWith("https")) {
@@ -54,47 +41,15 @@ public class MirlKoiService {
             body = HttpUtil.get(url);
         }
 
-        Map<String, String> bodyMap = JSONObject.parseObject(body, HashMap.class);
-        List<String> picUrls = JSON.parseArray(String.valueOf(bodyMap.get("pic")), String.class);
-        List<String> returnUrls = new ArrayList<>();
-        HashMap<String, String> header = new HashMap<>();
-        header.put("referer", "https://weibo.com/");
-        for (String picUrl : picUrls) {
-            returnUrls.add(ImageUtil.downloadImage(header, picUrl, "data/images/mirlkoi", System.currentTimeMillis() + ".jpg"));
-        }
-        return returnUrls;
-    }
-
-    public void sendRandomSetu(Contact subject) {
-        this.sendRandomSetu(subject, 1);
+        Map<String, String> bodyMap = JSON.parseObject(body, HashMap.class);
+        return JSON.parseArray(String.valueOf(bodyMap.get("pic")), String.class);
     }
 
     /**
-     * 发送一张随机色图
-     * 异常时重试一次
-     *
-     * @param subject 目标对象
+     * 获取一张色图
      */
-    public void sendRandomSetu(Contact subject, Integer count) {
-        try {
-            //默认为1张
-            if (null == count) {
-                count = 1;
-            }
-            List<String> pathStrs = downloadASetu(count);
-            for (String pathStr : pathStrs) {
-                if (StringUtil.isNotEmpty(pathStr)) {
-                    MessageChain messageChain = rabbitBotService.parseMsgChainByLocalImgs(pathStr);
-                    if (null != messageChain) {
-                        subject.sendMessage(messageChain);
-                    }
-                }
-
-                //间隔半秒
-                Thread.sleep(500);
-            }
-        } catch (Exception ex) {
-            logger.error("MirlKoi 色图发送异常", ex);
-        }
+    public String getASetu() throws IOException {
+        List<String> setuList = this.getSetus(1);
+        return CollectionUtil.isEmpty(setuList) ? null : setuList.get(0);
     }
 }

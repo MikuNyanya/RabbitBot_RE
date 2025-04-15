@@ -252,8 +252,8 @@ public class PixivService {
         //展示图片
         if (showImage) {
             parseImages(imageInfo);
-            List<Image> miraiImageList = rabbitBotService.uploadMiraiImage(imageInfo.getLocalImgPathList());
-            result = rabbitBotService.parseMsgChainByImgs(miraiImageList);
+//            List<Image> miraiImageList = rabbitBotService.uploadMiraiImage(imageInfo.getLocalImgPathList());
+//            result = rabbitBotService.parseMsgChainByImgs(miraiImageList);
         }
 
         StringBuilder resultStr = new StringBuilder();
@@ -283,8 +283,8 @@ public class PixivService {
         //日榜正常榜，不用r18过滤
         //展示图片
         if (CollectionUtil.isNotEmpty(imageInfo.getLocalImagesPath())) {
-            List<Image> miraiImageList = rabbitBotService.uploadMiraiImage(imageInfo.getLocalImagesPath());
-            result = rabbitBotService.parseMsgChainByImgs(miraiImageList);
+//            List<Image> miraiImageList = rabbitBotService.uploadMiraiImage(imageInfo.getLocalImagesPath());
+//            result = rabbitBotService.parseMsgChainByImgs(miraiImageList);
         }else{
             result = MessageUtils.newChain().plus("[未获取到相关图片]");
         }

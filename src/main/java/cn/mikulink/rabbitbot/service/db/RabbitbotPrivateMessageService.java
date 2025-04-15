@@ -69,4 +69,8 @@ public class RabbitbotPrivateMessageService {
         return resultList;
     }
 
+
+    public RabbitbotPrivateMessageInfo getLastBotHistoryByTargetId(Long targetId,Long botId) {
+        return mapper.getLastBotHistoryByTargetId(targetId, botId);
+    }
 }

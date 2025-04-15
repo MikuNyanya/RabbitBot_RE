@@ -42,7 +42,7 @@ public class CapsuleToyCommand extends EverywhereCommand {
         SenderInfo sender = messageInfo.getSender();
 
         Long userId = sender.getUserId();
-        String userNick = rabbitBotService.getUserName(sender);
+        String userNick = sender.getGroupCardOrUserNick();
         ArrayList<String> args = getArgs(messageInfo.getRawMessage());
 
         if (null == args || args.size() <= 0) {

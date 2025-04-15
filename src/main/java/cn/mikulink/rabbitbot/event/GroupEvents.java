@@ -1,7 +1,5 @@
 package cn.mikulink.rabbitbot.event;
 
-
-import cn.mikulink.rabbitbot.service.GroupNoticeService;
 import cn.mikulink.rabbitbot.service.ImageService;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
@@ -15,9 +13,6 @@ import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.MemberLeaveEvent;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,8 +52,6 @@ public class GroupEvents extends SimpleListenerHost {
     private ImageService imageService;
     @Autowired
     private RabbitBotService rabbitBotService;
-    @Autowired
-    private GroupNoticeService groupNoticeService;
 
 
     @Override
@@ -102,29 +95,29 @@ public class GroupEvents extends SimpleListenerHost {
 
     //群成员主动加群，被邀请加群事件业务
     private void groupMemberJoinMsg(Group group, User sender) {
-        //有人入群，发送对应群的自定义公告
-        String groupNotice = groupNoticeService.getGroupNotice(group.getId());
-        if (StringUtil.isNotEmpty(groupNotice)) {
-            Message result = groupNoticeService.parseGroupNotice(groupNotice, sender);
-            group.sendMessage(result);
-            return;
-        }
-
-        //如果没有自定义公告，则发送默认消息
-        //获取头像
-        String qlogoLocalPath = imageService.getQLogoCq(sender.getId());
-        //上传头像
-        Image miraiImage = rabbitBotService.uploadMiraiImage(qlogoLocalPath);
-        //获取群头像
-        //http://p.qlogo.cn/gh/QQ群号码/QQ群号码/100/
-
-        //返回消息
-        Message result = MessageUtils.newChain();
-        result = result.plus("").plus(miraiImage).plus("\n");
-        result = result.plus("[").plus(sender.getNick()).plus("]\n");
-        String msg = RandomUtil.rollStrFromList(memberJoinMsgList);
-        result = result.plus(String.format(msg, sender.getNick()));
-        group.sendMessage(result);
+//        //有人入群，发送对应群的自定义公告
+//        String groupNotice = groupNoticeService.getGroupNotice(group.getId());
+//        if (StringUtil.isNotEmpty(groupNotice)) {
+//            Message result = groupNoticeService.parseGroupNotice(groupNotice, sender);
+//            group.sendMessage(result);
+//            return;
+//        }
+//
+//        //如果没有自定义公告，则发送默认消息
+//        //获取头像
+//        String qlogoLocalPath = imageService.getQLogoCq(sender.getId());
+//        //上传头像
+//        Image miraiImage = rabbitBotService.uploadMiraiImage(qlogoLocalPath);
+//        //获取群头像
+//        //http://p.qlogo.cn/gh/QQ群号码/QQ群号码/100/
+//
+//        //返回消息
+//        Message result = MessageUtils.newChain();
+//        result = result.plus("").plus(miraiImage).plus("\n");
+//        result = result.plus("[").plus(sender.getNick()).plus("]\n");
+//        String msg = RandomUtil.rollStrFromList(memberJoinMsgList);
+//        result = result.plus(String.format(msg, sender.getNick()));
+//        group.sendMessage(result);
     }
 
 
@@ -162,17 +155,17 @@ public class GroupEvents extends SimpleListenerHost {
 
     //群成员主动离群，被踢出群事件业务
     private void groupMemberLeaveMsg(Group group, User sender) {
-        //获取头像
-        String qlogoLocalPath = imageService.getQLogoCq(sender.getId());
-        //上传头像
-        Image miraiImage = rabbitBotService.uploadMiraiImage(qlogoLocalPath);
-
-        //返回消息
-        Message result = MessageUtils.newChain();
-        result = result.plus("").plus(miraiImage).plus("\n");
-        result = result.plus("[").plus(sender.getNick()).plus("]\n");
-        String msg = RandomUtil.rollStrFromList(memberLeaveMsgList);
-        result = result.plus(String.format(msg, sender.getNick()));
-        group.sendMessage(result);
+//        //获取头像
+//        String qlogoLocalPath = imageService.getQLogoCq(sender.getId());
+//        //上传头像
+//        Image miraiImage = rabbitBotService.uploadMiraiImage(qlogoLocalPath);
+//
+//        //返回消息
+//        Message result = MessageUtils.newChain();
+//        result = result.plus("").plus(miraiImage).plus("\n");
+//        result = result.plus("[").plus(sender.getNick()).plus("]\n");
+//        String msg = RandomUtil.rollStrFromList(memberLeaveMsgList);
+//        result = result.plus(String.format(msg, sender.getNick()));
+//        group.sendMessage(result);
     }
 }

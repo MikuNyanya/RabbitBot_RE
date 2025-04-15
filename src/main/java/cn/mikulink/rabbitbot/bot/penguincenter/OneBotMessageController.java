@@ -1,7 +1,9 @@
 package cn.mikulink.rabbitbot.bot.penguincenter;
 
+import cn.mikulink.rabbitbot.constant.ConstantBlackList;
 import cn.mikulink.rabbitbot.entity.db.QQMessagePushInfo;
 import cn.mikulink.rabbitbot.service.db.QQMessagePushService;
+import cn.mikulink.rabbitbot.utils.NumberUtil;
 import com.alibaba.fastjson2.JSONObject;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -55,8 +57,12 @@ public class OneBotMessageController {
                 qqMessagePushService.create(qqMessagePushInfo);
             }
 
-            //todo 黑名单消息过滤
             String senderUserId = String.valueOf(bodyJsonObj.get("user_id"));
+
+            //黑名单，用来防止和其他机器人死循环响应，或者屏蔽恶意人员
+            if (ConstantBlackList.BLACK_LIST.contains(NumberUtil.toLong(senderUserId))) {
+                return;
+            }
 
             String postType = String.valueOf(bodyJsonObj.get("post_type"));
             if (null == postType) {

@@ -1,9 +1,13 @@
 package cn.mikulink.rabbitbot.tasks;
 
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
+import cn.mikulink.rabbitbot.bot.RabbitBotSender;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivRankImageInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.*;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.sys.ProxyService;
@@ -16,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -43,15 +48,13 @@ public class JobTimeRabbit {
     @Autowired
     private RabbitBotService rabbitBotService;
     @Autowired
+    private RabbitBotSender rabbitBotSender;
+    @Autowired
     private WeatherService weatherService;
     @Autowired
     private PixivService pixivService;
     @Autowired
-    private SetuService setuService;
-    @Autowired
-    private SwitchService switchService;
-    @Autowired
-    private WeiXinAppMsgService weiXinAppMsgService;
+    private NewsDayService newsDayService;
     @Autowired
     private ProxyService proxyService;
     @Autowired
@@ -61,27 +64,24 @@ public class JobTimeRabbit {
     @Autowired
     private MirlKoiService mirlKoiService;
 
-    //    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 1 * * * ?")
     public void execute() {
         //刷新当前时间
         hour_now = DateUtil.getHour();
+
+        //全局随机数刷新
+        rabbitRandomRefresh();
 
         //报时兔子
 //        timeRabbit();
         //天气
 //        weatherRabbit();
 
-        //全局随机数刷新
-        rabbitRandomRefresh();
-
         //每日色图
         setuOnDay();
 
         //每日新闻简报
         newsToday();
-
-        //微信公众平台cookie刷新
-//        refreshWeixinAppCookie();
 
         //代理检测
 //        proxyCheck();
@@ -102,47 +102,36 @@ public class JobTimeRabbit {
         //群报时，时间间隔交给定时器，这里返回值取当前时间即可
         String msg = String.format("这里是%s报时：%s%s", rabbit_bot_name, DateUtil.toString(new Date()), msgEx);
         try {
-//            //给每个群发送报时
-//            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-//            for (Group groupInfo : groupList) {
-//                //检查功能开关
-//                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "sj");
-//                if (!reStringSwitch.isSuccess()) {
-//                    continue;
-//                }
-//                groupInfo.sendMessage(msg);
-//            }
+            //给每个群发送报时
+            MessageInfo messageInfo = RabbitBotMessageBuilder.createMessageImage(msg);
+            List<GroupInfo> groupList = rabbitBotService.getGroupList();
+            for (GroupInfo groupInfo : groupList) {
+                rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
+            }
         } catch (Exception ex) {
-            logger.error("报时兔子 消息发送异常" + ex.toString(), ex);
+            logger.error("报时兔子 消息发送异常" + ex.getMessage(), ex);
         }
     }
 
     //获取附加短语，可以放一些彩蛋性质的东西，会附带在报时消息尾部
     private String getMsgEx() {
-        switch (hour_now) {
+        return switch (hour_now) {
             //半夜0点
-            case 0:
-                return ConstantCommon.NEXT_LINE + "新的一天开始啦ヽ(#`Д´)ノ";
+            case 0 -> ConstantCommon.NEXT_LINE + "新的一天开始啦ヽ(#`Д´)ノ";
             //凌晨4点
-            case 4:
-                return ConstantCommon.NEXT_LINE + "还有人活着嘛~";
+            case 4 -> ConstantCommon.NEXT_LINE + "还有人活着嘛~";
             //早上7点
-            case 7:
-                return ConstantCommon.NEXT_LINE + "早上好,该起床了哦~~";
+            case 7 -> ConstantCommon.NEXT_LINE + "早上好,该起床了哦~~";
             //中午11点
-            case 11:
-                return ConstantCommon.NEXT_LINE + "开始做饭了吗，外卖点了吗";
+            case 11 -> ConstantCommon.NEXT_LINE + "开始做饭了吗，外卖点了吗";
             //中午12点
-            case 12:
-                return ConstantCommon.NEXT_LINE + "午安，该是吃午饭的时间了";
+            case 12 -> ConstantCommon.NEXT_LINE + "午安，该是吃午饭的时间了";
             //下午18点
-            case 18:
-                return ConstantCommon.NEXT_LINE + "到了下班的时间啦!";
+            case 18 -> ConstantCommon.NEXT_LINE + "到了下班的时间啦!";
             //晚上23点
-            case 23:
-                return ConstantCommon.NEXT_LINE + "已经很晚了，早点休息哦~~";
-        }
-        return "";
+            case 23 -> ConstantCommon.NEXT_LINE + "已经很晚了，早点休息哦~~";
+            default -> "";
+        };
     }
 
     //天气兔子
@@ -157,12 +146,13 @@ public class JobTimeRabbit {
             String msg = weatherService.getWeatherByCityName("宿州市");
 
             //给每个群发送天气
-//            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-//            for (Group groupInfo : groupList) {
-//                groupInfo.sendMessage(msg);
-//            }
+            MessageInfo messageInfo = RabbitBotMessageBuilder.createMessageImage(msg);
+            List<GroupInfo> groupList = rabbitBotService.getGroupList();
+            for (GroupInfo groupInfo : groupList) {
+                rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
+            }
         } catch (Exception ioEx) {
-            logger.error("天气兔子发生异常:" + ioEx.toString(), ioEx);
+            logger.error("天气兔子发生异常:" + ioEx.getMessage(), ioEx);
         }
     }
 
@@ -172,12 +162,17 @@ public class JobTimeRabbit {
             return;
         }
         try {
+            //获取一张随机色图
+            String setuUrl = mirlKoiService.getASetu();
+            if (null == setuUrl) {
+                return;
+            }
 
-            List<String> setu = mirlKoiService.downloadASetu(1);
-
-            MessageChain messageChain = rabbitBotService.parseMsgChainByLocalImgs(setu.get(0));
-
-            rabbitBotService.sendGroupMessage(669863883L, messageChain);
+            MessageInfo messageInfo = RabbitBotMessageBuilder.createMessageImage(setuUrl);
+            List<GroupInfo> groupList = rabbitBotService.getGroupList();
+            for (GroupInfo groupInfo : groupList) {
+                rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
+            }
 
         } catch (Exception ex) {
             logger.error(ConstantPixiv.SETU_DAY_ERROR, ex);
@@ -186,34 +181,23 @@ public class JobTimeRabbit {
 
     //每日简报
     private void newsToday() {
-        //每天早晨10点播报，接口好像有点爆炸
+        //每天早晨10点播报
         if (hour_now != 10) {
             return;
         }
         logger.info("开始获取每日简报");
         try {
-//            //请求API获取今日简报
-//            WeiXinAppMsgInfo weiXinAppMsgInfo = weiXinAppMsgService.getNewsTodayMsg();
-//            //转化为消息链
-//            MessageChain messageChain = weiXinAppMsgService.parseNewsToday(weiXinAppMsgInfo);
-
-            MessageChain messageChain = weiXinAppMsgService.getNewsUseSourceConfig();
+            String newsImgUrl = newsDayService.getZaobNews();
 
             //给每个群发送消息
-//            ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-//            for (Group groupInfo : groupList) {
-//                //检查功能开关
-//                ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "newstoday");
-//                if (!reStringSwitch.isSuccess()) {
-//                    continue;
-//                }
-//                groupInfo.sendMessage(messageChain);
-//            }
-            rabbitBotService.sendGroupMessage(669863883L, messageChain);
-
+            MessageInfo messageInfo = RabbitBotMessageBuilder.createMessageImage(newsImgUrl);
+            List<GroupInfo> groupList = rabbitBotService.getGroupList();
+            for (GroupInfo groupInfo : groupList) {
+                rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
+            }
         } catch (Exception ex) {
             //挂了就挂了吧
-            logger.error("每日简报 消息发送异常" + ex.toString(), ex);
+            logger.error("每日简报 消息发送异常" + ex.getMessage(), ex);
         }
     }
 
@@ -256,7 +240,7 @@ public class JobTimeRabbit {
                 Thread.sleep(1000L * 2);
             }
         } catch (Exception ex) {
-            logger.error(ConstantPixiv.PIXIV_IMAGE_RANK_JOB_ERROR + ex.toString(), ex);
+            logger.error(ConstantPixiv.PIXIV_IMAGE_RANK_JOB_ERROR + ex.getMessage(), ex);
         }
     }
 

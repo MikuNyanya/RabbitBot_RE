@@ -1,24 +1,16 @@
 package cn.mikulink.rabbitbot.bot;
 
-import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.bot.penguincenter.entity.BaseRsp;
-import cn.mikulink.rabbitbot.entity.rabbitbotmessage.SenderInfo;
-import cn.mikulink.rabbitbot.utils.CollectionUtil;
+import cn.mikulink.rabbitbot.bot.penguincenter.NapCatApi;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import net.mamoe.mirai.contact.*;
-import net.mamoe.mirai.internal.contact.NormalMemberImpl;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageUtils;
-import net.mamoe.mirai.utils.ExternalResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,24 +23,25 @@ import java.util.Map;
 public class RabbitBotService {
     @Value("${bot.master:}")
     private String account_master;
+
+    @Autowired
+    private NapCatApi napCatApi;
+
     private List<Long> accountMasterList = new ArrayList<>();
 
     //群列表，缓存并单例下来供给其他业务使用
-    private static List<BaseRsp> groupList = null;
+    private static List<GroupInfo> groupList = null;
 
-    public List<BaseRsp> getGroupList(){
+    public List<GroupInfo> getGroupList() {
         //null表示没有初始化，长度为0则说明没加入任何群聊
-        if(null != groupList){
+        if (null != groupList) {
             return groupList;
         }
 
         //获取群信息
-        return null;
+        groupList = napCatApi.getGroupList();
+        return groupList;
     }
-
-
-
-    private Group group;
 
     /**
      * 检测指令操作间隔
@@ -110,189 +103,15 @@ public class RabbitBotService {
     }
 
     /**
-     * 是否为群主
-     *
-     * @param subject 群上下文
-     * @param sender  消息发送人
-     * @return 是否为群主
-     */
-    public boolean isGroupOwner(Contact subject, User sender) {
-        if (!(subject instanceof Group)) {
-            return false;
-        }
-
-        //((NormalMemberImpl) sender).getPermission()
-        //OWNER 群主 2
-        return ((NormalMemberImpl) sender).getPermission().getLevel() == ConstantCommon.OWNER_NUM;
-    }
-
-    /**
-     * 是否为群管理员
-     *
-     * @param subject 群上下文
-     * @param sender  消息发送人
-     * @return 是否为群管理员
-     */
-    public boolean isGroupAdmin(Contact subject, User sender) {
-        if (!(subject instanceof Group)) {
-            return false;
-        }
-
-        //((NormalMemberImpl) sender).getPermission()
-        //ADMINISTRATOR 管理 1
-        return ((NormalMemberImpl) sender).getPermission().getLevel() == ConstantCommon.ADMIN_NUM;
-    }
-
-    /**
-     * 是否为普通群员
-     *
-     * @param subject 群上下文
-     * @param sender  消息发送人
-     * @return 是否为普通群员
-     */
-    public boolean isGroupMember(Contact subject, User sender) {
-        if (!(subject instanceof Group)) {
-            return false;
-        }
-
-        //((NormalMemberImpl) sender).getPermission()
-        //MEMBER 群员 0
-        return ((NormalMemberImpl) sender).getPermission().getLevel() == ConstantCommon.MEMBER_NUM;
-    }
-
-    /**
-     * 获取用户名，优先获取群昵称
-     *
-     * @param sender 消息发送人信息
-     * @return 用户名称
-     */
-    public String getUserName(SenderInfo sender) {
-        String userName = sender.getCard();
-        if (StringUtil.isEmpty(userName)) {
-            userName = sender.getNickname();
-        }
-        return userName;
-    }
-
-    /**
-     * 上传图片，获取图片id
-     * 重载，单条转化
-     *
-     * @param localImagesPath 本地图片地址
-     * @return mirai图片id
-     */
-    public Image uploadMiraiImage(String localImagesPath) {
-        //上传
-        return group.uploadImage(ExternalResource.create(new File(localImagesPath)).toAutoCloseable());
-    }
-
-    /**
-     * 上传图片，获取图片id
-     *
-     * @param localImagesPath 本地图片列表
-     * @return mirai图片id列表
-     */
-    public List<Image> uploadMiraiImage(List<String> localImagesPath) {
-        List<Image> miraiImgList = new ArrayList<>();
-        //上传并获取每张图片的id
-        if (CollectionUtil.isEmpty(localImagesPath)) {
-            return miraiImgList;
-        }
-        for (String localImagePath : localImagesPath) {
-            Image tempMiraiImg = uploadMiraiImage(localImagePath);
-            miraiImgList.add(tempMiraiImg);
-        }
-        return miraiImgList;
-    }
-
-    /**
-     * 单图拼接成消息连做的代码封装方法
-     *
-     * @param imgInfo mirai图片
-     * @return 消息链
-     */
-    public MessageChain parseMsgChainByImg(Image imgInfo) {
-        MessageChain messageChain = MessageUtils.newChain();
-        messageChain = messageChain.plus("").plus(imgInfo).plus("\n");
-        return messageChain;
-    }
-
-    /**
-     * 针对多张图拼接成消息连做的代码封装方法
-     *
-     * @param imgList mirai图片集合
-     * @return 消息链
-     */
-    public MessageChain parseMsgChainByImgs(List<Image> imgList) {
-        MessageChain messageChain = MessageUtils.newChain();
-        for (Image image : imgList) {
-            messageChain = messageChain.plus("").plus(image).plus("\n");
-        }
-        return messageChain;
-    }
-
-
-    /**
-     * 针对本地图片路径上传并拼接成消息连做的代码封装方法
-     *
-     * @param localImgPath 本地图片路径
-     * @return 消息链
-     */
-    public MessageChain parseMsgChainByLocalImgs(String localImgPath) {
-        return parseMsgChainByLocalImgs(Arrays.asList(localImgPath));
-    }
-
-    /**
-     * 针对本地图片路径上传并拼接成消息连做的代码封装方法
-     * 重载 批量处理
-     *
-     * @param localImgsPath 本地图片路径
-     * @return 消息链
-     */
-    public MessageChain parseMsgChainByLocalImgs(List<String> localImgsPath) {
-        List<Image> imageList = this.uploadMiraiImage(localImgsPath);
-        return this.parseMsgChainByImgs(imageList);
-    }
-
-    /**
      * 给最高权限发送消息
-     *
-     * @param messageChain 消息链
      */
-    public void sendMasterMessage(MessageChain messageChain) {
+    public void sendMasterMessage(MessageInfo messageInfo) {
         if (CollectionUtils.isEmpty(accountMasterList)) {
             accountStrCheck(account_master, accountMasterList);
         }
         for (Long accountMaster : accountMasterList) {
-            sendFriendMessage(accountMaster, messageChain);
+            napCatApi.sendPrivateMessage(accountMaster, messageInfo.getMessage());
         }
     }
 
-    /**
-     * 发送好友私聊消息
-     *
-     * @param qq           目标账号
-     * @param messageChain 消息链
-     */
-    public void sendFriendMessage(Long qq, MessageChain messageChain) {
-//        Friend friend = RabbitBot.getBot().getFriend(qq);
-//        if (null == friend) {
-//            return;
-//        }
-//        friend.sendMessage(messageChain);
-    }
-
-    /**
-     * 发送群消息
-     *
-     * @param groupId      群号
-     * @param messageChain 消息链
-     */
-    public void sendGroupMessage(Long groupId, MessageChain messageChain) {
-//        Group group = RabbitBot.getBot().getGroup(groupId);
-//        if (null == group) {
-//            return;
-//        }
-//        group.sendMessage(messageChain);
-    }
 }

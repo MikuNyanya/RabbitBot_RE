@@ -11,7 +11,7 @@
 
     <groupId>cn.mikulink</groupId>
     <artifactId>rabbitbot</artifactId>
-    <version>AI_NT_1.0</version>
+    <version>AI_NT_1.1</version>
     <name>RabbitBot_RE</name>
     <description>for the Resien</description>
 
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.8</version>
+            <version>1.18.38</version>
             <scope>provided</scope>
         </dependency>
 

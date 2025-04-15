@@ -11,7 +11,6 @@ import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.SenderInfo;
 import cn.mikulink.rabbitbot.entity.rpg.PlayerCharacterStats;
 import cn.mikulink.rabbitbot.service.ImageService;
-import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.rpg.CharacterStatsService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import cn.mikulink.rabbitbot.utils.StringUtil;
@@ -31,8 +30,6 @@ import java.util.List;
 @Command
 public class StatsCommand extends EverywhereCommand {
     @Autowired
-    private RabbitBotService rabbitBotService;
-    @Autowired
     private CharacterStatsService characterStatsService;
     @Autowired
     private ImageService imageService;
@@ -47,7 +44,7 @@ public class StatsCommand extends EverywhereCommand {
         SenderInfo sender = messageInfo.getSender();
 
         //获取用户名，优先获取群名片
-        String userNick = rabbitBotService.getUserName(sender);
+        String userNick = sender.getGroupCardOrUserNick();
         if (StringUtil.isEmpty(userNick)) {
             return RabbitBotMessageBuilder.createMessageText(ConstantRPG.NO_NAME);
         }

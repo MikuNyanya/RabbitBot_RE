@@ -109,7 +109,7 @@ public class BilibiliService {
             //组装消息 懒加载
             MessageChain msgChain = parseDynamicSvrBody(dynamicSvrCardsInfo);
 
-            JobMain.msgList.add(msgChain);
+//            JobMain.msgList.add(msgChain);
             logger.info("一条b站消息 已加入肯德基豪华午餐 " + dynamicSvrCardsInfo.getDesc().getUid());
         } catch (Exception ioEx) {
             logger.error("BilibiliService groupDynamicSvrPush error,dynamicSvrCardsInfo:{}", JSONObject.toJSONString(dynamicSvrCardsInfo), ioEx);
@@ -230,7 +230,8 @@ public class BilibiliService {
         }
 
         //然后上传到服务器，获取imageId
-        return rabbitBotService.uploadMiraiImage(scaleImgPath);
+//        return rabbitBotService.uploadMiraiImage(scaleImgPath);
+        return null;
     }
 
 

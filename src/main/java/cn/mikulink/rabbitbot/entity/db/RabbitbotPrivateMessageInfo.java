@@ -36,4 +36,6 @@ public class RabbitbotPrivateMessageInfo {
     private String messageFormat;
     //消息状态 0.正常 1.已撤回
     private Integer recall;
+    //消息是否被总结压缩过了 0.正常 1.已完成总结压缩
+    private Integer msgZip;
 }

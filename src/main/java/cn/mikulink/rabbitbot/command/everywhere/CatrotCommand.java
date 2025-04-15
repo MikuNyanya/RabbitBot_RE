@@ -7,11 +7,9 @@ import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.TarotInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
-import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.service.TarotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -26,14 +24,12 @@ import java.util.List;
  * 猫罗牌
  * 塔罗牌的变异品种(并不
  */
+@Slf4j
 @Command
 public class CatrotCommand extends EverywhereCommand {
-    private static final Logger logger = LoggerFactory.getLogger(CatrotCommand.class);
 
     @Autowired
     private TarotService tarotService;
-    @Autowired
-    private RabbitBotService rabbitBotService;
 
     @Override
     public CommandProperties properties() {
@@ -42,7 +38,7 @@ public class CatrotCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
-        String userNick = rabbitBotService.getUserName(messageInfo.getSender());
+        String userNick = messageInfo.getSender().getGroupCardOrUserNick();
 
         try {
             //抽牌
@@ -60,7 +56,7 @@ public class CatrotCommand extends EverywhereCommand {
 
             return new MessageInfo(messageChainList);
         } catch (Exception ex) {
-            logger.error(ConstantTarot.CATROT_ERROR_GROUP_MESSAGE, ex);
+            log.error(ConstantTarot.CATROT_ERROR_GROUP_MESSAGE, ex);
             return RabbitBotMessageBuilder.createMessageText(ConstantTarot.CATROT_ERROR_GROUP_MESSAGE);
         }
     }

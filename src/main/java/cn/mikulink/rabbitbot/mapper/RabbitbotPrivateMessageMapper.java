@@ -15,4 +15,6 @@ public interface RabbitbotPrivateMessageMapper {
     int create(RabbitbotPrivateMessageInfo info);
 
     List<RabbitbotPrivateMessageInfo> getHistoryByTargetId(Long targetId, int historyCount);
+
+    RabbitbotPrivateMessageInfo getLastBotHistoryByTargetId(Long targetId,Long botId);
 }

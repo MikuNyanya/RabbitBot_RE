@@ -14,6 +14,7 @@
         <result column="sub_type" property="subType"/>
         <result column="message_format" property="messageFormat"/>
         <result column="recall" property="recall"/>
+        <result column="msg_zip" property="msgZip"/>
     </resultMap>
 
     <insert id="create" parameterType="cn.mikulink.rabbitbot.entity.db.RabbitbotPrivateMessageInfo" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -25,8 +26,15 @@
 
     <select id="getHistoryByTargetId" resultMap="BaseResultMap">
         SELECT * FROM rabbitbot_private_message
-        where target_id = #{targetId} and recall = 0
+        where target_id = #{targetId} and recall = 0 and msg_zip = 0
         order by create_time desc
         limit 0,#{historyCount}
+    </select>
+
+    <select id="getLastBotHistoryByTargetId" resultMap="BaseResultMap">
+        SELECT * FROM rabbitbot_private_message
+        where target_id = #{targetId} and recall = 0 and msg_zip = 0 and user_id = #{botId}
+        order by create_time desc
+        limit 1
     </select>
 </mapper>

@@ -12,8 +12,7 @@ import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import com.alibaba.fastjson2.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,9 +25,9 @@ import java.util.Map;
  * create by MikuLink on 2021/04/29 11:30
  * for the Reisen
  */
+@Slf4j
 @Service
 public class ConfigService {
-    private Logger logger = LoggerFactory.getLogger(ConfigService.class);
 
     //群配置 缓存
     Map<Long, ConfigGroupInfo> configGroupsMap = new HashMap<>();
@@ -81,7 +80,7 @@ public class ConfigService {
             //压缩图片文件夹检测
             FileUtil.fileDirsCheck(ConstantImage.DEFAULT_IMAGE_SCALE_SAVE_PATH);
         } catch (Exception ex) {
-            logger.error("资源文件读取异常:{}", ex.getMessage(), ex);
+            log.error("资源文件读取异常:{}", ex.getMessage(), ex);
         }
     }
 
@@ -113,7 +112,7 @@ public class ConfigService {
         try {
             this.writeFile();
         } catch (Exception ex) {
-            logger.error("刷新配置文件失败");
+            log.error("刷新配置文件失败");
         }
     }
 
@@ -199,7 +198,7 @@ public class ConfigService {
         try {
             this.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
         } catch (Exception ex) {
-            logger.error("ConfigService pullWeibo error,groupId:{},idsStr:{}", groupId, idsStr, ex);
+            log.error("ConfigService pullWeibo error,groupId:{},idsStr:{}", groupId, idsStr, ex);
         }
     }
 
@@ -222,7 +221,7 @@ public class ConfigService {
         try {
             this.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
         } catch (Exception ex) {
-            logger.error("ConfigService unpullWeibo error,groupId:{},idsStr:{}", groupId, idsStr, ex);
+            log.error("ConfigService unpullWeibo error,groupId:{},idsStr:{}", groupId, idsStr, ex);
         }
     }
 
@@ -261,7 +260,7 @@ public class ConfigService {
         try {
             this.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
         } catch (Exception ex) {
-            logger.error("ConfigService pullBiliUid error,groupId:{},idsStr:{}", groupId, idsStr, ex);
+            log.error("ConfigService pullBiliUid error,groupId:{},idsStr:{}", groupId, idsStr, ex);
         }
     }
 
@@ -284,7 +283,7 @@ public class ConfigService {
         try {
             this.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
         } catch (Exception ex) {
-            logger.error("ConfigService unpullBiliUid error,groupId:{},idsStr:{}", groupId, idsStr, ex);
+            log.error("ConfigService unpullBiliUid error,groupId:{},idsStr:{}", groupId, idsStr, ex);
         }
     }
 
@@ -303,7 +302,7 @@ public class ConfigService {
         try {
             this.writerConfigGroup(groupId, JSONObject.toJSONString(configGroupInfo));
         } catch (Exception ex) {
-            logger.error("ConfigService setGroupNotice error,groupId:{},groupNoticeStr:{}", groupId, groupNoticeStr, ex);
+            log.error("ConfigService setGroupNotice error,groupId:{},groupNoticeStr:{}", groupId, groupNoticeStr, ex);
             return new ReString(false, "群公告设置异常");
         }
         return new ReString(true);
@@ -331,7 +330,7 @@ public class ConfigService {
                 configGroupInfo = JSONObject.parseObject(configJsonStr, ConfigGroupInfo.class);
             }
         } catch (Exception ex) {
-            logger.error("ConfigService getConfigByGroupId error,groupId:{}", groupId, ex);
+            log.error("ConfigService getConfigByGroupId error,groupId:{}", groupId, ex);
         }
         if (null == configGroupInfo) {
             configGroupInfo = new ConfigGroupInfo();
@@ -347,10 +346,10 @@ public class ConfigService {
      */
     public int getRabbitRandomNum() {
         String rabbitRandomNum = ConstantCommon.common_config.get("rabbitRandomNum");
-        if(null == rabbitRandomNum){
+        if (null == rabbitRandomNum) {
             //生成一个新的随机数
             int randomNum = RandomUtil.roll(100);
-            ConstantCommon.common_config.put("rabbitRandomNum",String.valueOf(randomNum));
+            ConstantCommon.common_config.put("rabbitRandomNum", String.valueOf(randomNum));
             this.refreshConfigFile();
             return randomNum;
         }

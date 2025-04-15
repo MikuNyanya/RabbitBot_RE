@@ -1,11 +1,17 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
+import cn.mikulink.rabbitbot.constant.ConstantQRCode;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
+import cn.mikulink.rabbitbot.utils.qrcodes.QRCodeUtil;
 import lombok.extern.slf4j.Slf4j;
+
+import java.awt.*;
+import java.util.List;
 
 
 /**
@@ -25,10 +31,8 @@ public class QRCodeCommand extends EverywhereCommand {
 
     @Override
     public MessageInfo execute(MessageInfo messageInfo) {
-        //todo 整理
-//        List<String> args = getArgs(messageInfo.getRawMessage());
+        List<String> args = getArgs(messageInfo.getRawMessage());
 //        try {
-//
 //            if (null == args || args.size() == 0) {
 //                return RabbitBotMessageBuilder.createMessageText(ConstantQRCode.EXPLAIN);
 //            }
@@ -51,7 +55,7 @@ public class QRCodeCommand extends EverywhereCommand {
 //                        onColor = new Color(Integer.parseInt(args.get(0).substring(1), 16));
 //                        offColor = new Color(Integer.parseInt(args.get(1).substring(1), 16));
 //                    } catch (Exception ex) {
-//                        logger.warn("二维码颜色参数转化错误", ex);
+//                        log.warn("二维码颜色参数转化错误", ex);
 //                        return RabbitBotMessageBuilder.createMessageText((ConstantQRCode.QRCODE_COLOR_ERROR);
 //                    }
 //                }
