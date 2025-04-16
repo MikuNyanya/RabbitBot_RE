@@ -42,6 +42,8 @@ public class JobTimeRabbit {
     public String rabbit_bot_name;
     @Value("${proxy.check:off}")
     private String proxyCheck;
+    @Value("${bot.jobopen:off}")
+    private String jobOpen;
     //当前时间，方便其他地方使用
     private int hour_now = 0;
 
@@ -66,6 +68,10 @@ public class JobTimeRabbit {
 
     @Scheduled(cron = "0 1 * * * ?")
     public void execute() {
+        if(jobOpen.equals("off")){
+            return;
+        }
+
         //刷新当前时间
         hour_now = DateUtil.getHour();
 

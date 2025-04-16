@@ -20,6 +20,7 @@ import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,9 @@ import java.util.List;
 @Component
 @EnableScheduling
 public class JobMain {
+
+    @Value("${bot.jobopen:off}")
+    private String jobOpen;
 
     //正常间隔(毫秒) 目前为2小时
     private static final Long SPLIT_NORMAL = 1000L * 60 * 60 * 2;
@@ -63,6 +67,10 @@ public class JobMain {
 
     @Scheduled(cron = "0 * * * * ?")
     public void execute() {
+        if (jobOpen.equals("off")) {
+            return;
+        }
+
         //日常语句
         freeTimeRabbit();
 

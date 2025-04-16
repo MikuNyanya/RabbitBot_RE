@@ -11,7 +11,7 @@
 
     <groupId>cn.mikulink</groupId>
     <artifactId>rabbitbot</artifactId>
-    <version>AI_NT_1.1</version>
+    <version>AI_NT_1.2</version>
     <name>RabbitBot_RE</name>
     <description>for the Resien</description>
 

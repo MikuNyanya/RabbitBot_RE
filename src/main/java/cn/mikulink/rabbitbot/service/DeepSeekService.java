@@ -1,15 +1,15 @@
 package cn.mikulink.rabbitbot.service;
 
-import cn.mikulink.rabbitbot.modules.deepseek.ChatCompletionsRequest;
 import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.bot.RabbitBotSender;
-import cn.mikulink.rabbitbot.modules.deepseek.entity.MessageInfo;
 import cn.mikulink.rabbitbot.entity.db.RabbitbotGroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.db.RabbitbotPrivateMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.PrivateMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.SenderInfo;
+import cn.mikulink.rabbitbot.modules.deepseek.ChatCompletionsRequest;
+import cn.mikulink.rabbitbot.modules.deepseek.entity.MessageInfo;
 import cn.mikulink.rabbitbot.service.db.RabbitbotGroupMessageService;
 import cn.mikulink.rabbitbot.service.db.RabbitbotPrivateMessageService;
 import cn.mikulink.rabbitbot.utils.StringUtil;
@@ -51,34 +51,20 @@ public class DeepSeekService {
      * @param groupMessageInfo 接到的群聊消息对象
      * @return 是否实际执行了ai响应
      */
-    public boolean aiModeGroup(GroupMessageInfo groupMessageInfo) {
+    public GroupMessageInfo aiModeGroup(GroupMessageInfo groupMessageInfo) {
         Long groupId = groupMessageInfo.getGroupId();
         try {
-            boolean doRequestAIResult = false;
-            //at了兔叽和文本中提到兔叽的必定回复
-            if (groupMessageInfo.atBot() || groupMessageInfo.mentionBot()) {
-                doRequestAIResult = true;
-            } else {
-                //日常状态 包含响应间隔，以及响应概率
-
-            }
-
-            if (!doRequestAIResult) {
-                //表示没有执行ai响应
-                return false;
-            }
-
             //获取历史聊天记录
             List<MessageInfo> paramMessageList = getGroupMessageRecordList(groupId, groupHistoryNum);
 
+            //获取ai响应
             String chatRsp = requestAIResultGroup(paramMessageList);
 
-            rabbitBotSender.sendGroupMessage(groupId, RabbitBotMessageBuilder.parseMessageChainText(chatRsp));
-
-            return true;
+            //返回消息
+            return RabbitBotMessageBuilder.createGroupMessageText(groupMessageInfo.getGroupId(), chatRsp);
         } catch (Exception ex) {
             log.error("aiModeGroup AI请求异常,messageId:{}", groupMessageInfo.getMessageId(), ex);
-            return false;
+            return null;
         }
     }
 

@@ -6,10 +6,12 @@ import cn.mikulink.rabbitbot.command.CommandConfig;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.PrivateMessageInfo;
+import cn.mikulink.rabbitbot.service.AtService;
 import cn.mikulink.rabbitbot.service.DeepSeekService;
 import cn.mikulink.rabbitbot.service.KeyWordService;
 import cn.mikulink.rabbitbot.service.db.RabbitbotGroupMessageService;
 import cn.mikulink.rabbitbot.service.db.RabbitbotPrivateMessageService;
+import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +38,8 @@ public class MessageHandle {
     private RabbitbotPrivateMessageService rabbitbotPrivateMessageService;
     @Autowired
     private KeyWordService keyWordService;
+    @Autowired
+    private AtService atService;
 
     public void messageHandle(String messageBody) {
         JSONObject bodyJsonObj = JSONObject.parseObject(messageBody);
@@ -95,14 +99,30 @@ public class MessageHandle {
             }
         }
 
-        /**优先处理at自己的业务*/
-
-        /**at自己的其他相关业务*/
+        /**at相关业务 只将at放在最前面的消息视为at业务*/
+        if (CollectionUtil.isNotEmpty(groupMessageInfo.getMessage()) && groupMessageInfo.getMessage().get(0).getType().equals("at")) {
+            MessageInfo result = atService.doAtBiz(groupMessageInfo);
+            if (result != null) {
+                rabbitBotSender.sendGroupMessage(groupId, result.getMessage());
+            }
+        }
 
         /**进入AI响应模式*/
-        boolean isResponded = deepSeekService.aiModeGroup(groupMessageInfo);
-        if (isResponded) {
-            return;
+        boolean doRequestAIResult = false;
+        //at了兔叽和文本中提到兔叽的必定回复
+        if (groupMessageInfo.atBot() || groupMessageInfo.mentionBot()) {
+            doRequestAIResult = true;
+        } else {
+            //日常状态 包含响应间隔，以及响应概率
+
+        }
+        if (doRequestAIResult) {
+            GroupMessageInfo result = deepSeekService.aiModeGroup(groupMessageInfo);
+            if (null != result) {
+                result.setGroupId(groupId);
+                rabbitBotSender.sendGroupMessage(result);
+                return;
+            }
         }
 
         /**匹配关键词 (因为常规状态下，不是每一句都会触发AI响应的，所以会到这里)*/
@@ -160,6 +180,7 @@ public class MessageHandle {
         }
     }
 
+    //机器人自己的消息处理
     public void selfMessageHandle(String body) {
         JSONObject bodyJsonObj = JSONObject.parseObject(body);
 

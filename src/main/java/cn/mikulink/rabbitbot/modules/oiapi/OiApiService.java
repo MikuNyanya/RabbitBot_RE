@@ -73,16 +73,16 @@ public class OiApiService {
     }
 
     /**
-     * 碧蓝档案字体
+     * 蔚蓝档案字体
      *
      * @param startText 前缀部分
      * @param endText   后缀部分
      * @param x         左右坐标，默认-18
      * @param y         上下坐标，默认0
-     * @param rgba      背景颜色
+     * @param color      背景颜色 支持16进制颜色，rgb()，rgba()
      * @return url，可直接当图片链接使用
      */
-    public String blueArchiveImage(String startText, String endText, Integer x, Integer y, String rgba) {
+    public String blueArchiveImage(String startText, String endText, Integer x, Integer y, String color) {
         String url = "https://oiapi.net/API/BlueArchive?";
 
         //开头文本
@@ -109,8 +109,8 @@ public class OiApiService {
         url += "&y=" + y;
 
         //背景颜色 默认white，可选16进制颜色，rgb()，rgba()，颜色英文单词
-        if (StringUtil.isNotEmpty(rgba)) {
-            url += "&color=" + rgba;
+        if (StringUtil.isNotEmpty(color)) {
+            url += "&color=" + color;
         }
 
         return url;

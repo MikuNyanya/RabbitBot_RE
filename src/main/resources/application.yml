@@ -26,13 +26,13 @@ bot:
     #名称 英文
     en: RabbitBot
   #兔叽版本
-  version: AI_NT_1.0
+  version: AI_NT_1.2
   #配置admin权限的账号
   master: 114514
   #NapCat
   messageSend:
     apiurl: http://localhost:31011
-
+  jobopen: on
 ############# 文件相关 ######################
 #在 每个文件一个路径配置 和 仅主目录写为配置 两个方案中难舍 但眼下两种方案效果实为无异
 #啊。。随便了=A=
