@@ -50,17 +50,17 @@ public class MessageInfo extends MessagePushBase {
     protected List<MessageChain> message;
 
     //是否为群消息
-    public boolean isGroupMessage() {
+    public boolean groupMessage() {
         return messageType.equals("group");
     }
 
     //是否为私聊信息
-    public boolean isPrivateMessage() {
+    public boolean privateMessage() {
         return messageType.equals("private");
     }
 
     //是否at了机器人
-    public boolean isAtBot() {
+    public boolean atBot() {
         for (MessageChain messageChain : message) {
             if (messageChain.getType().equalsIgnoreCase("at")) {
                 if (selfId.equals(NumberUtil.toLong(messageChain.getData().getQq()))) {
@@ -72,7 +72,7 @@ public class MessageInfo extends MessagePushBase {
     }
 
     //获取简易消息，该消息将尽量精简文本，比如图片会被标记为[图片]
-    public String getSimpleMessage() {
+    public String simpleMessage() {
         String strTemp = "";
         for (MessageChain messageChain : message) {
             if (messageChain.getType().equalsIgnoreCase("text")) {
@@ -90,7 +90,7 @@ public class MessageInfo extends MessagePushBase {
     }
 
     //是否提到了机器人
-    public boolean isMentionBot() {
+    public boolean mentionBot() {
         //todo 写到某个服务中，机器人名称使用配置文件的值
         return this.rawMessage.contains("兔叽");
     }

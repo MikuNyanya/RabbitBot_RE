@@ -1,10 +1,10 @@
 package cn.mikulink.rabbitbot.service;
 
 import cn.mikulink.rabbitbot.apirequest.neteaseCloudMusic.NeteaseCloudSearch;
-import cn.mikulink.rabbitbot.apirequest.oiapi.OiapiMusic163;
+import cn.mikulink.rabbitbot.modules.oiapi.OiapiMusic163;
 import cn.mikulink.rabbitbot.entity.apirequest.neteaseCloud.NeteaseCloudSearchResponse;
-import cn.mikulink.rabbitbot.entity.apirequest.oiapi.Music163Response;
-import cn.mikulink.rabbitbot.entity.apirequest.oiapi.Music163Singer;
+import cn.mikulink.rabbitbot.modules.oiapi.entity.Music163Response;
+import cn.mikulink.rabbitbot.modules.oiapi.entity.Music163Singer;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChainData;
 import cn.mikulink.rabbitbot.utils.CollectionUtil;

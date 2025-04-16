@@ -150,6 +150,7 @@ public class JobMain {
             return;
         }
 
+        log.info("====开始执行微博推送====");
         try {
             //执行微博消息推送
             //获取接口返回
@@ -183,11 +184,10 @@ public class JobMain {
 
                 //每个群发送微博推送
                 MessageInfo messageInfo = new MessageInfo(msgChain);
-//                List<GroupInfo> groupList = rabbitBotService.getGroupList();
-//                for (GroupInfo groupInfo : groupList) {
-//                    rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
-//                }
-                rabbitBotSender.sendPrivateMessage(455806936L,messageInfo);
+                List<GroupInfo> groupList = rabbitBotService.getGroupList();
+                for (GroupInfo groupInfo : groupList) {
+                    rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
+                }
             }
 
 

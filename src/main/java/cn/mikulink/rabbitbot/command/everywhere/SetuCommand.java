@@ -71,6 +71,7 @@ public class SetuCommand extends EverywhereCommand {
             List<MessageChain> messageChains = new ArrayList<>();
             for (String setuUrl : setuList) {
                 messageChains.add(RabbitBotMessageBuilder.parseMessageChainImage(setuUrl));
+                messageChains.add(RabbitBotMessageBuilder.parseMessageChainText("\n"));
             }
             return new MessageInfo(messageChains);
         } catch (Exception ex) {

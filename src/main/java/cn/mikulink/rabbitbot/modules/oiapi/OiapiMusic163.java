@@ -1,7 +1,7 @@
-package cn.mikulink.rabbitbot.apirequest.oiapi;
+package cn.mikulink.rabbitbot.modules.oiapi;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
-import cn.mikulink.rabbitbot.entity.apirequest.oiapi.Music163Response;
+import cn.mikulink.rabbitbot.modules.oiapi.entity.Music163Response;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;

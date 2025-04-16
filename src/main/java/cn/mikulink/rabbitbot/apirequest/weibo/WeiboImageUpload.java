@@ -39,7 +39,7 @@ public class WeiboImageUpload extends BaseRequest {
         body = response.body();
 
         //记录接口返回日志
-        logger.info(String.format("Api Request WeiboImageUpload,resultBody:%s", body));
+        logger.debug(String.format("Api Request WeiboImageUpload,resultBody:%s", body));
     }
 
     //拼装参数

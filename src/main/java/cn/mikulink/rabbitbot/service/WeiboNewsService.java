@@ -134,12 +134,12 @@ public class WeiboNewsService {
 
         //头像
         if (1312997677 == userId) {
-            result.add(RabbitBotMessageBuilder.parseMessageChainText(ConstantWeiboNews.WHAT_ASSHOLE + "\n"));
+            result.add(RabbitBotMessageBuilder.parseMessageChainText("\n"+ConstantWeiboNews.WHAT_ASSHOLE + "\n"));
         } else {
             //解析推主头像
             String userLogoUrl = getUserLogoUrl(info.getUser().getProfile_image_url());
             if (null != userLogoUrl) {
-                result.add(RabbitBotMessageBuilder.parseMessageChainText(userLogoUrl));
+                result.add(RabbitBotMessageBuilder.parseMessageChainImage(userLogoUrl));
             }
         }
         //推主名
@@ -163,10 +163,10 @@ public class WeiboNewsService {
             }
             //获取原图地址
             String largeImageUrl = getImgLarge(picUrl.getThumbnail_pic());
-            //上传图片并获取图片id
             String userLogoUrl = getUserLogoUrl(largeImageUrl);
             if (null != userLogoUrl) {
-                result.add(RabbitBotMessageBuilder.parseMessageChainText("\n" + userLogoUrl));
+                result.add(RabbitBotMessageBuilder.parseMessageChainImage(userLogoUrl));
+                result.add(RabbitBotMessageBuilder.parseMessageChainText("\n"));
             }
         }
         return result;
@@ -195,7 +195,7 @@ public class WeiboNewsService {
         if (imageUrl.contains("?")) {
             imageUrl = imageUrl.substring(0, imageUrl.lastIndexOf("?"));
         }
-        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        return imageUrl;
     }
 
     //转化微博接口的时间字段

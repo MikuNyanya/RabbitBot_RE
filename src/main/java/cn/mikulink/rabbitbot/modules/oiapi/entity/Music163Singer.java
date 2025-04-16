@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.entity.apirequest.oiapi;
+package cn.mikulink.rabbitbot.modules.oiapi.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

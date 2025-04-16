@@ -55,9 +55,9 @@ public class ZIPCommand extends EverywhereCommand {
 //        zipSave(targetId, botId);
 
 //          List<RabbitbotPrivateMessageInfo> privateMessageInfoList = rabbitbotPrivateMessageService.getHistoryByTargetId(455806936L);
-//        List<cn.mikulink.rabbitbot.entity.apirequest.deepseek.MessageInfo> dsMessages = deepSeekService.getPrivateMessageRecordList(455806936L,500);
+//        List<cn.mikulink.rabbitbot.modules.deepseek.entity.MessageInfo> dsMessages = deepSeekService.getPrivateMessageRecordList(455806936L,500);
 //
-//        for (cn.mikulink.rabbitbot.entity.apirequest.deepseek.MessageInfo dsMessage : dsMessages) {
+//        for (cn.mikulink.rabbitbot.modules.deepseek.entity.MessageInfo dsMessage : dsMessages) {
 //            DeepseekChatRecordInfo chatRecordInfo = new DeepseekChatRecordInfo();
 //            chatRecordInfo.setTag("凛雪飘渺");
 //            chatRecordInfo.setRoleType(dsMessage.getRole());

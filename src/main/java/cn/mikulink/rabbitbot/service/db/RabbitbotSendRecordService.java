@@ -77,7 +77,6 @@ public class RabbitbotSendRecordService {
         info.setResponseJson(responseBody);
 
         mapper.updateResponseBody(info);
-
     }
 
 }

@@ -29,7 +29,7 @@ public class WeiboApiTest {
         try {
 
             WeiboHomeTimelineGet request = new WeiboHomeTimelineGet();
-            request.setAccessToken("2.00V1mcpB9MoExC23fd96a2b0zPGUJE");
+            request.setAccessToken("2.00Vfa21312asdffdd19asdfhC");
             request.setPage(1);
             //每次获取最近的5条
             request.setCount(5);
@@ -51,7 +51,7 @@ public class WeiboApiTest {
     public void WeiboImageUploadTest() {
         try {
             String url = "https://picupload.weibo.com/interface/pic_upload.php?ori=1&mime=image%2Fjpeg&data=base64&url=0&markpos=1&logo=&nick=0&marks=1&app=miniblog";
-            String cookie = "SINAGLOBAL=9512145936146.342.1620702509418; SSOLoginState=1652426469; XSRF-TOKEN=2awcee_BDhgmiAiEhijQXXWh; WBPSESS=kWd5G1Gkgmu41uC779gXBzV0bHKT_4GUe4-OrpJSVtbsuvH45HwUiNYf5aVXSwyJ7SVM4efd-lz-mOk_Y3NeqeSmkZyfvirqnv88Xp3ugAkcoU2uUulywp-Q0gxENxqA-4cl9fhVuXaSYUwRaqzJMA==; _s_tentry=www.baidu.com; UOR=,,www.baidu.com; Apache=1883719981188.6118.1652431476072; ULV=1652431476079:38:2:1:1883719981188.6118.1652431476072:1651817591161; ALF=1683967491; SCF=Apo7cthQLBVq83acSGZfr1juT4Hz5eXTxdN3xFg9-OuvjbulDYnZy7CSqwiVjhLjNjJxEhfBKBx6jSk_EGQDYYI.; SUB=_2A25PemrUDeRhGedI7FoY9ibOyjmIHXVsDtscrDV8PUNbmtAfLVXukW9NVq7Q3ZoESkiXj0q8MP3fk8i0IQTfmaZT; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFKforM0T8bFj0KC6i9qLf55JpX5KzhUgL.Fo2cS0n4SonEeK-2dJLoIEBLxK-L1hML1-zLxK.L1-zLB-2LxK.LBKeL1KnLxKqLBonLB.2t; PC_TOKEN=b839f729ee";
+            String cookie = "cookie";
             String localFilePath = "E://害怕2.gif";
 
             File imageLocal = new File(localFilePath);

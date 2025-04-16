@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.entity.apirequest.deepseek;
+package cn.mikulink.rabbitbot.modules.deepseek.entity;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -120,7 +120,10 @@ public class ImageService {
      * 根据q号获取头像网络url
      * 大概100x100
      * 使用的是腾讯自家链接
+     * 似乎只能固定100大小
      * http://q1.qlogo.cn/g?b=qq&s=100&nk=qq号
+     * 这个较大
+     * http://q2.qlogo.cn/headimg_dl?dst_uin=455806936&spec=5
      * http://users.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=qq号
      *
      * @param qq q号
@@ -133,6 +136,12 @@ public class ImageService {
         return String.format("http://q1.qlogo.cn/g?b=qq&s=100&nk=%s", qq);
     }
 
+    public String getQLogoBigUrl(Long qq) {
+        if (null == qq) {
+            return null;
+        }
+        return String.format("http://q2.qlogo.cn/headimg_dl?dst_uin=%s&spec=5", qq);
+    }
 
     /**
      * 压缩图片

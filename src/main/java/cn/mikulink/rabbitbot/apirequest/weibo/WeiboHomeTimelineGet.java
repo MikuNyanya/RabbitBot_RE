@@ -72,7 +72,7 @@ public class WeiboHomeTimelineGet extends BaseRequest {
         body = new String(responseBytes);
 
         //记录接口请求与返回日志
-        logger.info(String.format("Api Request WeiboHomeTimelineGet,param:%s,resultBody:%s", JSONObject.toJSONString(param), body));
+        logger.debug(String.format("Api Request WeiboHomeTimelineGet,param:%s,resultBody:%s", JSONObject.toJSONString(param), body));
     }
 
     //拼装参数

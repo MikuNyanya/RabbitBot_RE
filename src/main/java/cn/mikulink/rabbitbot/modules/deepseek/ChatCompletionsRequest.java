@@ -1,10 +1,10 @@
-package cn.mikulink.rabbitbot.apirequest.deepseek;
+package cn.mikulink.rabbitbot.modules.deepseek;
 
 import cn.hutool.http.*;
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
-import cn.mikulink.rabbitbot.entity.apirequest.deepseek.MessageInfo;
-import cn.mikulink.rabbitbot.entity.apirequest.deepseek.ResponseBodyInfo;
-import cn.mikulink.rabbitbot.entity.apirequest.deepseek.ResponseFormatInfo;
+import cn.mikulink.rabbitbot.modules.deepseek.entity.MessageInfo;
+import cn.mikulink.rabbitbot.modules.deepseek.entity.ResponseBodyInfo;
+import cn.mikulink.rabbitbot.modules.deepseek.entity.ResponseFormatInfo;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.Setter;
 

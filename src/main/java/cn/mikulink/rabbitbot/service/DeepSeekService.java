@@ -1,9 +1,9 @@
 package cn.mikulink.rabbitbot.service;
 
-import cn.mikulink.rabbitbot.apirequest.deepseek.ChatCompletionsRequest;
+import cn.mikulink.rabbitbot.modules.deepseek.ChatCompletionsRequest;
 import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.bot.RabbitBotSender;
-import cn.mikulink.rabbitbot.entity.apirequest.deepseek.MessageInfo;
+import cn.mikulink.rabbitbot.modules.deepseek.entity.MessageInfo;
 import cn.mikulink.rabbitbot.entity.db.RabbitbotGroupMessageInfo;
 import cn.mikulink.rabbitbot.entity.db.RabbitbotPrivateMessageInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupMessageInfo;
@@ -56,7 +56,7 @@ public class DeepSeekService {
         try {
             boolean doRequestAIResult = false;
             //at了兔叽和文本中提到兔叽的必定回复
-            if (groupMessageInfo.isAtBot() || groupMessageInfo.isMentionBot()) {
+            if (groupMessageInfo.atBot() || groupMessageInfo.mentionBot()) {
                 doRequestAIResult = true;
             } else {
                 //日常状态 包含响应间隔，以及响应概率

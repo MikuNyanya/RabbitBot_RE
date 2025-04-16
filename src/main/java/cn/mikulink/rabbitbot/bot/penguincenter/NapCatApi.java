@@ -38,6 +38,7 @@ public class NapCatApi {
     @Autowired
     private RabbitbotSendRecordService rabbitbotSendRecordService;
 
+
     /**
      * 调用接口
      *
@@ -46,6 +47,17 @@ public class NapCatApi {
      * @return 接口返回参数
      */
     private String httpToNapCatApi(String url, String jsonBody) {
+        return httpToNapCatApi(url, jsonBody, true);
+    }
+
+    /**
+     * 调用接口
+     *
+     * @param url      接口完整链接
+     * @param jsonBody json参数
+     * @return 接口返回参数
+     */
+    private String httpToNapCatApi(String url, String jsonBody, boolean updateResponseBody) {
         try {
             HttpRequest httpRequest = HttpUtil.createPost(url);
             httpRequest.contentType(ContentType.JSON.getValue());
@@ -56,8 +68,10 @@ public class NapCatApi {
             HttpResponse response = httpRequest.timeout(HttpGlobalConfig.getTimeout()).body(jsonBody).execute();
             String responseBody = response.body();
 
-            //返回消息落库
-            rabbitbotSendRecordService.updateResponseBody(recordId, responseBody);
+            //返回消息落库 部分报文不需要落库
+            if (updateResponseBody) {
+                rabbitbotSendRecordService.updateResponseBody(recordId, responseBody);
+            }
 
             return responseBody;
         } catch (Exception ex) {
@@ -154,7 +168,7 @@ public class NapCatApi {
         param.put("next_token", nextToken);
 
         //解析返回信息
-        String body = this.httpToNapCatApi(url + apiName, JSON.toJSONString(param));
+        String body = this.httpToNapCatApi(url + apiName, JSON.toJSONString(param), false);
         BaseRsp baseRsp = JSON.parseObject(body, BaseRsp.class);
         if (null == baseRsp) {
             log.error("获取群列表返回为空");
@@ -194,7 +208,7 @@ public class NapCatApi {
         param.put("no_cache", false);
 
         //解析返回信息
-        String body = this.httpToNapCatApi(url + apiName, JSON.toJSONString(param));
+        String body = this.httpToNapCatApi(url + apiName, JSON.toJSONString(param), false);
         BaseRsp baseRsp = JSON.parseObject(body, BaseRsp.class);
         if (null == baseRsp) {
             log.error("获取群员信息返回为空");
