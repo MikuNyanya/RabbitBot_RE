@@ -5,19 +5,18 @@ import cn.mikulink.rabbitbot.bot.RabbitBotSender;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
-import cn.mikulink.rabbitbot.modules.pixiv.PixivService;
-import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivRankImageInfo;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
 import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
+import cn.mikulink.rabbitbot.modules.pixiv.PixivService;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivRankImageInfo;
 import cn.mikulink.rabbitbot.service.*;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.sys.ProxyService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.mamoe.mirai.message.data.MessageChain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -98,9 +97,8 @@ public class JobTimeRabbit {
         //养成系统数据刷新
 //        petRefresh();
 
-        //pixiv日榜，最好放在最后执行，要下载图片
-        //也可以另起一个线程，但我懒
-        //pixivRankDay();
+        //pixiv日榜
+        pixivRankDay();
 
         //微博最新消息
         weiboNews();
@@ -231,25 +229,19 @@ public class JobTimeRabbit {
             //获取日榜
             List<PixivRankImageInfo> imageList = pixivService.getPixivIllustRank(ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
             for (PixivRankImageInfo imageInfo : imageList) {
-                //上传图片
-//                MessageChain resultChain = pixivService.parsePixivImgInfoByApiInfo(imageInfo);
+                //转化为消息对象
+                MessageInfo messageInfo = pixivService.parsePixivImgInfoByApiInfo(imageInfo);
 
                 //给每个群发送消息
-//                ContactList<Group> groupList = RabbitBot.getBot().getGroups();
-//                for (Group groupInfo : groupList) {
-//                    //检查功能开关
-//                    ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "pixivRank");
-//                    if (!reStringSwitch.isSuccess()) {
-//                        continue;
-//                    }
-//                    groupInfo.sendMessage(resultChain);
-//
-//                    //每个群之间间隔半秒意思下
-//                    Thread.sleep(500);
-//                }
+                List<GroupInfo> groupList = rabbitBotService.getGroupList();
+                for (GroupInfo groupInfo : groupList) {
+                    rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
+                    //每个群之间间隔半秒意思下
+                    Thread.sleep(500);
+                }
 
-                //每张图片之间间隔5秒
-                Thread.sleep(1000L * 2);
+                //每张图片之间间隔几秒 为的是降低被企鹅风控概率
+                Thread.sleep(1000L * 1);
             }
         } catch (Exception ex) {
             log.error(ConstantPixiv.PIXIV_IMAGE_RANK_JOB_ERROR + ex.getMessage(), ex);
@@ -287,7 +279,6 @@ public class JobTimeRabbit {
 
         log.info("全局随机数刷新,{}->{}", rabbitRandomNum, randomNum);
     }
-
 
     //微信最新消息
     private void weiboNews() {

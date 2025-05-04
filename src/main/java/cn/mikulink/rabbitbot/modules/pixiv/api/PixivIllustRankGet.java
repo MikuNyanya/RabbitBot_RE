@@ -82,7 +82,13 @@ public class PixivIllustRankGet extends BaseRequest {
             //排名
             String rank = attrs.get("data-rank");
             //上次排名
-            String previousRank = element.getElementsByClass("rank").get(0).childNode(1).childNode(0).attr("text");
+            String previousRank = "";
+            if(element.getElementsByClass("rank").get(0).getElementsByClass("new").size()>0){
+                //初次上榜
+                previousRank = element.getElementsByClass("rank").get(0).childNode(1).childNode(0).toString();
+            }else{
+                previousRank = element.getElementsByClass("rank").get(0).childNode(1).childNode(0).childNode(0).toString();
+            }
             //pixivId
             String pixivId = attrs.get("data-id");
 

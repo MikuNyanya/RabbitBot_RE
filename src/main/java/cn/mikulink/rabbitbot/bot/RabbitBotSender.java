@@ -131,13 +131,36 @@ public class RabbitBotSender {
                     log.error("sendSimpleText准备回复群消息，但获取不到群号,msg:{}", JSON.toJSONString(messageInfo));
                     return;
                 }
-                this.sendGroupMessage(RabbitBotMessageBuilder.createGroupMessageText(((GroupMessageInfo) messageInfo).getGroupId(), text));
+                this.sendGroupMessage(((GroupMessageInfo) messageInfo).getGroupId(), RabbitBotMessageBuilder.createMessageText(text));
                 break;
             case "private":
-
+                this.sendPrivateMessage(messageInfo.getUserId(), RabbitBotMessageBuilder.createMessageText(text));
                 break;
             default:
                 log.error("sendSimpleText没有找到回复目标,msg:{}", JSON.toJSONString(messageInfo));
+        }
+    }
+
+    /**
+     * 根据消息来源进行回复
+     *
+     * @param messageInfo   来源消息
+     * @param resultMessage 回复消息
+     */
+    public void resultMessageToSource(MessageInfo messageInfo, MessageInfo resultMessage) {
+        switch (messageInfo.getMessageType()) {
+            case "group":
+                if (!(messageInfo instanceof GroupMessageInfo)) {
+                    log.error("resultMessageToSource准备回复群消息，但获取不到群号,msg:{}", JSON.toJSONString(messageInfo));
+                    return;
+                }
+                this.sendGroupMessage(((GroupMessageInfo) messageInfo).getGroupId(), resultMessage);
+                break;
+            case "private":
+                this.sendPrivateMessage(messageInfo.getUserId(), resultMessage);
+                break;
+            default:
+                log.error("resultMessageToSource没有找到回复目标,msg:{}", JSON.toJSONString(messageInfo));
         }
     }
 }

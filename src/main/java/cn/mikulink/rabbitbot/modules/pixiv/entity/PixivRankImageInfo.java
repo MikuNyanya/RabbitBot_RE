@@ -18,9 +18,9 @@ public class PixivRankImageInfo {
      */
     private Long pid;
     /**
-     * 下载到本地图片路径
+     * 图片代理链接列表
      */
-    private List<String> localImagesPath;
+    private List<String> imagesProxyUrlList;
     /**
      * 图片标题
      */

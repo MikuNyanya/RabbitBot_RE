@@ -19,7 +19,6 @@ import cn.mikulink.rabbitbot.utils.CollectionUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import cn.mikulink.rabbitbot.utils.StringUtil;
-import com.alibaba.fastjson2.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +44,9 @@ public class PixivService {
     //pixiv曲奇 不登录的话，功能有所限制
     @Value("${pixiv.cookie:0}")
     private String pixivCookie;
+
+    //pid下多图时，展示的最多图片数量
+    private int imageShowCountMax = 10;
 
     @Autowired
     private ImageService imageService;
@@ -191,23 +193,17 @@ public class PixivService {
         request.doRequest();
         List<PixivRankImageInfo> rankImageList = request.getResponseList();
 
-        logger.info("PixivService getPixivIllustRank list:{}", JSONObject.toJSONString(rankImageList));
-
-        //根据pid，去单独爬图片的信息
+        //根据pid，去单独获取图片的信息
         for (PixivRankImageInfo rankImageInfo : rankImageList) {
             //根据pid获取图片信息
             PixivImageInfo pixivImageInfo = getPixivImgInfoById(rankImageInfo.getPid());
 
-//            //下载图片到本地
-//            try {
-//                parseImages(pixivImageInfo);
-//            } catch (SocketTimeoutException stockTimeoutEx) {
-//                logger.warn("PixivService getPixivIllustRank {}", ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString(), stockTimeoutEx);
-//            }
+            //图片转化代理
+            List<String> imgUrlList = parseImages(pixivImageInfo);
 
             //信息合并
             //图片
-//            rankImageInfo.setLocalImagesPath(pixivImageInfo.getLocalImgPathList());
+            rankImageInfo.setImagesProxyUrlList(imgUrlList);
             //标题
             rankImageInfo.setTitle(pixivImageInfo.getTitle());
             //简介
@@ -277,17 +273,19 @@ public class PixivService {
      * @param imageInfo 排行榜图片信息
      * @return 群消息
      */
-    public MessageChain parsePixivImgInfoByApiInfo(PixivRankImageInfo imageInfo) {
-        MessageChain result = null;
-        //日榜正常榜，不用r18过滤
-        //展示图片
-        if (CollectionUtil.isNotEmpty(imageInfo.getLocalImagesPath())) {
-//            List<Image> miraiImageList = rabbitBotService.uploadMiraiImage(imageInfo.getLocalImagesPath());
-//            result = rabbitBotService.parseMsgChainByImgs(miraiImageList);
-        } else {
-//            result = MessageUtils.newChain().plus("[未获取到相关图片]");
-        }
+    public MessageInfo parsePixivImgInfoByApiInfo(PixivRankImageInfo imageInfo) {
 
+        List<MessageChain> messageChainList = new ArrayList<>();
+
+        //展示图片
+        if (CollectionUtil.isNotEmpty(imageInfo.getImagesProxyUrlList())) {
+            for (String imgUrl : imageInfo.getImagesProxyUrlList()) {
+                messageChainList.add(RabbitBotMessageBuilder.parseMessageChainImage(imgUrl));
+                messageChainList.add(RabbitBotMessageBuilder.parseMessageChainText("\n"));
+            }
+        } else {
+            messageChainList.add(RabbitBotMessageBuilder.parseMessageChainText("[未获取到相关图片]"));
+        }
 
         StringBuilder resultStr = new StringBuilder();
         if (1 < imageInfo.getPageCount()) {
@@ -300,8 +298,9 @@ public class PixivService {
         resultStr.append("\n[作者] ").append(imageInfo.getUserName());
         resultStr.append("\n[作者id] ").append(imageInfo.getUserId());
         resultStr.append("\n[创建时间] ").append(imageInfo.getCreatedTime());
-//        result = result.plus(resultStr.toString());
-        return result;
+        messageChainList.add(RabbitBotMessageBuilder.parseMessageChainText(resultStr.toString()));
+
+        return new MessageInfo(messageChainList);
     }
 
     /**
@@ -395,9 +394,15 @@ public class PixivService {
         Long pixivId = NumberUtil.toLong(imageInfo.getId());
 
         List<PixivImageUrlInfo> urlList = getPixivImgUrlListById(pixivId);
+        int count = 0;
         for (PixivImageUrlInfo pixivImageUrlInfo : urlList) {
             String tempUrl = pixivImageUrlInfo.getOriginal().replace("i.pximg.net", "i.pixiv.re");
             resultList.add(tempUrl);
+            //图片展示数量上限
+            count++;
+            if (count >= imageShowCountMax) {
+                break;
+            }
         }
         return resultList;
     }
