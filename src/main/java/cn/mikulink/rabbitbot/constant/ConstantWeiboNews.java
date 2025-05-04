@@ -7,11 +7,6 @@ package cn.mikulink.rabbitbot.constant;
  * 微博推文 常量
  */
 public class ConstantWeiboNews extends ConstantCommon {
-    //微博新闻最后扫描时间
-    public static Long weibo_news_last_send_time = System.currentTimeMillis();
-    //微博新闻扫描间隔 60分钟一次
-    public static Long weibo_news_sprit_time = 1000L * 60 * 30;
-
     public static final String SINCEID = "lasttag";
     public static final String SINCEID_REFRESH = "refreshSinceId";
     public static final String SINCEID_OVERRIDE_SUCCESS = "sinceId覆写完毕";

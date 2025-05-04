@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.entity.apirequest.pixiv;
+package cn.mikulink.rabbitbot.modules.pixiv.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -40,10 +40,6 @@ public class PixivImageInfo {
      * 如果是多图，这个值才会有用
      */
     private List<PixivImageUrlInfo> urlList;
-    /**
-     * 本地图片路径
-     */
-    private List<String> localImgPathList;
     /**
      * 似乎是某种限制，应该可以用来判断是否r18和r18g
      * 0为无限制 1为有限制
@@ -90,14 +86,4 @@ public class PixivImageInfo {
      * 相似度，在搜图功能里会用到
      */
     private String similarity;
-    /**
-     * 请求来源的消息
-     * 用于判断配置和开关
-     */
-    private Contact subject;
-    /**
-     * 请求来源的qq
-     * 用于判断配置和开关
-     */
-    private User sender;
 }

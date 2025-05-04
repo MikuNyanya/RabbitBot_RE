@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.apirequest.pixiv;
+package cn.mikulink.rabbitbot.modules.pixiv.api;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;

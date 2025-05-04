@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.test.apirequest.pixiv;
 
-import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustTagGet;
+import cn.mikulink.rabbitbot.modules.pixiv.api.PixivIllustTagGet;
 import org.junit.Test;
 
 public class PixivIllustTagGetTest {

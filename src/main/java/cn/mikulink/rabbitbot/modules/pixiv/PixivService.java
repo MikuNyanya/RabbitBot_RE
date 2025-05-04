@@ -1,35 +1,32 @@
-package cn.mikulink.rabbitbot.service;
+package cn.mikulink.rabbitbot.modules.pixiv;
 
-import cn.mikulink.rabbitbot.apirequest.pixiv.*;
+import cn.mikulink.rabbitbot.bot.RabbitBotMessageBuilder;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;
-import cn.mikulink.rabbitbot.constant.ConstantCommon;
-import cn.mikulink.rabbitbot.constant.ConstantImage;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
-import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageInfo;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageUrlInfo;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivRankImageInfo;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivUserInfo;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain;
+import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
+import cn.mikulink.rabbitbot.modules.pixiv.api.*;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivImageInfo;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivImageUrlInfo;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivRankImageInfo;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivUserInfo;
+import cn.mikulink.rabbitbot.service.ImageService;
 import cn.mikulink.rabbitbot.service.sys.ProxyService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
-import cn.mikulink.rabbitbot.utils.*;
+import cn.mikulink.rabbitbot.utils.CollectionUtil;
+import cn.mikulink.rabbitbot.utils.NumberUtil;
+import cn.mikulink.rabbitbot.utils.RandomUtil;
+import cn.mikulink.rabbitbot.utils.StringUtil;
 import com.alibaba.fastjson2.JSONObject;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.Proxy;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,18 +62,31 @@ public class PixivService {
      * @return 拼装好的结果信息
      * @throws IOException 异常继续上抛，调用端处理
      */
-    public PixivImageInfo getPixivImgInfoById(Long pid) throws IOException {
+    public PixivImageInfo getPixivImgInfoById(Long pid) throws RabbitApiException, IOException {
         if (null == pid) {
             return null;
         }
         //根据pid获取图片列表
-        PixivIllustGet request = new PixivIllustGet(pid);
+        PixivIllustDetailGet request = new PixivIllustDetailGet(pid);
         Map<String, String> header = new HashMap<>();
         header.put("cookie", pixivCookie);
         request.setHeader(header);
         request.setProxy(proxyService.getProxy());
         request.doRequest();
         return request.getPixivImageInfo();
+    }
+
+    /**
+     * 获取pid下所有图片
+     */
+    public List<PixivImageUrlInfo> getPixivImgUrlListById(Long pid) throws RabbitApiException, IOException {
+        PixivIllustPagesGet request = new PixivIllustPagesGet(pid);
+        Map<String, String> header = new HashMap<>();
+        header.put("cookie", pixivCookie);
+        request.setHeader(header);
+        request.setProxy(proxyService.getProxy());
+        request.doRequest();
+        return request.getResponseList();
     }
 
     /**
@@ -87,7 +97,7 @@ public class PixivService {
      * @param tag 标签 参数在上一层过滤好再进来
      * @return 结果对象
      */
-    public PixivImageInfo getPixivIllustByTag(String tag) throws RabbitException, IOException {
+    public PixivImageInfo getPixivIllustByTag(String tag) throws RabbitException, RabbitApiException, IOException {
         //1.查询这个tag下的总结果
         PixivIllustTagGet request = new PixivIllustTagGet();
         request.setWord(tag);
@@ -171,7 +181,7 @@ public class PixivService {
      * @param pageSize 获取个数，传个5个10个的差不多了，一次大概最多50个
      * @return 日榜图片信息
      */
-    public List<PixivRankImageInfo> getPixivIllustRank(int pageSize) throws IOException {
+    public List<PixivRankImageInfo> getPixivIllustRank(int pageSize) throws RabbitApiException, IOException {
         //获取排行榜信息
         PixivIllustRankGet request = new PixivIllustRankGet();
         request.setMode("daily");
@@ -188,16 +198,16 @@ public class PixivService {
             //根据pid获取图片信息
             PixivImageInfo pixivImageInfo = getPixivImgInfoById(rankImageInfo.getPid());
 
-            //下载图片到本地
-            try {
-                parseImages(pixivImageInfo);
-            } catch (SocketTimeoutException stockTimeoutEx) {
-                logger.warn("PixivService getPixivIllustRank {}", ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString(), stockTimeoutEx);
-            }
+//            //下载图片到本地
+//            try {
+//                parseImages(pixivImageInfo);
+//            } catch (SocketTimeoutException stockTimeoutEx) {
+//                logger.warn("PixivService getPixivIllustRank {}", ConstantPixiv.PIXIV_IMAGE_TIMEOUT + stockTimeoutEx.toString(), stockTimeoutEx);
+//            }
 
             //信息合并
             //图片
-            rankImageInfo.setLocalImagesPath(pixivImageInfo.getLocalImgPathList());
+//            rankImageInfo.setLocalImagesPath(pixivImageInfo.getLocalImgPathList());
             //标题
             rankImageInfo.setTitle(pixivImageInfo.getTitle());
             //简介
@@ -222,7 +232,7 @@ public class PixivService {
      * @return 群消息
      * @throws IOException api异常
      */
-    public MessageChain parsePixivImgInfoByApiInfo(PixivImageInfo imageInfo) throws IOException {
+    public MessageInfo parsePixivImgInfoByApiInfo(PixivImageInfo imageInfo) throws RabbitApiException, IOException {
         return parsePixivImgInfoByApiInfo(imageInfo, null);
     }
 
@@ -235,25 +245,14 @@ public class PixivService {
      * @return 群消息
      * @throws IOException api异常
      */
-    public MessageChain parsePixivImgInfoByApiInfo(PixivImageInfo imageInfo, String similarity) throws IOException {
-        MessageChain result = MessageUtils.newChain();
+    public MessageInfo parsePixivImgInfoByApiInfo(PixivImageInfo imageInfo, String similarity) throws RabbitApiException, IOException {
+        List<MessageChain> messageChainList = new ArrayList<>();
 
-        //r18过滤
-        boolean showImage = true;
-        Integer xRestrict = imageInfo.getXRestrict();
-        if (null != xRestrict && 1 == xRestrict) {
-            ReString reStringSwitch = switchService.switchCheck(imageInfo.getSender(), imageInfo.getSubject(), "pixivR18");
-            if (!reStringSwitch.isSuccess()) {
-                result = result.plus(ConstantPixiv.PIXIV_IMAGE_R18);
-                showImage = false;
-            }
-        }
-
-        //展示图片
-        if (showImage) {
-            parseImages(imageInfo);
-//            List<Image> miraiImageList = rabbitBotService.uploadMiraiImage(imageInfo.getLocalImgPathList());
-//            result = rabbitBotService.parseMsgChainByImgs(miraiImageList);
+        //图片 使用代理
+        List<String> imgUrlList = parseImages(imageInfo);
+        for (String imgUrl : imgUrlList) {
+            messageChainList.add(RabbitBotMessageBuilder.parseMessageChainImage(imgUrl));
+            messageChainList.add(RabbitBotMessageBuilder.parseMessageChainText("\n"));
         }
 
         StringBuilder resultStr = new StringBuilder();
@@ -268,8 +267,8 @@ public class PixivService {
         resultStr.append("\n[作者] ").append(imageInfo.getUserName());
         resultStr.append("\n[作者id] ").append(imageInfo.getUserId());
         resultStr.append("\n[上传时间] ").append(imageInfo.getCreateDate());
-        result = result.plus(resultStr.toString());
-        return result;
+        messageChainList.add(RabbitBotMessageBuilder.parseMessageChainText(resultStr.toString()));
+        return new MessageInfo(messageChainList);
     }
 
     /**
@@ -285,8 +284,8 @@ public class PixivService {
         if (CollectionUtil.isNotEmpty(imageInfo.getLocalImagesPath())) {
 //            List<Image> miraiImageList = rabbitBotService.uploadMiraiImage(imageInfo.getLocalImagesPath());
 //            result = rabbitBotService.parseMsgChainByImgs(miraiImageList);
-        }else{
-            result = MessageUtils.newChain().plus("[未获取到相关图片]");
+        } else {
+//            result = MessageUtils.newChain().plus("[未获取到相关图片]");
         }
 
 
@@ -301,7 +300,7 @@ public class PixivService {
         resultStr.append("\n[作者] ").append(imageInfo.getUserName());
         resultStr.append("\n[作者id] ").append(imageInfo.getUserId());
         resultStr.append("\n[创建时间] ").append(imageInfo.getCreatedTime());
-        result = result.plus(resultStr.toString());
+//        result = result.plus(resultStr.toString());
         return result;
     }
 
@@ -379,138 +378,27 @@ public class PixivService {
         return pixivImageInfos;
     }
 
-    //下载图片到本地
-    public void parseImages(PixivImageInfo imageInfo) throws IOException {
-        if (StringUtil.isEmpty(imageInfo.getUrls().getOriginal())) {
-            imageInfo.setLocalImgPathList(null);
-            return;
+    public List<String> parseImages(PixivImageInfo imageInfo) throws RabbitApiException, IOException {
+        //https://pixiv.cat/
+        //https://i.pximg.net/img-original/img/2025/03/24/21/03/46/128565958_p0.jpg
+        //https://i.pixiv.re/img-original/img/2025/03/24/21/03/46/128565958_p0.jpg
+        if (1 >= imageInfo.getPageCount()) {
+            if (StringUtil.isEmpty(imageInfo.getUrls().getOriginal())) {
+                return null;
+            }
+            String preUrl = imageInfo.getUrls().getOriginal().replace("i.pximg.net", "i.pixiv.re");
+            return List.of(preUrl);
         }
+
+        //多图
+        List<String> resultList = new ArrayList<>();
         Long pixivId = NumberUtil.toLong(imageInfo.getId());
-        List<String> localImagesPathList = new ArrayList<>();
 
-        if (1 < imageInfo.getPageCount()) {
-            //多图
-            try {
-                localImagesPathList.addAll(downloadPixivImgs(pixivId));
-            } catch (FileNotFoundException fileNotFoundEx) {
-                logger.warn("pixiv多图获取失败，可能登录过期,imageInfo:{}", JSONObject.toJSONString(imageInfo), fileNotFoundEx);
-                //限制级会要求必须登录，如果不登录会抛出异常
-                localImagesPathList.add(downloadPixivImg(imageInfo.getUrls().getOriginal(), pixivId));
-            }
-        } else {
-            //单图
-            localImagesPathList.add(downloadPixivImg(imageInfo.getUrls().getOriginal(), pixivId));
+        List<PixivImageUrlInfo> urlList = getPixivImgUrlListById(pixivId);
+        for (PixivImageUrlInfo pixivImageUrlInfo : urlList) {
+            String tempUrl = pixivImageUrlInfo.getOriginal().replace("i.pximg.net", "i.pixiv.re");
+            resultList.add(tempUrl);
         }
-        imageInfo.setLocalImgPathList(localImagesPathList);
-    }
-
-    /**
-     * 下载P站图片
-     *
-     * @param url p站图片链接
-     * @return 压缩后的本地图片地址
-     */
-    public String downloadPixivImg(String url, Long pixivId) throws IOException {
-        //先检测是否已下载，如果已下载直接送去压图
-        String pixivImgFileName = url.substring(url.lastIndexOf("/") + 1);
-        String localPixivFilePath = ConstantImage.DEFAULT_IMAGE_SAVE_PATH + File.separator + "pixiv" + File.separator + pixivImgFileName;
-        if (FileUtil.exists(localPixivFilePath)) {
-            return imageService.scaleForceByLocalImagePath(localPixivFilePath);
-        }
-
-        //是否不加载p站图片，由于从p站本体拉数据，还没代理，很慢
-        String pixiv_image_ignore = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_IMAGE_IGNORE);
-        if ("1".equalsIgnoreCase(pixiv_image_ignore)) {
-            return null;
-        }
-
-        String scaleForceLocalUrl = null;
-        try {
-            String localUrl = downloadPixivImgByPixivImgUrl(url, pixivId);
-
-            if (StringUtil.isNotEmpty(localUrl)) {
-                scaleForceLocalUrl = imageService.scaleForceByLocalImagePath(localUrl);
-            }
-            if (StringUtil.isEmpty(scaleForceLocalUrl)) {
-                //图片下载或压缩失败
-                logger.warn(String.format("PixivImjadService downloadPixivImg %s url:%s", ConstantPixiv.PIXIV_IMAGE_DOWNLOAD_FAIL, url));
-            }
-        } catch (FileNotFoundException fileNotFoundEx) {
-            //图片被删了
-            logger.warn(String.format("PixivImjadService downloadPixivImg %s pixivId:%s", ConstantPixiv.PIXIV_IMAGE_DELETE, pixivId));
-        }
-        return scaleForceLocalUrl;
-    }
-
-    /**
-     * 下载并压缩P站图片(多图)
-     *
-     * @return 处理后的本地图片地址列表
-     */
-    public List<String> downloadPixivImgs(Long pixivId) throws IOException {
-        List<String> localImagesPath = new ArrayList<>();
-
-        //查看多图展示数量配置，默认为3
-        String pixiv_config_images_show_count = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_IMAGES_SHOW_COUNT);
-        if (!NumberUtil.isNumberOnly(pixiv_config_images_show_count)) {
-            pixiv_config_images_show_count = ConstantPixiv.PIXIV_CONFIG_IMAGES_SHOW_COUNT_DEFAULT;
-        }
-        Integer showCount = NumberUtil.toInt(pixiv_config_images_show_count);
-
-        //获取多图
-        PixivIllustPagesGet request = new PixivIllustPagesGet(pixivId);
-        try {
-            //如果是登录可见图片，必须附带cookie，不然会抛出404异常
-            Map<String, String> header = new HashMap<>();
-            header.put("cookie", pixivCookie);
-            request.setHeader(header);
-            request.setProxy(proxyService.getProxy());
-            request.doRequest();
-        } catch (RabbitApiException rabApiEx) {
-            logger.warn("Pixiv downloadPixivImgs apierr msg:{}", rabApiEx.getMessage(), rabApiEx);
-            return new ArrayList<>();
-        }
-        List<PixivImageUrlInfo> urlInfoList = request.getResponseList();
-
-        int i = 0;
-
-        for (PixivImageUrlInfo urlInfo : urlInfoList) {
-            //下载并压缩图片
-            String scaleForceLocalUrl = downloadPixivImg(urlInfo.getOriginal(), pixivId);
-            localImagesPath.add(scaleForceLocalUrl);
-            //达到指定数量，结束追加图片
-            i++;
-            if (i >= showCount) {
-                break;
-            }
-        }
-        return localImagesPath;
-    }
-
-    /**
-     * 根据p站图片链接下载图片
-     * 带图片后缀的那种，比如
-     * https://i.pximg.net/img-original/img/2018/03/31/01/10/08/67994735_p0.png
-     *
-     * @param url     p站图片链接
-     * @param pixivId p站图片id，用于防爬链，必须跟url中的id一致
-     * @return 下载后的本地连接
-     */
-    public String downloadPixivImgByPixivImgUrl(String url, Long pixivId) throws IOException {
-        logger.info("Pixiv image download:" + url);
-        //目前一共遇到的
-        //1.似乎是新连接，最近UI改了 https://i.pximg.net/img-original/img/2020/02/17/22/07/00/79561788_p0.jpg
-        //Referer: https://www.pixiv.net/artworks/79561788
-        //2.没研究出来的链接，还是403，但是把域名替换成正常链接的域名，可以正常获取到数据 https://i-cf.pximg.net/img-original/img/2020/02/17/22/07/00/79561788_p0.jpg
-        HashMap<String, String> header = new HashMap<>();
-        if (url.contains("i-cf.pximg.net")) {
-            url = url.replace("i-cf.pximg.net", "i.pximg.net");
-        }
-        //加入p站防爬链
-        header.put("referer", "https://www.pixiv.net/artworks/" + pixivId);
-        // 创建代理
-        Proxy proxy = proxyService.getProxy();
-        //下载图片
-        return ImageUtil.downloadImage(header, url, ConstantImage.DEFAULT_IMAGE_SAVE_PATH + File.separator + "pixiv", null, proxy);
+        return resultList;
     }
 }

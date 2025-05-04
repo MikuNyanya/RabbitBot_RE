@@ -32,7 +32,12 @@ bot:
   #NapCat
   messageSend:
     apiurl: http://localhost:31011
-  jobopen: on
+  #定时任务开关
+  jobOpen: off
+  #群消息响应开关
+  groupMessageResponse: on
+  #私聊消息响应开关
+  privateMessageResponse: on
 ############# 文件相关 ######################
 #在 每个文件一个路径配置 和 仅主目录写为配置 两个方案中难舍 但眼下两种方案效果实为无异
 #啊。。随便了=A=
@@ -51,6 +56,7 @@ deepseek:
 ############# 代理相关 ######################
 #地址
 proxy:
+  userProxy: on
   address: 127.0.0.1
   #端口
   prot: 31051

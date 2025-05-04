@@ -1,7 +1,7 @@
 package cn.mikulink.rabbitbot.test.apirequest.pixiv;
 
-import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustRankGet;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivRankImageInfo;
+import cn.mikulink.rabbitbot.modules.pixiv.api.PixivIllustRankGet;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivRankImageInfo;
 import org.junit.Test;
 
 import java.util.List;

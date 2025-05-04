@@ -16,6 +16,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,6 +26,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MessageHandle {
+    @Value("${bot.groupMessageResponse:false}")
+    private boolean groupMessageResponse;
+    @Value("${bot.privateMessageResponse:false}")
+    private boolean privateMessageResponse;
 
     @Autowired
     private CommandConfig commandConfig;
@@ -65,6 +70,11 @@ public class MessageHandle {
      * @param groupMessageInfo 群消息
      */
     public void doMessageBiz(@NotNull GroupMessageInfo groupMessageInfo) {
+        //总开关
+        if (!groupMessageResponse) {
+            return;
+        }
+
         rabbitbotGroupMessageService.create(groupMessageInfo);
 
         Long groupId = groupMessageInfo.getGroupId();
@@ -104,6 +114,7 @@ public class MessageHandle {
             MessageInfo result = atService.doAtBiz(groupMessageInfo);
             if (result != null) {
                 rabbitBotSender.sendGroupMessage(groupId, result.getMessage());
+                return;
             }
         }
 
@@ -134,6 +145,11 @@ public class MessageHandle {
 
 
     public void doMessageBiz(@NotNull PrivateMessageInfo privateMessageInfo) {
+        //总开关
+        if (!privateMessageResponse) {
+            return;
+        }
+
         //消息落库
         rabbitbotPrivateMessageService.create(privateMessageInfo);
 

@@ -9,7 +9,8 @@ import cn.mikulink.rabbitbot.entity.ImageInfo;
 import cn.mikulink.rabbitbot.entity.ImageSearchMemberInfo;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
 import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchResult;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.modules.pixiv.PixivService;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivImageInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitException;
 import cn.mikulink.rabbitbot.service.sys.ProxyService;
 import cn.mikulink.rabbitbot.utils.*;
@@ -300,8 +301,8 @@ public class ImageService {
 
             //搜图
             MessageChain messageChain = event.getMessage();
-            String imgUrl = ((OnlineGroupImageImpl) messageChain.get(1)).getOriginUrl();
-            messageChain = searchImgByImgUrl(imgUrl, event.getSender(), event.getSubject());
+//            String imgUrl = ((OnlineGroupImageImpl) messageChain.get(1)).getOriginUrl();
+//            messageChain = searchImgByImgUrl(imgUrl, event.getSender(), event.getSubject());
 
             //发送结果
             event.getSubject().sendMessage(messageChain);
@@ -324,9 +325,9 @@ public class ImageService {
             if (5 == searchResult.getHeader().getIndex_id()) {
                 //pixiv
                 PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById((long) searchResult.getData().getPixiv_id());
-                pixivImageInfo.setSender(sender);
-                pixivImageInfo.setSubject(subject);
-                messageChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo, searchResult.getHeader().getSimilarity());
+//                pixivImageInfo.setSender(sender);
+//                pixivImageInfo.setSubject(subject);
+//                messageChain = pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo, searchResult.getHeader().getSimilarity());
             } else {
                 //Danbooru
                 messageChain = danbooruService.parseDanbooruImgRequest(searchResult);

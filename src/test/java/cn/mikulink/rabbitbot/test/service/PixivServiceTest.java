@@ -1,7 +1,7 @@
 package cn.mikulink.rabbitbot.test.service;
 
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageInfo;
-import cn.mikulink.rabbitbot.service.PixivService;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivImageInfo;
+import cn.mikulink.rabbitbot.modules.pixiv.PixivService;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

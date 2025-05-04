@@ -26,8 +26,8 @@ import java.util.List;
 @EnableScheduling
 public class JobWeekRabbit {
 
-    @Value("${bot.jobopen:off}")
-    private String jobOpen;
+    @Value("${bot.jobOpen:false}")
+    private boolean jobOpen;
 
     @Autowired
     private OiApiService oiApiService;
@@ -40,7 +40,7 @@ public class JobWeekRabbit {
     @Scheduled(cron = "0 50 11 ? * 4")
     public void execute() {
         //定时任务开关
-        if (jobOpen.equals("off")) {
+        if (!jobOpen) {
             return;
         }
 
@@ -48,7 +48,7 @@ public class JobWeekRabbit {
             String msg = oiApiService.kfcV50();
 
             //给每个群发送消息
-            MessageInfo messageInfo = RabbitBotMessageBuilder.createMessageImage(msg);
+            MessageInfo messageInfo = RabbitBotMessageBuilder.createMessageText(msg);
             List<GroupInfo> groupList = rabbitBotService.getGroupList();
             for (GroupInfo groupInfo : groupList) {
                 rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());

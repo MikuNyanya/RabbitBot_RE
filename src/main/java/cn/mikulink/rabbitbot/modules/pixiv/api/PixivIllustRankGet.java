@@ -1,7 +1,7 @@
-package cn.mikulink.rabbitbot.apirequest.pixiv;
+package cn.mikulink.rabbitbot.modules.pixiv.api;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivRankImageInfo;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivRankImageInfo;
 import cn.mikulink.rabbitbot.utils.HttpUtil;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;

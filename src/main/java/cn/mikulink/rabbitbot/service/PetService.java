@@ -1,16 +1,13 @@
 package cn.mikulink.rabbitbot.service;
 
-import cn.mikulink.rabbitbot.bot.RabbitBot;
 import cn.mikulink.rabbitbot.constant.ConstantPet;
 import cn.mikulink.rabbitbot.entity.PetInfo;
-import cn.mikulink.rabbitbot.entity.ReString;
+import cn.mikulink.rabbitbot.modules.pixiv.PixivService;
 import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.FileUtil;
 import cn.mikulink.rabbitbot.utils.NumberUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
 import com.alibaba.fastjson2.JSONObject;
-import net.mamoe.mirai.contact.ContactList;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageUtils;
 import org.slf4j.Logger;

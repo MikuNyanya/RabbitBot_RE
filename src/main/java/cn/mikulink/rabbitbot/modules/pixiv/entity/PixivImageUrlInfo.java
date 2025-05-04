@@ -1,4 +1,4 @@
-package cn.mikulink.rabbitbot.entity.apirequest.pixiv;
+package cn.mikulink.rabbitbot.modules.pixiv.entity;
 
 import lombok.Getter;
 import lombok.Setter;

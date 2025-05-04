@@ -5,18 +5,19 @@ import cn.mikulink.rabbitbot.bot.RabbitBotSender;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivRankImageInfo;
+import cn.mikulink.rabbitbot.modules.pixiv.PixivService;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivRankImageInfo;
+import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoStatuses;
+import cn.mikulink.rabbitbot.entity.apirequest.weibo.InfoWeiboHomeTimeline;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.GroupInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
 import cn.mikulink.rabbitbot.service.*;
 import cn.mikulink.rabbitbot.service.sys.ConfigService;
 import cn.mikulink.rabbitbot.service.sys.ProxyService;
-import cn.mikulink.rabbitbot.service.sys.SwitchService;
 import cn.mikulink.rabbitbot.utils.DateUtil;
 import cn.mikulink.rabbitbot.utils.RandomUtil;
+import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.message.data.MessageChain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -32,18 +33,18 @@ import java.util.List;
  * <p>
  * 1小时执行一次的定时器
  */
+@Slf4j
 @Component
 @EnableScheduling
 public class JobTimeRabbit {
-    private static final Logger logger = LoggerFactory.getLogger(JobTimeRabbit.class);
 
     //兔叽
     @Value("${bot.name.cn:兔叽}")
     public String rabbit_bot_name;
-    @Value("${proxy.check:off}")
-    private String proxyCheck;
-    @Value("${bot.jobopen:off}")
-    private String jobOpen;
+    @Value("${proxy.check:false}")
+    private boolean proxyCheck;
+    @Value("${bot.jobOpen:false}")
+    private boolean jobOpen;
     //当前时间，方便其他地方使用
     private int hour_now = 0;
 
@@ -65,10 +66,12 @@ public class JobTimeRabbit {
     private ConfigService configService;
     @Autowired
     private MirlKoiService mirlKoiService;
+    @Autowired
+    private WeiboNewsService weiboNewsService;
 
     @Scheduled(cron = "0 1 * * * ?")
     public void execute() {
-        if(jobOpen.equals("off")){
+        if (!jobOpen) {
             return;
         }
 
@@ -98,6 +101,9 @@ public class JobTimeRabbit {
         //pixiv日榜，最好放在最后执行，要下载图片
         //也可以另起一个线程，但我懒
         //pixivRankDay();
+
+        //微博最新消息
+        weiboNews();
     }
 
     //报时兔子
@@ -115,7 +121,7 @@ public class JobTimeRabbit {
                 rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
             }
         } catch (Exception ex) {
-            logger.error("报时兔子 消息发送异常" + ex.getMessage(), ex);
+            log.error("报时兔子 消息发送异常" + ex.getMessage(), ex);
         }
     }
 
@@ -158,7 +164,7 @@ public class JobTimeRabbit {
                 rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
             }
         } catch (Exception ioEx) {
-            logger.error("天气兔子发生异常:" + ioEx.getMessage(), ioEx);
+            log.error("天气兔子发生异常:" + ioEx.getMessage(), ioEx);
         }
     }
 
@@ -181,7 +187,7 @@ public class JobTimeRabbit {
             }
 
         } catch (Exception ex) {
-            logger.error(ConstantPixiv.SETU_DAY_ERROR, ex);
+            log.error(ConstantPixiv.SETU_DAY_ERROR, ex);
         }
     }
 
@@ -191,7 +197,7 @@ public class JobTimeRabbit {
         if (hour_now != 10) {
             return;
         }
-        logger.info("开始获取每日简报");
+        log.info("开始获取每日简报");
         try {
             String newsImgUrl = newsDayService.getZaobNews();
 
@@ -203,13 +209,13 @@ public class JobTimeRabbit {
             }
         } catch (Exception ex) {
             //挂了就挂了吧
-            logger.error("每日简报 消息发送异常" + ex.getMessage(), ex);
+            log.error("每日简报 消息发送异常" + ex.getMessage(), ex);
         }
     }
 
     //代理检测是否可用
     private void proxyCheck() {
-        if (ConstantCommon.ON.equalsIgnoreCase(proxyCheck)) {
+        if (proxyCheck) {
             proxyService.proxyCheck();
         }
     }
@@ -226,7 +232,7 @@ public class JobTimeRabbit {
             List<PixivRankImageInfo> imageList = pixivService.getPixivIllustRank(ConstantPixiv.PIXIV_IMAGE_PAGESIZE);
             for (PixivRankImageInfo imageInfo : imageList) {
                 //上传图片
-                MessageChain resultChain = pixivService.parsePixivImgInfoByApiInfo(imageInfo);
+//                MessageChain resultChain = pixivService.parsePixivImgInfoByApiInfo(imageInfo);
 
                 //给每个群发送消息
 //                ContactList<Group> groupList = RabbitBot.getBot().getGroups();
@@ -246,7 +252,7 @@ public class JobTimeRabbit {
                 Thread.sleep(1000L * 2);
             }
         } catch (Exception ex) {
-            logger.error(ConstantPixiv.PIXIV_IMAGE_RANK_JOB_ERROR + ex.getMessage(), ex);
+            log.error(ConstantPixiv.PIXIV_IMAGE_RANK_JOB_ERROR + ex.getMessage(), ex);
         }
     }
 
@@ -262,7 +268,7 @@ public class JobTimeRabbit {
             //数据保存到文件
             petService.writeFile();
         } catch (Exception ex) {
-            logger.error("养成数据刷新执行异常", ex);
+            log.error("养成数据刷新执行异常", ex);
         }
     }
 
@@ -279,7 +285,55 @@ public class JobTimeRabbit {
         ConstantCommon.common_config.put("rabbitRandomNum", String.valueOf(randomNum));
         configService.refreshConfigFile();
 
-        logger.info("全局随机数刷新,{}->{}", rabbitRandomNum, randomNum);
+        log.info("全局随机数刷新,{}->{}", rabbitRandomNum, randomNum);
     }
 
+
+    //微信最新消息
+    private void weiboNews() {
+        log.info("====开始执行微博推送====");
+        try {
+            //执行微博消息推送
+            //获取接口返回
+            InfoWeiboHomeTimeline weiboNews = weiboNewsService.getWeiboNews(10);
+
+            //刷新最后推文标识，但如果一次请求中没有获取到新数据，since_id会为0
+            Long sinceId = weiboNews.getSince_id();
+            if (0 != sinceId) {
+                log.info(String.format("微博sinceId刷新：[%s]->[%s]", ConstantCommon.common_config.get("sinceId"), sinceId));
+                //刷新sinceId配置
+                ConstantCommon.common_config.put("sinceId", String.valueOf(sinceId));
+                //更新配置文件
+                configService.refreshConfigFile();
+            }
+
+            //获取微博内容
+            List<InfoStatuses> statuses = weiboNews.getStatuses();
+
+            if (null == statuses || statuses.size() == 0) {
+                return;
+            }
+
+            //发送微博
+            for (InfoStatuses info : statuses) {
+                //解析微博报文
+                List<cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageChain> msgChain = weiboNewsService.parseWeiboBody(info);
+                if (null != info.getRetweeted_status()) {
+                    //追加被转发的微博消息
+                    msgChain.addAll(weiboNewsService.parseWeiboBody(info.getRetweeted_status(), true));
+                }
+
+                //每个群发送微博推送
+                MessageInfo messageInfo = new MessageInfo(msgChain);
+                List<GroupInfo> groupList = rabbitBotService.getGroupList();
+                for (GroupInfo groupInfo : groupList) {
+                    rabbitBotSender.sendGroupMessage(groupInfo.getGroupId(), messageInfo.getMessage());
+                }
+            }
+
+
+        } catch (Exception ex) {
+            log.error("微博消息推送执行异常:" + ex.getMessage(), ex);
+        }
+    }
 }

@@ -1,9 +1,9 @@
-package cn.mikulink.rabbitbot.apirequest.pixiv;
+package cn.mikulink.rabbitbot.modules.pixiv.api;
 
 import cn.mikulink.rabbitbot.apirequest.BaseRequest;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageInfo;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageUrlInfo;
 import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivImageInfo;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivImageUrlInfo;
 import cn.mikulink.rabbitbot.utils.HttpsUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * create by MikuLink on 2020/12/17 22:10
  * for the Reisen
- * 根据p站图片id获取插画图片信息 尚未找到官方API，或者稳定的第三方，所以使用爬虫
+ * 根据p站图片id获取id下所有图片信息
  * https://www.pixiv.net/ajax/illust/82343475/pages
  */
 @Setter
@@ -39,7 +39,7 @@ public class PixivIllustPagesGet extends BaseRequest {
     private Long pixivId;
 
     /**
-     * pixiv图片列表
+     * pixiv图片
      */
     private List<PixivImageUrlInfo> responseList;
 
@@ -71,5 +71,6 @@ public class PixivIllustPagesGet extends BaseRequest {
         for (PixivImageInfo pixivImageInfo : pixivImageInfos) {
             responseList.add(pixivImageInfo.getUrls());
         }
+
     }
 }

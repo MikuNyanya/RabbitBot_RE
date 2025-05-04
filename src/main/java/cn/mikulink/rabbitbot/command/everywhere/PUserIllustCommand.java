@@ -2,9 +2,9 @@ package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.command.EverywhereCommand;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivUserInfo;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivUserInfo;
 import cn.mikulink.rabbitbot.entity.rabbitbotmessage.MessageInfo;
-import cn.mikulink.rabbitbot.service.PixivService;
+import cn.mikulink.rabbitbot.modules.pixiv.PixivService;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.sys.annotate.Command;
 import net.mamoe.mirai.message.data.MessageChain;

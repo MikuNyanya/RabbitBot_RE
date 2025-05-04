@@ -1,6 +1,6 @@
 package cn.mikulink.rabbitbot.test.apirequest.pixiv;
 
-import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustUserGet;
+import cn.mikulink.rabbitbot.modules.pixiv.api.PixivIllustUserGet;
 import org.junit.Test;
 
 import java.util.List;

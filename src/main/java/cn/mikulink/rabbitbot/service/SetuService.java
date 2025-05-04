@@ -3,7 +3,9 @@ package cn.mikulink.rabbitbot.service;
 import cn.mikulink.rabbitbot.bot.RabbitBotService;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
-import cn.mikulink.rabbitbot.entity.apirequest.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.exceptions.RabbitApiException;
+import cn.mikulink.rabbitbot.modules.pixiv.PixivService;
+import cn.mikulink.rabbitbot.modules.pixiv.entity.PixivImageInfo;
 import cn.mikulink.rabbitbot.utils.*;
 import com.alibaba.fastjson2.JSONObject;
 import org.slf4j.Logger;
@@ -46,7 +48,7 @@ public class SetuService {
     /**
      * 来张色图
      */
-    public PixivImageInfo getSetu() throws IOException {
+    public PixivImageInfo getSetu() throws RabbitApiException,IOException {
         //获取一个pid
         Long setu_pid = NumberUtil.toLong(randOneSetuPid());
 

@@ -1,10 +1,8 @@
 package cn.mikulink.rabbitbot.service.sys;
 
-import cn.mikulink.rabbitbot.apirequest.pixiv.PixivIllustRankGet;
-import cn.mikulink.rabbitbot.bot.RabbitBotService;
+import cn.mikulink.rabbitbot.modules.pixiv.api.PixivIllustRankGet;
 import cn.mikulink.rabbitbot.utils.ProxyUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +17,17 @@ import java.net.SocketException;
 @Slf4j
 @Service
 public class ProxyService {
-
+    @Value("${proxy.userProxy:false}")
+    private boolean userProxy;
     @Value("${proxy.address:127.0.0.1}")
     private String proxyAddress;
     @Value("${proxy.prot:31051}")
     private Integer proxyProt;
 
     public Proxy getProxy() {
+        if (!userProxy) {
+            return null;
+        }
         return getProxy(proxyAddress, proxyProt);
     }
 
